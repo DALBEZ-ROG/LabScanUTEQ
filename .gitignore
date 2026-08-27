@@ -1,0 +1,51 @@
+# --- Gradle ---
+.gradle/
+build/
+/build
+/captures
+local.properties
+
+# --- Android Studio / IntelliJ ---
+*.iml
+.idea/*
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+.navigation/
+.cxx/
+.externalNativeBuild/
+
+# --- Salidas de compilacion ---
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+output.json
+release/
+
+# --- Firma ---
+# Regla general: ninguna clave de firma entra al repositorio.
+*.jks
+*.keystore
+keystore.properties
+
+# Excepcion deliberada, documentada en README.md y en docs/DECISIONES.md (D-021):
+# el almacen de DEMOSTRACION si viaja, para que cualquiera pueda clonar el proyecto y
+# generar un APK instalable sin pedirle nada a nadie, que es lo que exige la entrega.
+# No protege nada y no pretende hacerlo: su contrasena esta escrita en build.gradle.kts.
+# Para publicar en una tienda habria que generar un almacen nuevo, dejarlo fuera del
+# control de versiones y pasarlo por variables de entorno.
+!keystore/labscan-demo.jks
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Modelo entrenado ---
+# model.tflite SI se versiona: la app debe poder clonarse y compilarse tal cual.
+# Lo que no se versiona es el material de entrenamiento, que pesa demasiado.
+/dataset/
+/runs/
+*.pt
+*.onnx

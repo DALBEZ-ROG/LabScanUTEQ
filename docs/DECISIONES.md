@@ -1,0 +1,739 @@
+# Bitácora de decisiones técnicas
+
+Toda decisión no trivial se registra aquí: qué se decidió, por qué, qué se descartó y qué
+consecuencias tiene. Regla 8 de CLAUDE.md: **no se agrega ninguna dependencia sin una
+entrada en este archivo.**
+
+Formato: `D-NNN — título — fase — fecha`.
+
+---
+
+## D-001 — Se usa el `Interpreter` crudo de TFLite, no la Task Library — F0 — 2026-08-26
+
+**Decisión.** La inferencia del modelo YOLO se hará con `org.tensorflow.lite.Interpreter`
+directamente, escribiendo a mano el letterbox, la descuantización, la decodificación del
+tensor y el NMS. Se descartan `tensorflow-lite-task-vision` (Task Library) y MediaPipe Tasks.
+
+**Por qué.**
+
+1. **La Task Library exige metadatos que un export de Ultralytics no trae.**
+   `ObjectDetector.createFromFileAndOptions()` lee los *TFLite Metadata* incrustados en el
+   `.tflite` para saber la normalización de entrada y el mapa de etiquetas. El export de
+   `model.export(format="tflite", int8=True, nms=False)` no los escribe, así que la Task
+   Library falla al cargar el modelo con un error de metadatos, no de inferencia.
+
+2. **La Task Library asume la salida de un SSD, no la de un YOLOv8.** Espera cuatro
+   tensores separados (cajas, clases, puntajes, número de detecciones), que es la firma de
+   los detectores del Model Zoo de TensorFlow. YOLOv8 devuelve **un solo** tensor
+   `[1, 4 + N, 8400]`, transpuesto y sin dimensión de *objectness*. No hay forma de que la
+   Task Library lo interprete: no es un problema de configuración, es otra forma de salida.
+
+3. **El NMS lo hace la app a propósito.** Se exporta con `nms=False`
+   (docs/INTEGRACION_MODELO.md, 2.3) para que el modelo quede más simple y portable. Eso
+   implica que alguien tiene que hacer la supresión de no máximos, y ese alguien es
+   `YoloDecoder`. La Task Library no permite intervenir en ese punto.
+
+4. **Se necesita ver el tensor crudo.** El riesgo número dos del proyecto es la
+   decodificación de la salida (docs/PLAN_FASES.md, 3). La pantalla de Diagnóstico tiene
+   que mostrar forma, tipo, `scale`, `zero_point` y rango real de los valores. El
+   `Interpreter` expone todo eso con `getInputTensor()` / `getOutputTensor()`; la Task
+   Library lo oculta por completo.
+
+5. **MediaPipe Tasks tiene el mismo problema, agravado.** Su `ObjectDetector` también
+   depende de metadatos y además arrastra su propio grafo y sus assets, lo que suma peso
+   al APK sin resolver nada de lo anterior.
+
+**Qué cuesta.** Aproximadamente 700 líneas propias entre `Letterbox`, `YoloDecoder`,
+`ModelConfig` y `YoloTfliteDetector`, y la responsabilidad de la conversión YUV a RGB.
+Es el costo previsto en docs/PLAN_FASES.md y se acepta.
+
+**Qué se gana.** El modelo se puede cambiar sin tocar código Kotlin: basta reemplazar los
+assets y editar `model_config.json` (`outputLayout`, `quantized`, `coordsNormalized`,
+`inputSize`). Esa propiedad es la que permite que la app y el modelo avancen en paralelo.
+
+**Consecuencia de diseño.** `org.tensorflow` solo puede importarse dentro de
+`detection/`. Es la regla 1 de CLAUDE.md y hace que cambiar de motor de inferencia en el
+futuro sea un cambio local.
+
+---
+
+## D-002 — `compileSdk 37` con `targetSdk 35` — F0 — 2026-08-26
+
+**Decisión.** `compileSdk = 37`, `targetSdk = 35`, `minSdk = 26`.
+
+**Por qué.** El plan de F0 pedía `compileSdk 35`, pero el proyecto ya venía generado con
+AGP 9.3.2 y Gradle 9.5, y esa combinación no lo permite. El build lo rechaza de forma
+explícita:
+
+```
+Dependency 'androidx.compose.ui:ui-android:1.12.0' requires libraries and applications
+that depend on it to compile against version 37 or later of the Android APIs.
+:app is currently compiled against android-36.
+```
+
+Se intentó primero con 36 y falló por lo mismo. Como `compileSdk` solo determina contra
+qué APIs se **compila**, subirlo no cambia el comportamiento de la app en el dispositivo.
+
+**Lo que sí importa se mantiene:** `targetSdk` sigue en 35 y `minSdk` en 26, tal como fija
+CLAUDE.md. El comportamiento en tiempo de ejecución es exactamente el planificado.
+
+**Alternativa descartada.** Bajar a AGP 8.x y Gradle 8.x para poder usar `compileSdk 35`.
+Habría obligado a degradar el wrapper de Gradle y a pelear con la versión de Android
+Studio instalada, a cambio de nada: ninguna API de 36 ni de 37 se usa en el código.
+
+---
+
+## D-003 — Kotlin integrado de AGP 9 en vez del plugin `kotlin-android` — F0 — 2026-08-26
+
+**Decisión.** No se aplica `org.jetbrains.kotlin.android`. Se usa el soporte de Kotlin
+integrado de AGP 9 (`android.builtInKotlin`, activo por defecto) y solo se aplican los dos
+plugins de compilador que el proyecto necesita: `org.jetbrains.kotlin.plugin.compose` y
+`org.jetbrains.kotlin.plugin.serialization`, ambos en 2.4.10.
+
+**Por qué.** El plan pedía Kotlin 2.0.x con el plugin clásico. Con AGP 9 eso no compila.
+El propio build lo dice:
+
+```
+The 'org.jetbrains.kotlin.android' plugin is not compatible with AGP's 9.0 new DSL
+(`android.newDsl=true` is enabled by default).
+Solution: Set `android.builtInKotlin=true` in `gradle.properties` and migrate to
+built-in Kotlin.
+```
+
+Se probó con Kotlin 2.2.10 y con 2.4.10, y también con `android.builtInKotlin=false`: las
+tres rutas fallan al aplicar el plugin. La ruta soportada es la integrada.
+
+**Consecuencias.**
+
+- No hay bloque `kotlinOptions`; el objetivo de bytecode se fija en `kotlin { compilerOptions
+  { jvmTarget.set(JvmTarget.JVM_17) } }`. Verificado: las clases salen con *major version*
+  61, es decir Java 17, como pedía el plan.
+- El compilador de Compose ya no necesita `composeOptions`; lo gestiona el plugin
+  `kotlin.plugin.compose`.
+- Si en el futuro hiciera falta KSP o Room, habría que revisar su compatibilidad con el
+  Kotlin integrado antes de agregarlos.
+
+---
+
+## D-004 — Dependencias declaradas por adelantado en F0 — F0 — 2026-08-26
+
+**Decisión.** El version catalog declara ya todas las dependencias de las ocho fases,
+aunque F0 no use ninguna salvo Compose y Navigation.
+
+**Por qué.** Evita que cada fase se abra con una tanda de descargas y un build roto por
+un conflicto de versiones descubierto tarde. Todo el árbol de dependencias queda resuelto
+y compilado una sola vez, aquí.
+
+**Registro de dependencias, según la regla 8 de CLAUDE.md:**
+
+| Dependencia | Versión | Fase que la usa | Motivo |
+|---|---|---|---|
+| CameraX (core, camera2, lifecycle, view) | 1.4.2 | F1-F2 | Vista previa y `ImageAnalysis`. Se fija 1.4.x por CLAUDE.md aunque exista 1.6.x |
+| `tensorflow-lite` | 2.17.0 | F3 | `Interpreter` crudo. Ver D-001 |
+| `tensorflow-lite-gpu` | 2.17.0 | F3 | Delegado GPU opcional, según `useGpuDelegate` |
+| Retrofit | 2.12.0 | F5 | Cliente HTTP del backend RAG |
+| `retrofit2-kotlinx-serialization-converter` | 1.0.0 | F5 | Convertidor de kotlinx en vez de Gson o Moshi: no requiere reflexión |
+| OkHttp + `logging-interceptor` | 4.12.0 | F5 | Timeouts y trazas HTTP solo en debug |
+| `kotlinx-serialization-json` | 1.9.0 | F3, F4, F5 | `model_config.json`, `catalog.json` y los DTO del contrato |
+| `navigation-compose` | 2.9.8 | F0 en adelante | Navegación entre scanner, ficha, chat y diagnóstico |
+| `lifecycle-viewmodel-compose` | 2.9.4 | F2 en adelante | ViewModel sin framework de DI |
+| `datastore-preferences` | 1.2.1 | F7 | Ajustes persistentes: umbrales, cámara, delegado GPU |
+
+Se descartó Room (el catálogo es un JSON de solo lectura dentro del APK), Hilt y Koin (la
+inyección es manual vía `AppContainer`), y Gson y Moshi (kotlinx.serialization ya entra con
+el plugin de Kotlin).
+
+**Efecto secundario a vigilar.** El APK de depuración pesa unos 44 MB, porque
+`tensorflow-lite-gpu` incluye librerías nativas de todas las ABI. F7 debe recortarlo con
+*splits* por ABI o `abiFilters`. En release, con R8 activo, el peso previsto vuelve al
+rango de 18-26 MB de docs/PLAN_FASES.md.
+
+---
+
+## D-005 — La app fuerza el tema oscuro — F0 — 2026-08-26
+
+**Decisión.** `LabScanTheme` usa la paleta oscura siempre, sin consultar
+`isSystemInDarkTheme()`. El acento es el verde institucional #009B4C.
+
+**Por qué.** La pantalla principal es una vista de cámara a pantalla completa. Un fondo
+claro deslumbra en el laboratorio y le resta contraste a los cuadros de detección, que son
+lo único que el usuario necesita leer. El tema XML de arranque también va en negro para que
+no haya un destello blanco antes de que la cámara se enganche.
+
+**Detalle de contraste.** #009B4C se usa como `primary` en rellenos, pero para texto fino y
+bordes sobre el fondo oscuro se usa `UteqGreenLight` (#3ED184), que sí alcanza la relación
+4.5:1. El parámetro `darkTheme` se deja expuesto para poder generar capturas en claro para
+el informe.
+
+---
+
+## D-006 — Configuración de CameraX que F2 no puede cambiar — F1 — 2026-08-26
+
+**Sin dependencias nuevas.** F1 se resolvió entera con lo declarado en F0. En particular,
+`ProcessCameraProvider.awaitInstance()` ya existe en CameraX 1.4.2 como función `suspend`,
+así que no hizo falta `kotlinx-coroutines-guava` ni envolver el `ListenableFuture` a mano.
+
+Tres decisiones de F1 condicionan el mapeo de coordenadas de F2, que es la parte frágil del
+proyecto. Quedan aquí para que no se toquen por descuido:
+
+1. **`AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY`**, expuesta como
+   `CameraBinder.ASPECT_RATIO_STRATEGY`. F2 **debe** construir su `ImageAnalysis` con esta
+   misma constante. Si `Preview` e `ImageAnalysis` piden relaciones distintas, CameraX
+   recorta cada uno por su lado y las cajas quedan desplazadas respecto a lo que se ve.
+
+2. **`PreviewView.ScaleType.FILL_CENTER`.** Recorta para llenar la pantalla, y ese recorte
+   es una de las transformaciones que `BoxMapper` tiene que deshacer.
+
+3. **`PreviewView.ImplementationMode.COMPATIBLE`** (`TextureView`) en lugar de
+   `PERFORMANCE` (`SurfaceView`). Cuesta algo más de memoria, pero un `SurfaceView` se
+   dibuja en su propia capa, por debajo de la ventana, y superponerle un `Canvas` de
+   Compose da problemas de orden de dibujo y de transformaciones. El overlay de F2 es
+   exactamente eso, así que se paga el costo.
+
+**Estado del permiso.** Se modela con tres valores y no con un booleano, porque
+`shouldShowRequestPermissionRationale()` devuelve `false` en dos situaciones opuestas:
+cuando nunca se preguntó y cuando el usuario denegó para siempre. La bandera "ya
+preguntamos" va en `rememberSaveable`, de modo que sobreviva a la muerte del proceso; sin
+eso, tras volver de segundo plano la app ofrecería un botón que el sistema ya no atiende.
+
+**Orientación fija en vertical.** Se mantiene el `screenOrientation="portrait"` que puso
+F0. La app se usa apuntando a un equipo y la rotación agrega una transformación más a la
+cadena de `BoxMapper` sin aportar nada al caso de uso. El código de F1 es correcto igual
+si se quita: el estado vive en el ViewModel y el enganche se rehace solo. Para permitir la
+rotación basta con borrar esa línea del manifiesto.
+
+---
+
+## D-007 — La caja de calibración se define sobre el frame, no sobre el cuadrado del modelo — F2 — 2026-08-26
+
+**Sin dependencias nuevas.** F2 se resolvió con lo declarado en F0.
+
+**El problema.** El plan de F2 pedía que `StubDetector` devolviera una caja en
+`(0.25, 0.25)-(0.75, 0.75)` del **espacio del modelo**, y a la vez que esa caja se viera
+*"exactamente centrada y ocupando la mitad central de la pantalla"*. Las dos cosas juntas
+no son posibles, porque el espacio del modelo incluye las bandas grises del letterbox.
+
+**Los números.** Frame de análisis 1280×720, modelo de 640, pantalla 1080×2400:
+
+| Caja | En el frame | En la pantalla |
+|---|---|---|
+| `0.25-0.75` del **modelo** | x 25,0 %-75,0 % · y 5,6 %-94,4 % | x **−5,6 %-105,6 %** · y 25,0 %-75,0 % |
+| `0.25-0.75` del **frame** | x 25,0 %-75,0 % · y 25,0 %-75,0 % | x 18,8 %-81,3 % · y 25,0 %-75,0 % |
+
+Tomada sobre el cuadrado del modelo, la caja se sale de la pantalla por los dos lados: sus
+bordes verticales quedan fuera y no hay forma de comprobar el centrado a ojo, que es
+justamente para lo que existe. La segunda caja del plan, `(0.05, 0.60)-(0.35, 0.90)`, sale
+todavía peor: su borde inferior cae en `y = 121 %` del frame, o sea dentro del relleno gris,
+fuera de la imagen real.
+
+**Decisión.** `StubDetector` interpreta sus constantes como fracciones **del frame** y las
+convierte al espacio del modelo aplicando el letterbox hacia adelante. Es lo que pide la
+verificación obligatoria de CLAUDE.md, que dice literalmente *"una caja fija en el 25 %-75 %
+**del frame**"*. El contrato de `Detection.box` no cambia: sigue siendo espacio del modelo,
+que es lo que devolverá el YOLO real en F3.
+
+**Lo que sigue sin poder cumplirse, y no es un fallo.** Ni siquiera con la caja relativa al
+frame se ve *"la mitad central"* en los dos ejes: `FILL_CENTER` recorta el eje que sobra, así
+que en un teléfono 20:9 la caja sale al 18,8 %-81,3 % en horizontal. El invariante que sí se
+cumple siempre, y es el que detecta cualquier error de espejado, de relleno o de
+desplazamiento, es que **la caja queda perfectamente centrada**. Por eso el overlay dibuja,
+solo en depuración, una cruz en el centro exacto de la vista.
+
+**Riesgo aceptado.** Que el stub aplique el letterbox hacia adelante y `BoxMapper` lo
+invierta con la misma función `letterboxParams` significa que un error en esa función se
+cancelaría y no se vería. Se cubre con una prueba unitaria propia de `letterboxParams`,
+independiente de `BoxMapper`.
+
+---
+
+## D-008 — `Preview` e `ImageAnalysis` comparten `ResolutionSelector` — F2 — 2026-08-26
+
+`CameraBinder` construye **un solo** `ResolutionSelector`, con
+`CameraBinder.ASPECT_RATIO_STRATEGY` (16:9 con reserva automática), y se lo pasa a los dos
+casos de uso.
+
+**Por qué es obligatorio.** CameraX elige la resolución de cada caso de uso por separado. Si
+`Preview` y `ImageAnalysis` piden relaciones de aspecto distintas, el sensor se recorta de
+forma distinta para cada uno: el overlay dibujaría cajas calculadas sobre un encuadre que no
+es el que el usuario está viendo. El desplazamiento resultante es pequeño y constante, que es
+la peor clase de error: parece un problema de redondeo y no lo es.
+
+**Cómo se garantiza.** La estrategia es una constante del `companion object` de
+`CameraBinder`, y los dos `Builder` reciben la misma instancia de `ResolutionSelector`
+construida en la misma línea. No hay forma de cambiar uno sin cambiar el otro.
+
+**Consecuencia para F3.** El detector real no puede pedir otra resolución de entrada por su
+cuenta. Su `inputSize` afecta al letterbox, no al `ImageAnalysis`.
+
+---
+
+## D-009 — La forma del tensor manda sobre `model_config.json` — F3 — 2026-08-26
+
+**Sin dependencias nuevas.** `tensorflow-lite` y `tensorflow-lite-gpu` ya estaban declaradas
+desde F0 (D-004).
+
+**Decisión.** Cuando `model_config.json` y la forma real del tensor se contradicen, gana la
+forma real, y la pantalla de Diagnóstico avisa de que hubo corrección.
+
+Se aplica a tres cosas:
+
+| Dato | De dónde sale de verdad |
+|---|---|
+| `inputSize` | `interpreter.getInputTensor(0).shape()[1]` |
+| Número de clases | eje de canales de la salida menos 4 |
+| `outputLayout` | el eje **corto** de `[1, a, b]` es siempre el de canales |
+
+`model_config.json` sigue mandando en lo que no se puede deducir: umbrales, `maxDetections`,
+`coordsNormalized` y `useGpuDelegate`.
+
+**Por qué.** El error más frecuente al integrar un modelo entrenado por otra persona es un
+`model_config.json` copiado de otro export. Si la app se fía de él, falla de formas confusas:
+cajas en sitios absurdos, o un `IndexOutOfBounds` a mitad del decodificador. Deducirlo del
+tensor convierte un error silencioso en un dato visible.
+
+**Lo comprobado en el dispositivo.** El modelo COCO de prueba declara entrada y salida en
+`FLOAT32`, mientras que `model_config.json` decía `"quantized": true`. El detector tomó el
+camino float32 por introspección y funcionó a la primera. Si se hubiera fiado de la
+configuración, habría escrito bytes int8 en un buffer float32.
+
+**Excepción deliberada.** Si `labels.txt` no cuadra con el número de clases del tensor, la
+app **no** intenta arreglarlo: lanza `ModelMismatchException`, cae a `StubDetector` y lo
+enseña. Adivinar ahí significaría poner nombres equivocados a detecciones correctas, que es
+peor que no detectar.
+
+---
+
+## D-010 — Reserva única de buffers, fuera del bucle de inferencia — F3 — 2026-08-26
+
+`YoloTfliteDetector` reserva en su constructor, y nunca más: el `ByteBuffer` de entrada
+(directo, orden nativo), el de salida, el `IntArray` de píxeles, el `FloatArray` de la salida
+descuantizada y el `Bitmap` del letterbox, ahora en `LetterboxScaler`.
+
+**Por qué.** Un bitmap de 640×640 en ARGB_8888 son 1,6 MB. Crearlo por frame, a 30 frames por
+segundo, son 48 MB/s de basura: el recolector se dispara y se lleva por delante los FPS y la
+fluidez de la vista previa. El `letterbox()` de F2 hacía justo eso, así que se sustituyó por
+`LetterboxScaler`, que redibuja siempre sobre el mismo bitmap.
+
+**Consecuencia.** `LetterboxScaler` y `YoloDecoder` **no** son seguros entre hilos. No pasa
+nada porque el detector solo se usa desde el hilo único de `ImageAnalysis`, pero si alguna
+vez se paraleliza la inferencia habrá que revisar esto primero.
+
+**Lo que sí se asigna por frame,** y es aceptable: la lista de candidatos que superan el
+umbral, un puñado de objetos pequeños, y los `Detection` que se devuelven. El `ArrayList` de
+candidatos se reutiliza; lo que se crea son los `Detection` finales, que la UI necesita
+inmutables.
+
+---
+
+## D-011 — Un solo modelo de datos para el backend y para el catálogo local — F5 — 2026-08-27
+
+Los DTO viven en `data/remote/dto/` y son **los mismos** para las dos fuentes: la respuesta de
+`GET /api/equipment/{classId}` y las fichas de `assets/catalog.json`. No hay modelo de dominio
+intermedio ni conversión entre capas.
+
+**Por qué.** `catalog.json` no es "otro formato de datos": son literalmente respuestas del
+contrato guardadas dentro del APK. Un segundo modelo con su mapeador solo añadiría un sitio
+donde los dos pueden dejar de coincidir en silencio, que es justo el fallo que se quiere
+evitar cuando la mitad de las fichas llegan por red y la otra mitad no. La prueba
+`CatalogJsonTest` deserializa el catálogo con estos DTO en modo estricto, así que si alguien
+edita el JSON a mano y se equivoca en un campo, la compilación se cae.
+
+**Ningún campo lleva `@SerialName`.** Se revisó el contrato entero: los diez campos de
+`EquipmentDto`, los tres de `HealthDto`, los tres de `ChatResponseDto` y los dos del sobre de
+error ya son camelCase y coinciden con el nombre idiomático en Kotlin. El único `@SerialName`
+del proyecto está en `ChatRole`, para traducir `USER`/`ASSISTANT` a `"user"`/`"assistant"`.
+
+**Lo que sí se envuelve.** `RagRepository` no devuelve el DTO pelado sino un `Equipment`, que
+añade `origin` (red o caché) y el `RagError` que provocó la caída. Eso es estado de esta
+consulta concreta, no un dato del equipo, y por eso no toca el contrato.
+
+---
+
+## D-012 — Cleartext solo en la variante debug, y sin subredes — F5 — 2026-08-27
+
+`network_security_config.xml` vive en `app/src/debug/res/xml/`, enganchado por una superposición
+de manifiesto en `app/src/debug/AndroidManifest.xml`. La variante de release no tiene el archivo,
+no declara `networkSecurityConfig` y por tanto hereda el comportamiento por defecto de
+targetSdk 35: **todo el tráfico en claro prohibido**.
+
+**Por qué así y no con un `usesCleartextTraffic` en el manifiesto principal.** Un permiso de
+desarrollo puesto en el manifiesto común acaba tarde o temprano en la app publicada. Poniéndolo
+en el `sourceSet` de debug no hay forma de que se cuele: el archivo simplemente no existe en el
+APK de release.
+
+**Limitación conocida.** El formato de Android **no admite subredes**: `<domain>` acepta nombres
+de dominio e IP literales, pero no `192.168.0.0/16`. La petición original pedía "10.0.2.2 y la
+subred local"; la parte de la subred no se puede expresar. Están declarados `10.0.2.2` (host del
+PC visto desde el emulador), `10.0.3.2` (Genymotion), `localhost` y `127.0.0.1`. Para probar
+contra el PC desde un teléfono real hay que agregar a mano su IP LAN en ese archivo **y** en el
+`BASE_URL` de la variante debug. Está escrito como comentario dentro del propio XML.
+
+**Alternativa descartada.** `<base-config cleartextTrafficPermitted="true">` en debug habría
+cubierto cualquier IP de la LAN sin listarla, pero también cualquier host de internet. Para una
+app que en clase se conecta a wifi compartida, eso es un precio peor que editar una línea.
+
+---
+
+## D-013 — El mock es un interceptor de OkHttp, no un `MockWebServer` — F5 — 2026-08-27
+
+`MockInterceptor` se instala en el cliente OkHttp cuando `BuildConfig.USE_MOCK_API` es `true` y
+responde desde `assets/mock/`. El contrato mencionaba `MockWebServer` como alternativa.
+
+**Por qué el interceptor.** `MockWebServer` es una dependencia de pruebas que hay que arrancar y
+apagar, y que escucha en un puerto: para que la app de depuración instalada en el teléfono
+hablara con él habría que levantarlo dentro del proceso de la app y reescribir `BASE_URL` en
+caliente. El interceptor no necesita nada de eso: la petición sale por la misma `BASE_URL`
+real, atraviesa Retrofit y el convertidor igual que siempre, y solo se corta en el último
+tramo. Eso hace que lo que se prueba sea **todo el cableado menos el socket**, que es
+exactamente lo que interesa verificar antes de que exista el backend.
+
+**Lo que el mock cubre a propósito.**
+
+- `equipment_camara_electroforesis.json` **no existe**. Es la única forma de ejercitar el camino
+  404 → catálogo local sin apagar el wifi. `MockAssetsTest` falla si alguien completa las cuatro
+  clases y deja ese camino sin probar.
+- `/api/chat` **alterna** entre `chat.json` (`hasSufficientContext: true`) y
+  `chat_sin_contexto.json` (`false`), por número de petición. F6 puede ver los dos estilos de la
+  interfaz sin tocar código.
+- Las fichas de mock traen **más fuentes** que las del catálogo local. Así, en pantalla, se
+  distingue de un vistazo si el dato vino del servidor o del APK.
+- Retardo artificial de 350 ms. Sin él, la respuesta llega tan rápido que el indicador de carga
+  no se ve nunca y no hay manera de comprobar que funciona.
+
+**Deuda para F7.** `assets/mock/` viaja también en el APK de release, donde nada lo lee. Son
+unos 7 KB; conviene moverlo a `app/src/debug/assets/` al preparar la compilación de entrega.
+
+---
+
+## D-014 — La ficha técnica se desplaza; el `ModalBottomSheet` no basta — F5 — 2026-08-27
+
+El `Column` interior de `EquipmentSheet` lleva `verticalScroll(rememberScrollState())`.
+
+**Por qué se anota.** Es fácil creer que un `ModalBottomSheet` ya trae desplazamiento porque se
+arrastra: lo que se arrastra es la hoja, no su contenido. Sin `verticalScroll`, la ficha se
+corta por donde termine la pantalla y no hay ningún gesto que lleve más abajo. Se descubrió al
+abrir la hoja por primera vez en un dispositivo, el 2026-08-27: la ficha del microscopio se
+cortaba en el paso 1 del procedimiento, y **riesgos, prácticas, fuentes y los dos botones de
+acción eran inalcanzables**.
+
+**Por qué era grave y no cosmético.** La regla 6 de CLAUDE.md exige que toda información muestre
+su fuente. Las fuentes se estaban dibujando, pero ningún usuario podía llegar a verlas. Una
+regla que se cumple en el código y no en la pantalla no se cumple.
+
+**Orden de los modificadores.** `verticalScroll` va antes del `padding` horizontal, para que la
+zona de arrastre ocupe todo el ancho y no deje dos franjas muertas de 24 dp a los lados.
+
+**Nota para F6.** Cuando el chat entre en esta misma hoja habrá que revisar esto: un área de
+texto desplazable dentro de otra desplazable dentro de una hoja arrastrable son tres gestos
+compitiendo por el mismo dedo.
+
+---
+
+## D-015 — El tope de 6 turnos vive solo en el repositorio — F6 — 2026-08-27
+
+`ChatViewModel` manda el historial **completo** a `RagRepository.chat`, que es quien lo recorta
+a los últimos seis turnos con `truncateForRequest()`.
+
+**Por qué.** El tope de 6 lo fija `docs/CONTRATO_API.md`, no la pantalla. Si el ViewModel
+también recortara, habría dos sitios que hay que cambiar el día que el backend admita ocho, y
+uno de los dos se quedaría sin cambiar. El repositorio es la frontera con el contrato: el
+recorte pertenece ahí, junto a la constante que lo nombra y a la prueba que lo verifica
+(`RagErrorTest.el historial se recorta a los ultimos seis turnos`).
+
+**Consecuencia que hay que recordar.** El ViewModel guarda la conversación entera en memoria
+para poder pintarla; lo que se recorta es lo que **viaja**, no lo que se ve. Un estudiante
+puede desplazarse hacia arriba y leer sus veinte preguntas anteriores aunque el backend solo
+haya visto las seis últimas.
+
+---
+
+## D-016 — Un solo motor de voz para toda la app, soltado en `AppContainer.close()` — F6 — 2026-08-27
+
+`TtsManager` y `SttManager` se construyen una vez en `AppContainer` y viven lo que vive el
+proceso. Las pantallas llaman a `stop()`, nunca a `shutdown()`.
+
+**Por qué.** `TextToSpeech` se enlaza con un servicio de otro proceso y tarda décimas de segundo
+en estar listo. Si cada pantalla construyera el suyo, la primera respuesta de cada visita al
+chat llegaría muda: el motor todavía estaría arrancando cuando se le pide hablar. Con
+`SpeechRecognizer` el motivo es distinto pero apunta igual: es un recurso del sistema y dos
+instancias escuchando a la vez se estorban con `ERROR_RECOGNIZER_BUSY`.
+
+**El hueco que esto deja, y cómo se tapa.** Un motor compartido sigue hablando aunque la
+pantalla desaparezca. Por eso hay tres puntos de corte explícitos, y los tres son
+`DisposableEffect` o llamadas directas, no efectos secundarios de la navegación:
+
+1. `ChatScreen` y el scanner cortan en `onDispose`.
+2. `ChatViewModel.send()` corta antes de enviar la siguiente pregunta.
+3. El micrófono corta antes de abrirse, porque el reconocedor se oiría a sí mismo.
+
+**Peticiones antes de tiempo.** `TtsManager.speak()` llamado antes de `onInit` no se pierde: se
+guarda en `pendingText` y se dice en cuanto el motor responde. Sin eso, pedir la lectura
+automática de la primera respuesta justo al abrir la app no sonaría nunca, y no habría ningún
+error que lo explicara.
+
+---
+
+## D-017 — El permiso en tiempo de ejecución se extrae a `ui/common` — F6 — 2026-08-27
+
+`rememberRuntimePermission(permission, requestOnFirstAppearance)` vive en
+`ui/common/RuntimePermission.kt`. `ScannerScreen` perdió su copia privada de F1 y ahora la usa.
+
+**Por qué.** El micrófono necesitaba exactamente el mismo comportamiento que la cámara, con sus
+dos trampas: `shouldShowRequestPermissionRationale` devuelve `false` tanto si nunca se preguntó
+como si se denegó para siempre, y volver desde los ajustes del sistema no dispara ningún
+callback. Copiar y pegar esa lógica habría garantizado que una de las dos copias se quedara sin
+arreglar el día que aparezca la tercera trampa.
+
+**La única diferencia entre los dos usos, y es deliberada:** la cámara se pide **al entrar**,
+porque sin ella el escáner es una pantalla negra; el micrófono **no**, porque el chat funciona
+escribiendo y asaltar con un diálogo de permiso nada más abrirlo sería grosero. Se pide en el
+primer intento de dictar. Eso es lo que controla `requestOnFirstAppearance`.
+
+---
+
+## D-018 — El delegado GPU estaba roto, y aun arreglado la CPU gana — F7 — 2026-08-27
+
+Se agregó `org.tensorflow:tensorflow-lite-gpu-api`, que faltaba. `useGpuDelegate` sigue en `false`.
+
+**El defecto.** Desde F3, `GpuDelegate()` lanzaba `NoClassDefFoundError: GpuDelegateFactory$Options`
+en cuanto se activaba la bandera. El artefacto `tensorflow-lite-gpu` trae la biblioteca nativa pero
+**no** las clases Java que la envuelven; esas viven en `tensorflow-lite-gpu-api`. El repliegue a CPU
+funcionó exactamente como manda la regla 2 de CLAUDE.md, así que el fallo nunca se notó: la app
+seguía detectando y nadie miraba el log. Un delegado que no se puede construir es peor que no
+tenerlo, porque la bandera del contrato miente.
+
+**Lo medido, con el delegado ya funcionando.** SM-A566E, YOLOv8n float32 a 640, mediana de 30
+inferencias:
+
+| | Inferencia | Total | Veredicto |
+|---|---|---|---|
+| CPU, 4 hilos | 100 ms | **107 ms** | Gana |
+| GPU | 73 ms | 120 ms | Pierde |
+
+La inferencia baja de verdad, pero el total sube. El motivo es que con el delegado la llamada a
+`Interpreter.run` devuelve antes de que la GPU haya terminado, y la espera reaparece al leer el
+tensor de salida, fuera del cronómetro. Contando la operación completa, la GPU sale perdiendo en
+este dispositivo.
+
+**Se deja instalado igualmente.** La bandera es parte de `model_config.json` y del contrato con
+quien entrena el modelo. Con un modelo int8 el reparto puede invertirse, y ahora se puede
+comprobar cambiando un `true` en un JSON en lugar de descubrir que la opción nunca existió.
+
+---
+
+## D-019 — El coste no estaba donde parecía: 86 ms se iban copiando buffers — F7 — 2026-08-27
+
+`writeInput` y `readOutput` pasaron de recorrer el `ByteBuffer` elemento a elemento a llenar un
+arreglo plano y volcarlo de una sola llamada.
+
+**Lo que se creía.** Que el cuello de botella era la inferencia y que la única salida era un modelo
+más pequeño.
+
+**Lo que se midió.** De los 188 ms por frame, la inferencia eran 102 y los otros **86 ms** se iban
+en preparar la entrada y leer la salida. Con `inputSize = 640` eso son 1 228 800 llamadas a
+`putFloat` y 705 600 a `get`, cada una con su comprobación de límites, por frame.
+
+| | Antes | Después |
+|---|---|---|
+| Preparación del frame | 86 ms | **6 ms** |
+| Inferencia | 102 ms | 100 ms |
+| Total | 188 ms | **107 ms** |
+
+**La lección, que es la razón de esta entrada.** La optimización que de verdad hacía falta no estaba
+en la lista que uno escribe antes de medir. Por eso `PerformanceStats` ahora separa la latencia
+total de la de inferencia y la pantalla de Diagnóstico enseña las dos: sin ese desglose, cualquiera
+que retome el proyecto repetiría la misma suposición equivocada.
+
+**Los arreglos de trabajo se reservan una vez** en el constructor, y solo el camino que el tensor
+real necesita. Medido con `art.gc.bytes-allocated`: **9 833 bytes por frame**, muy por debajo del
+tope de 256 KB que vigila `DetectorBenchmarkTest`.
+
+---
+
+## D-020 — Se suaviza el dibujo de las cajas, no la detección — F7 — 2026-08-27
+
+`BoxSmoother` guarda una posición dibujada por caja y la acerca a la última posición detectada en
+cada fotograma, con `1 - exp(-dt / tau)` y `tau = 80 ms`.
+
+**Por qué hacía falta.** El detector produce unas 9 listas por segundo y la pantalla refresca a 60 o
+120 Hz: la caja se quedaba quieta seis o siete fotogramas y después saltaba. Encima, dos
+inferencias seguidas sobre la misma escena nunca dan el mismo rectángulo, así que además temblaba.
+En video se ve peor de lo que la app realmente es.
+
+**Por qué depende del tiempo y no del fotograma.** Un factor fijo por fotograma haría que la caja se
+moviera al doble de velocidad en una pantalla de 120 Hz. Con la exponencial sobre el tiempo
+transcurrido el resultado se ve igual en cualquier dispositivo.
+
+**Lo que NO hace, y conviene tenerlo claro:** no mejora la detección ni los FPS. La caja llega
+exactamente al mismo sitio; lo único que cambia es que recorre el camino en lugar de teletransportarse.
+
+**Dos casos que se tratan aparte.** Un salto de más de media pantalla no se interpola, porque
+deslizar una caja de un extremo a otro parece un fallo y no una detección nueva; y una pausa de más
+de medio segundo sin dibujar (la app estuvo en segundo plano) coloca las cajas directamente en su
+sitio.
+
+---
+
+## D-021 — Almacén de firma dentro del repositorio, a propósito — F7 — 2026-08-27
+
+`keystore/labscan-demo.jks` viaja en el repositorio y su contraseña está escrita en
+`app/build.gradle.kts`.
+
+**Por qué.** La entrega exige un APK release instalable y que un tercero pueda clonar el proyecto y
+continuarlo. Con un almacén fuera del control de versiones, ese tercero no puede generar un release
+sin pedirlo, y el `debug.keystore` de cada máquina produce firmas distintas, así que las
+instalaciones se pisan entre sí. Un almacén conocido y compartido resuelve las dos cosas.
+
+**Lo que esto significa.** Esta firma **no protege nada**, y no debe pretenderlo: cualquiera puede
+firmar un APK que se haga pasar por este. Es aceptable porque la app no se distribuye por ninguna
+tienda ni recibe actualizaciones firmadas. Si algún día se publicara, habría que generar un almacén
+nuevo, dejarlo fuera del repositorio y pasarlo por variables de entorno; está escrito así en el
+README y en el propio `build.gradle.kts`, junto al bloque de firma, que es donde alguien lo va a
+leer.
+
+---
+
+## D-022 — El mock del backend sale del APK de entrega — F7 — 2026-08-27
+
+`assets/mock/` se movió de `app/src/main/assets/` a `app/src/debug/assets/`.
+
+**Por qué.** En release nadie lee esos JSON: `USE_MOCK_API` es `false` y el interceptor ni siquiera
+se instala. Pero seguían viajando dentro del APK, y son fichas técnicas de laboratorio con aspecto
+de dato real. Un revisor que abriera el APK encontraría contenido de ejemplo indistinguible del
+verdadero.
+
+**El intento que no funcionó, y merece quedar escrito.** Primero se probó con
+`packaging { resources { excludes += "/assets/mock/**" } }`. No hace nada: ese bloque filtra
+recursos de Java, no `assets/`. La compilación pasó, el APK se generó, y los archivos seguían
+dentro. Solo se descubrió al abrir el APK con `unzip -l`. Lo único que saca assets de una variante
+es ponerlos en el `sourceSet` de la otra.
+
+**Efecto de paso.** `MockAssetsTest` ahora lee de `src/debug/assets/mock`, y sigue validando los
+JSON contra los DTO del contrato.
+
+---
+
+## D-023 — La escucha continua no existe: se simula con reinicios — F8 — 2026-08-27
+
+`ContinuousSttManager` reinicia la sesión de `SpeechRecognizer` cada vez que el sistema la cierra,
+con esperas crecientes de 200, 400 y 800 ms y un tope de tres intentos seguidos.
+
+**Por qué.** `SpeechRecognizer` **no tiene modo continuo**. Está pensado para una locución: llama a
+`onEndOfSpeech` y después a `onResults` o `onError`, y a partir de ahí el micrófono está muerto
+hasta que alguien vuelva a llamar a `startListening`. No hay ninguna bandera que lo cambie. La
+escucha continua que pide F8, por tanto, no se puede activar: se construye.
+
+**Lo que cuesta.** Cada reinicio abre un hueco de unos 200 ms en el que el micrófono no oye. Es la
+razón por la que el fin de turno **no** se delega en `onResults` del sistema, que además tarda más
+de dos segundos en decidir: se detecta por cuenta propia con 900 ms sin parciales nuevos.
+
+**El tope de tres no es una optimización.** Sin él, un motor que falla siempre deja la app
+reintentando para siempre, con la pantalla diciendo "Escuchando" y el micrófono cerrado. Es el peor
+fallo posible en esta pantalla, porque desde fuera es idéntico a estar funcionando. El contador se
+pone a cero en `onReadyForSpeech`: que el motor acepte la sesión demuestra que está sano, y sin eso
+una sala en silencio agotaba el tope en medio minuto.
+
+---
+
+## D-024 — El cancelador de eco del sistema no se puede usar con `SpeechRecognizer` — F8 — 2026-08-27
+
+`EchoControl` existe, comprueba disponibilidad y sabe engancharse a una sesión de captura, pero
+**no es la defensa contra el eco** de este proyecto.
+
+**Por qué.** `AcousticEchoCanceler` y `NoiseSuppressor` se enganchan a una sesión de audio concreta:
+la del `AudioRecord` que captura. `SpeechRecognizer` crea y gestiona su `AudioRecord` por dentro, en
+el proceso del motor de reconocimiento, y **no expone el identificador de esa sesión** por ninguna
+vía pública. Sin ese identificador, `create()` no tiene a qué engancharse.
+
+**Lo que habría que hacer para usarlos de verdad**: abandonar `SpeechRecognizer` y capturar con un
+`AudioRecord` propio, lo que a su vez obliga a reconocimiento propio o en la nube. Las dos cosas
+están prohibidas en este proyecto (CLAUDE.md: voz con APIs de plataforma; F8: nada de servicios de
+voz en la nube).
+
+**Lo que sí protege contra el eco**, y es lo que se verificó con el altavoz al máximo:
+
+1. Mientras el asistente habla, el reconocedor pasa a `ListenMode.WATCH` y su texto **se descarta
+   entero**. Aunque transcriba al altavoz, ese texto no llega a ninguna parte.
+2. El umbral de amplitud para dar por buena una interrupción sube a 0,55 mientras habla el
+   asistente, por encima del nivel que el altavoz devuelve al micrófono.
+3. La interrupción exige 300 ms seguidos por encima de ese umbral, que una sílaba devuelta por el
+   altavoz no alcanza a sostener.
+
+En el Samsung A56 de prueba los dos efectos **sí** están disponibles (`eco=true, ruido=true` en el
+log) y el propio motor de reconocimiento los aplica por su cuenta al capturar de
+`VOICE_RECOGNITION`. Esa es la razón de que el eco se comporte razonablemente incluso antes de las
+tres medidas de arriba.
+
+---
+
+## D-025 — El aviso de "sin conexión" es el único error que se dice en voz alta — F8 — 2026-08-27
+
+F6 dejó escrito que los errores de red **nunca** se leen en voz alta, y sigue siendo la regla en el
+chat escrito. En el modo de conversación por voz hay una excepción, y solo una: cuando no hay
+conexión, la app lo dice una vez y sale del modo.
+
+**Por qué la contradicción es deliberada.** El estudiante está con las manos ocupadas y puede no
+estar mirando la pantalla; ese es el supuesto entero de la pantalla. Callarse equivaldría a dejarlo
+hablándole a una app muerta sin ninguna señal de que no le oye. El resto de errores —fallo del
+backend, contexto insuficiente— sí siguen la regla de F6: se muestran y no se leen, porque en esos
+casos la app sí responde algo y el estudiante lo nota.
+
+---
+
+## D-026 — La app se interrumpía a sí misma: el foco de audio no se pide para escuchar — F8 — 2026-08-27
+
+`VoiceCallViewModel` **no** pide foco de audio al entrar al modo de voz. Lo pide `TtsManager`, y
+solo mientras lee una respuesta. Además, la pausa por pérdida de foco espera 500 ms antes de
+ejecutarse.
+
+**El síntoma.** La primera versión pedía el foco al entrar y lo mantenía durante toda la llamada,
+que es lo que parece correcto para una conversación. En el teléfono, la app se apagaba y se
+encendía sola varias veces por segundo. El log lo explicó:
+
+```
+openMicrophone(): active=true pausado=false
+Foco de audio: cambio=-2   <- AUDIOFOCUS_LOSS_TRANSIENT
+Foco de audio: cambio=1    <- AUDIOFOCUS_GAIN, 3 ms después
+openMicrophone(): active=true pausado=false
+```
+
+**La causa.** El servicio de reconocimiento de voz **pide el foco de audio para grabar**. Al
+pedirlo nos lo quitaba; nosotros lo leíamos como "entró una llamada telefónica" y cerrábamos el
+micrófono; el servicio lo soltaba, lo recuperábamos, reabríamos el micrófono, y vuelta a empezar.
+
+**Los dos cambios.** El foco de audio es para **reproducir**, no para grabar: se pide solo cuando
+hay algo sonando que puede molestar a otra app. Y como durante la lectura el micrófono sigue
+abierto para poder interrumpir, el reconocedor sigue robando el foco cada pocos segundos; esas
+pérdidas se recuperan en menos de 30 ms medidos, mientras que una llamada telefónica dura minutos.
+Medio segundo de gracia distingue las dos sin ambigüedad y no se percibe como retraso.
+
+---
+
+## D-027 — Vigilante de sesión: `SpeechRecognizer` puede quedarse mudo — F8 — 2026-08-27
+
+`ContinuousSttManager` arma una cuenta atrás de 2500 ms que se reinicia con cada `onRmsChanged`. Si
+vence, la sesión se da por muerta y se reinicia.
+
+**Por qué.** El reconocedor puede no llamar a ningún callback: ni resultado, ni error, ni nada. En
+el Samsung A56 de prueba ocurre **siempre** en la primera sesión con `EXTRA_PREFER_OFFLINE` activo y
+sin el paquete de español descargado. Medido:
+
+```
+17:28:34.260  STT startSession running=true muted=false bloqueado=false
+17:28:34.802  rec stop ... VOICE_RECOGNITION          (dumpsys audio)
+(35 segundos de silencio absoluto: ningún callback)
+```
+
+**Por qué importa tanto.** F8 pide `EXTRA_PREFER_OFFLINE` en `true` "con reintento en línea si
+falla", y ese reintento se dispara desde `onError`. Sin vigilante no se disparaba nunca: la pantalla
+se quedaba en "Escuchando" para siempre, con el micrófono cerrado y sin una sola línea de log que lo
+delatara. Es el mismo tipo de fallo que el bucle infinito de D-023 y por el mismo motivo: desde
+fuera es indistinguible de estar funcionando.
+
+**El latido** son las medidas de volumen de `onRmsChanged`, que un reconocedor sano entrega varias
+veces por segundo incluso en una sala en silencio.
+
+**Se recuerda para todo el proceso.** Que el reconocimiento sin conexión no sirva se guarda en una
+bandera estática: la comprobación cuesta 2,5 s y no hay motivo para repetirla cada vez que el
+estudiante entra al modo de voz. Vuelve a intentarse al reiniciar la app, que es cuando podría haber
+cambiado porque el estudiante descargó el idioma desde los ajustes del sistema.

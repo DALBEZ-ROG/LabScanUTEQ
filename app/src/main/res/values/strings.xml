@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LabScan UTEQ</string>
+
+    <!-- Pantalla principal (scanner) -->
+    <string name="scanner_titulo">LabScan UTEQ</string>
+    <string name="scanner_cambiar_camara">Cambiar de cámara</string>
+    <string name="scanner_error_camara">No se pudo iniciar la cámara. Cierre otras aplicaciones que la estén usando y vuelva a intentarlo.</string>
+    <string name="scanner_error_sin_camara">Este dispositivo no tiene esa cámara.</string>
+
+    <!-- Permiso de cámara -->
+    <string name="permiso_camara_titulo">Se necesita la cámara</string>
+    <string name="permiso_camara_explicacion">LabScan usa la cámara para reconocer los equipos del laboratorio y mostrar su ficha técnica. Las imágenes se procesan en el teléfono y no se envían a ningún servidor.</string>
+    <string name="permiso_camara_boton_permitir">Permitir acceso a la cámara</string>
+    <string name="permiso_camara_denegado_siempre">El permiso quedó denegado de forma permanente, así que el sistema ya no volverá a preguntar. Actívelo desde los ajustes de la aplicación.</string>
+    <string name="permiso_camara_boton_ajustes">Abrir ajustes</string>
+
+    <!-- Estado del detector -->
+    <string name="detector_stub_por_configuracion">Detector de prueba activo: model_config.json tiene useStubDetector en true.</string>
+    <string name="detector_stub_sin_modelo">Modo demostración: modelo de detección no cargado</string>
+    <string name="detector_stub_sin_etiquetas">No se pudo leer labels.txt. Se muestran cajas de prueba.</string>
+    <string name="detector_stub_error_carga">El modelo no se pudo cargar. Se muestran cajas de prueba.</string>
+    <string name="detector_stub_desajuste">El modelo y labels.txt no coinciden. Se muestran cajas de prueba.</string>
+
+    <!-- Overlay de detecciones -->
+    <string name="scanner_etiqueta_deteccion">%1$s  %2$d%%</string>
+    <string name="scanner_hud_rendimiento">%1$s FPS · %2$d ms (%3$d inf) · %4$dx%5$d · rot %6$d</string>
+
+    <!-- Pantalla de diagnostico -->
+    <string name="diagnostico_titulo">Diagnóstico del modelo</string>
+    <string name="diagnostico_abrir">Abrir diagnóstico</string>
+    <string name="diagnostico_volver">Volver</string>
+    <string name="diagnostico_copiar">Copiar diagnóstico</string>
+    <string name="diagnostico_copiado">Diagnóstico copiado al portapapeles</string>
+    <string name="diagnostico_detector">Detector activo</string>
+    <string name="diagnostico_detector_stub">Cajas de prueba (StubDetector)</string>
+    <string name="diagnostico_detector_real">TensorFlow Lite Interpreter</string>
+    <string name="diagnostico_motivo">Motivo</string>
+    <string name="diagnostico_tensor_entrada">Tensor de entrada</string>
+    <string name="diagnostico_tensor_salida">Tensor de salida</string>
+    <string name="diagnostico_forma">Forma</string>
+    <string name="diagnostico_tipo">Tipo</string>
+    <string name="diagnostico_cuantizacion">Cuantización</string>
+    <string name="diagnostico_clases">Clases</string>
+    <string name="diagnostico_clases_detalle">labels.txt: %1$d · inferidas del tensor: %2$d</string>
+    <string name="diagnostico_clases_ok">Coinciden</string>
+    <string name="diagnostico_clases_error">NO coinciden: revise labels.txt</string>
+    <string name="diagnostico_disposicion">Disposición</string>
+    <string name="diagnostico_disposicion_corregida">La forma real contradecía a model_config.json; mandó la forma</string>
+    <string name="diagnostico_candidatos">Candidatos por frame</string>
+    <string name="diagnostico_rango">Rango de la salida (último frame)</string>
+    <string name="diagnostico_rango_detalle">mín %1$s · máx %2$s · sobre el umbral: %3$d</string>
+    <string name="diagnostico_rango_aviso">El máximo debería acercarse a 1. Si no, revise coordsNormalized y la cuantización.</string>
+    <string name="diagnostico_rendimiento">Rendimiento (últimos 30 frames)</string>
+    <string name="diagnostico_rendimiento_detalle">%1$s FPS · %2$d ms total · %3$d ms inferencia · %4$d ms preparación</string>
+    <string name="diagnostico_ejecucion">Ejecución</string>
+    <string name="diagnostico_ejecucion_detalle">%1$d hilos · delegado GPU: %2$s</string>
+    <string name="diagnostico_si">sí</string>
+    <string name="diagnostico_no">no</string>
+    <string name="diagnostico_sin_modelo">No hay modelo cargado, así que no hay tensores que inspeccionar. Copie los tres archivos a app/src/main/assets y ponga useStubDetector en false.</string>
+
+    <!-- Ficha tecnica del equipo -->
+    <string name="ficha_confianza">%1$d%% de confianza</string>
+    <string name="ficha_no_disponible">Ficha no disponible. Este equipo aún no está en el catálogo del laboratorio.</string>
+    <string name="ficha_funcion">Función</string>
+    <string name="ficha_componentes">Componentes principales</string>
+    <string name="ficha_procedimiento">Procedimiento básico de uso</string>
+    <string name="ficha_epp">Elementos de protección personal</string>
+    <string name="ficha_riesgos">Riesgos asociados</string>
+    <string name="ficha_practicas">Prácticas académicas relacionadas</string>
+    <string name="ficha_fuentes">Fuentes consultadas</string>
+    <string name="ficha_fuente_pagina">%1$s, p. %2$d</string>
+    <string name="ficha_expandir">Mostrar la sección</string>
+    <string name="ficha_contraer">Ocultar la sección</string>
+    <string name="ficha_escuchar">Escuchar</string>
+    <string name="ficha_preguntar">Preguntar al asistente</string>
+    <string name="ficha_detener">Detener</string>
+    <string name="ficha_sin_voz">Este dispositivo no tiene motor de voz instalado, así que no se puede leer la ficha en voz alta.</string>
+    <string name="ficha_icono_epp">Elemento de protección</string>
+    <string name="ficha_icono_riesgo">Advertencia</string>
+    <string name="ficha_sin_conexion">Sin conexión: ficha guardada en el teléfono</string>
+    <string name="ficha_cargando">Cargando ficha…</string>
+
+    <!-- Estado de la conexion con el backend RAG (F5) -->
+    <string name="conexion_sin_red">Sin conexión. Las fichas se muestran desde el teléfono.</string>
+    <string name="conexion_sin_backend">El asistente no está disponible en este momento.</string>
+    <string name="conexion_icono">Estado de la conexión</string>
+
+    <!-- Fallos de red. Uno por cada caso de RagError. -->
+    <string name="error_red_sin_conexion">No hay conexión a internet.</string>
+    <string name="error_red_timeout">El servidor tardó demasiado en responder.</string>
+    <string name="error_red_no_encontrado">Ese equipo no está en el índice del laboratorio.</string>
+    <string name="error_red_servidor">El servidor no pudo atender la consulta. Inténtelo de nuevo.</string>
+    <string name="error_red_llm">El asistente no está disponible en este momento.</string>
+    <string name="error_red_desconocido">Ocurrió un error inesperado al consultar el servidor.</string>
+
+    <!-- Chat con el asistente (F6) -->
+    <string name="chat_titulo">Asistente del laboratorio</string>
+    <string name="chat_volver">Volver</string>
+    <string name="chat_contexto">Consultando sobre: %1$s</string>
+    <string name="chat_quitar_contexto">Quitar el equipo del contexto</string>
+    <string name="chat_placeholder">Escriba su pregunta…</string>
+    <string name="chat_escuchando">Escuchando…</string>
+    <string name="chat_enviar">Enviar la pregunta</string>
+    <string name="chat_microfono">Mantenga pulsado para hablar</string>
+    <string name="chat_microfono_escuchando">Suelte para enviar</string>
+    <string name="chat_escuchar_respuesta">Escuchar la respuesta</string>
+    <string name="chat_detener_lectura">Detener la lectura</string>
+    <string name="chat_icono_fuente">Fuente consultada</string>
+    <string name="chat_sin_contexto_titulo">Información insuficiente</string>
+    <string name="chat_reintentar">Reintentar</string>
+    <string name="chat_descartar">Descartar</string>
+    <string name="chat_sugerencias_titulo">Preguntas frecuentes</string>
+    <string name="chat_sugerencia_encender">¿Cómo se enciende?</string>
+    <string name="chat_sugerencia_apagar">¿Cómo se apaga?</string>
+    <string name="chat_sugerencia_proteccion">¿Qué protección necesito?</string>
+    <string name="chat_sugerencia_riesgos">¿Qué riesgos tiene?</string>
+
+    <!-- Dictado por voz (F6) -->
+    <string name="voz_error_sin_texto">No se entendió nada. Mantenga pulsado el micrófono y hable con claridad.</string>
+    <string name="voz_error_red">El reconocimiento de voz necesita conexión y no hay red.</string>
+    <string name="voz_error_permiso">Falta el permiso de micrófono.</string>
+    <string name="voz_error_ocupado">El micrófono está ocupado. Espere un momento y vuelva a intentarlo.</string>
+    <string name="voz_error_no_disponible">Este dispositivo no tiene reconocimiento de voz. Puede escribir su pregunta.</string>
+    <string name="voz_error_desconocido">No se pudo usar el micrófono. Puede escribir su pregunta.</string>
+    <string name="voz_permiso_denegado_siempre">El permiso de micrófono está denegado. Actívelo en los ajustes para poder dictar.</string>
+
+    <!-- Ajustes (F6) -->
+    <string name="ajustes_titulo">Ajustes</string>
+    <string name="ajustes_abrir">Abrir ajustes</string>
+    <string name="ajustes_volver">Volver</string>
+    <string name="ajustes_lectura_automatica">Leer las respuestas en voz alta</string>
+    <string name="ajustes_lectura_automatica_detalle">Cada respuesta del asistente se lee sola apenas llega. Útil cuando tiene las manos ocupadas.</string>
+<!-- Ajustes ampliados y Acerca de (F7) -->
+    <string name="ajustes_seccion_deteccion">Detección</string>
+    <string name="ajustes_seccion_asistente">Asistente</string>
+    <string name="ajustes_seccion_avanzado">Avanzado</string>
+    <string name="ajustes_umbral">Umbral de confianza</string>
+    <string name="ajustes_umbral_detalle">Solo se dibujan las detecciones que superen %1$s. Bájelo si el laboratorio tiene poca luz; súbalo si aparecen cuadros de más.</string>
+    <string name="ajustes_camara">Cámara al abrir</string>
+    <string name="ajustes_camara_detalle">Con cuál arranca el escáner.</string>
+    <string name="ajustes_camara_trasera">Trasera</string>
+    <string name="ajustes_camara_frontal">Frontal</string>
+    <string name="ajustes_backend">Servidor del asistente</string>
+    <string name="ajustes_backend_detalle">Déjelo vacío para usar el de fábrica: %1$s</string>
+    <string name="ajustes_backend_ayuda">Ejemplo: http://192.168.1.50:8000/</string>
+    <string name="ajustes_backend_invalida">Esa dirección no es válida. Debe empezar por http:// o https://</string>
+    <string name="ajustes_diagnostico_detalle">Forma del tensor, clases y rendimiento del modelo.</string>
+    <string name="acerca_titulo">Acerca de</string>
+    <string name="acerca_app">LabScan UTEQ: asistente móvil de detección de equipos de laboratorio con reconocimiento visual y consulta por voz.</string>
+    <string name="acerca_universidad">Universidad Técnica Estatal de Quevedo</string>
+    <string name="acerca_laboratorio">Laboratorio de Biotecnología</string>
+    <string name="acerca_integrantes">Integrantes: Dariem Alberto Benites Pérez · Mario (modelo de detección y backend RAG)</string>
+    <string name="acerca_version">Versión %1$s (build %2$d)</string>
+
+    <!-- Conversacion por voz manos libres (F8) -->
+    <string name="vozcall_estado_conectando">Preparando el asistente…</string>
+    <string name="vozcall_estado_escuchando">Escuchando…</string>
+    <string name="vozcall_estado_capturando">Le estoy escuchando…</string>
+    <string name="vozcall_estado_pensando">Pensando…</string>
+    <string name="vozcall_estado_hablando">Hablando…</string>
+    <string name="vozcall_invitacion">Diga su pregunta en voz alta. No hace falta tocar nada.</string>
+    <string name="vozcall_silenciado">Micrófono silenciado. Toque el micrófono para reactivarlo.</string>
+    <string name="vozcall_silenciar">Silenciar el micrófono</string>
+    <string name="vozcall_activar">Reactivar el micrófono</string>
+    <string name="vozcall_transcripcion">Ver la conversación escrita</string>
+    <string name="vozcall_colgar">Colgar</string>
+    <string name="vozcall_forma">Indicador de estado de la conversación</string>
+    <string name="vozcall_permiso_titulo">Se necesita el micrófono</string>
+    <string name="vozcall_permiso_detalle">La conversación por voz necesita el micrófono para oír sus preguntas. El audio no sale del teléfono.</string>
+    <string name="vozcall_permiso_conceder">Dar permiso</string>
+    <string name="vozcall_permiso_ajustes">Abrir los ajustes</string>
+    <string name="vozcall_error_sin_reconocedor">Este dispositivo no tiene reconocimiento de voz. Puede escribir su pregunta en el chat.</string>
+    <string name="vozcall_error_sin_permiso">Sin permiso de micrófono no se puede conversar por voz.</string>
+    <string name="vozcall_error_microfono">No se pudo mantener el micrófono abierto. Vuelva a intentarlo.</string>
+    <string name="vozcall_error_sin_conexion">No hay conexión con el asistente.</string>
+    <string name="vozcall_error_backend">El asistente no pudo responder. Repita la pregunta.</string>
+    <string name="vozcall_error_desconocido">Algo falló en la conversación por voz.</string>
+    <string name="ficha_hablar">Hablar con el asistente</string>
+    <string name="chat_modo_voz">Conversar por voz</string>
+    <string name="chat_voz_no_disponible">Este dispositivo no tiene reconocimiento de voz.</string>
+</resources>

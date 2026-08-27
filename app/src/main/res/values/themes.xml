@@ -1,0 +1,30 @@
+<resources>
+    <!--
+        Tema de arranque, el que el sistema pinta antes de que exista un solo composable.
+
+        Hereda de Theme.SplashScreen (androidx.core:core-splashscreen), que en API 31 y
+        superior usa la pantalla de arranque del sistema y en API 26-30 la reproduce a mano.
+        Al ser una sola declaracion para todas las versiones, no hay dos aspectos distintos
+        que mantener sincronizados.
+
+        postSplashScreenTheme es el tema al que la Activity salta en cuanto arranca; ahi
+        toma el relevo ui/theme/Theme.kt, que es donde vive la apariencia real (Compose,
+        Material 3, paleta oscura).
+    -->
+    <style name="Theme.LabScanUTEQ.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/labscan_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.LabScanUTEQ</item>
+    </style>
+
+    <!--
+        Tema XML minimo de la aplicacion ya en marcha. Solo sirve de contenedor de la
+        Activity. Fondo negro para que no haya un destello blanco antes de que la camara se
+        enganche.
+    -->
+    <style name="Theme.LabScanUTEQ" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/labscan_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

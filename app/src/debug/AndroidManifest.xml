@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Superposicion de manifiesto de la variante debug.
+
+    Su unica funcion es enganchar la configuracion de seguridad de red que permite hablar
+    con el backend de desarrollo en HTTP plano. El manifiesto principal no declara
+    networkSecurityConfig, asi que aqui no hay conflicto que resolver con tools:replace.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application android:networkSecurityConfig="@xml/network_security_config" />
+
+</manifest>

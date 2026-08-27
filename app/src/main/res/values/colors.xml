@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Espejo XML de los colores de ui/theme/Color.kt, solo para el tema de arranque. -->
+    <color name="labscan_background">#FF0E1013</color>
+</resources>

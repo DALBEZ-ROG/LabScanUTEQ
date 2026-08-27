@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "EQUIPMENT_NOT_FOUND",
+    "message": "No existe ficha para ese identificador de clase en el índice del laboratorio."
+  }
+}

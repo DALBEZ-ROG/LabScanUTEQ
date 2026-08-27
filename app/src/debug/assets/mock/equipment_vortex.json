@@ -1,0 +1,27 @@
+{
+  "classId": "vortex",
+  "displayName": "Agitador vórtex",
+  "shortDescription": "Agitador de tubos por movimiento orbital de alta frecuencia.",
+  "function": "Mezclar de forma rápida y homogénea el contenido de tubos de ensayo, microtubos o viales, mediante un cabezal que gira de manera excéntrica y genera un remolino en el líquido.",
+  "components": ["Cabezal de goma", "Selector de velocidad", "Interruptor de modo continuo o por contacto", "Base antideslizante", "Motor excéntrico"],
+  "basicProcedure": [
+    "Verificar que el tubo esté bien tapado antes de agitarlo.",
+    "Seleccionar el modo por contacto para agitaciones cortas.",
+    "Apoyar el tubo sobre el cabezal y presionar suavemente, sin forzar.",
+    "Agitar de 5 a 15 segundos, hasta que la mezcla se vea homogénea.",
+    "Retirar el tubo y dejar que el cabezal se detenga por completo.",
+    "Limpiar el cabezal con alcohol al 70 % al terminar."
+  ],
+  "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Gafas de seguridad"],
+  "risks": [
+    "Salpicadura o formación de aerosoles si el tubo está mal tapado o demasiado lleno.",
+    "Atrapamiento de cabello largo o mangas sueltas en el cabezal en movimiento."
+  ],
+  "relatedPractices": [
+    "Práctica 2: Preparación de diluciones seriadas",
+    "Práctica 4: Extracción de ADN vegetal"
+  ],
+  "sources": [
+    { "title": "Guía de prácticas de Biotecnología UTEQ", "page": 8, "documentId": "guia_biotec_2024" }
+  ]
+}

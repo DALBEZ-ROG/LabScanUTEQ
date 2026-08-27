@@ -1,0 +1,99 @@
+[
+  {
+    "classId": "microscopio_binocular",
+    "displayName": "Microscopio binocular",
+    "shortDescription": "Instrumento óptico para observar muestras a 40x-1000x.",
+    "function": "Ampliar muestras biológicas mediante un sistema de lentes objetivo y ocular, para observar estructuras celulares y microorganismos que no se distinguen a simple vista.",
+    "components": ["Oculares", "Revólver portaobjetivos", "Objetivos 4x, 10x, 40x y 100x", "Platina mecánica", "Condensador", "Diafragma", "Tornillo macrométrico", "Tornillo micrométrico", "Lámpara"],
+    "basicProcedure": [
+      "Conectar el equipo y encender la lámpara con el interruptor lateral.",
+      "Colocar la preparación sobre la platina y sujetarla con las pinzas.",
+      "Iniciar con el objetivo de 4x y enfocar con el tornillo macrométrico.",
+      "Afinar el enfoque con el tornillo micrométrico y ajustar el diafragma.",
+      "Cambiar a mayor aumento girando el revólver, sin volver a tocar el macrométrico.",
+      "Al terminar, bajar la intensidad de la lámpara, apagar y volver al objetivo de 4x."
+    ],
+    "ppe": ["Bata de laboratorio", "Guantes de nitrilo"],
+    "risks": [
+      "Descarga eléctrica por manipular el equipo con las manos húmedas.",
+      "Rotura del portaobjetos y del objetivo al enfocar con el tornillo macrométrico en 40x o 100x."
+    ],
+    "relatedPractices": ["Práctica 3: Observación de células vegetales"],
+    "sources": [
+      { "title": "Guía de prácticas de Biotecnología UTEQ", "page": 12, "documentId": "guia_biotec_2024" }
+    ]
+  },
+  {
+    "classId": "incubadora",
+    "displayName": "Incubadora de laboratorio",
+    "shortDescription": "Cámara de temperatura controlada para el cultivo de microorganismos.",
+    "function": "Mantener una temperatura estable, en general 35-37 °C, durante el tiempo necesario para que crezcan cultivos microbianos en placas o en medio líquido.",
+    "components": ["Cámara interna de acero inoxidable", "Bandejas o parrillas regulables", "Panel de control digital", "Sensor de temperatura", "Resistencia calefactora", "Puerta con empaque hermético"],
+    "basicProcedure": [
+      "Verificar que la cámara esté limpia y sin material del ciclo anterior.",
+      "Encender el equipo y fijar la temperatura de trabajo en el panel digital.",
+      "Esperar a que la lectura se estabilice antes de introducir las muestras.",
+      "Colocar las placas invertidas y bien separadas para que circule el aire.",
+      "Registrar hora de entrada y temperatura en la bitácora del laboratorio.",
+      "Retirar las muestras al cumplirse el tiempo de incubación y cerrar la puerta."
+    ],
+    "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Mascarilla"],
+    "risks": [
+      "Quemadura por contacto con las superficies internas cuando el equipo está caliente.",
+      "Contaminación cruzada si se incuban cultivos sin identificar o mal sellados."
+    ],
+    "relatedPractices": ["Práctica 5: Siembra y recuento en placa"],
+    "sources": [
+      { "title": "Manual de bioseguridad del laboratorio UTEQ", "page": 21, "documentId": "bioseguridad_uteq" }
+    ]
+  },
+  {
+    "classId": "vortex",
+    "displayName": "Agitador vórtex",
+    "shortDescription": "Agitador de tubos por movimiento orbital de alta frecuencia.",
+    "function": "Mezclar de forma rápida y homogénea el contenido de tubos de ensayo, microtubos o viales, mediante un cabezal que gira de manera excéntrica y genera un remolino en el líquido.",
+    "components": ["Cabezal de goma", "Selector de velocidad", "Interruptor de modo continuo o por contacto", "Base antideslizante", "Motor excéntrico"],
+    "basicProcedure": [
+      "Verificar que el tubo esté bien tapado antes de agitarlo.",
+      "Seleccionar el modo por contacto para agitaciones cortas.",
+      "Apoyar el tubo sobre el cabezal y presionar suavemente, sin forzar.",
+      "Agitar de 5 a 15 segundos, hasta que la mezcla se vea homogénea.",
+      "Retirar el tubo y dejar que el cabezal se detenga por completo.",
+      "Limpiar el cabezal con alcohol al 70 % al terminar."
+    ],
+    "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Gafas de seguridad"],
+    "risks": [
+      "Salpicadura o formación de aerosoles si el tubo está mal tapado o demasiado lleno.",
+      "Atrapamiento de cabello largo o mangas sueltas en el cabezal en movimiento."
+    ],
+    "relatedPractices": ["Práctica 2: Preparación de diluciones seriadas"],
+    "sources": [
+      { "title": "Guía de prácticas de Biotecnología UTEQ", "page": 8, "documentId": "guia_biotec_2024" }
+    ]
+  },
+  {
+    "classId": "camara_electroforesis",
+    "displayName": "Cámara de electroforesis horizontal",
+    "shortDescription": "Cuba para separar fragmentos de ADN en gel de agarosa por carga y tamaño.",
+    "function": "Someter un gel de agarosa a un campo eléctrico constante para que los fragmentos de ácido nucleico migren desde el polo negativo hacia el positivo y se separen según su tamaño.",
+    "components": ["Cuba de acrílico", "Bandeja de fundido del gel", "Peines formadores de pocillos", "Electrodos de platino", "Tapa con conectores polarizados", "Fuente de poder"],
+    "basicProcedure": [
+      "Preparar el gel de agarosa y dejarlo solidificar en la bandeja con el peine puesto.",
+      "Retirar el peine y colocar la bandeja en la cuba con los pocillos junto al polo negativo.",
+      "Cubrir el gel con buffer de corrida hasta la marca indicada.",
+      "Cargar las muestras en los pocillos con micropipeta, sin perforar el gel.",
+      "Tapar la cuba, conectar la fuente respetando la polaridad y fijar el voltaje.",
+      "Al terminar la corrida, apagar la fuente y desconectar antes de abrir la tapa."
+    ],
+    "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Gafas de seguridad"],
+    "risks": [
+      "Descarga eléctrica al abrir la tapa o tocar el buffer con la fuente encendida.",
+      "Exposición a colorantes intercalantes de ADN, que son mutagénicos."
+    ],
+    "relatedPractices": ["Práctica 7: Electroforesis de ADN en gel de agarosa"],
+    "sources": [
+      { "title": "Manual de bioseguridad del laboratorio UTEQ", "page": 33, "documentId": "bioseguridad_uteq" },
+      { "title": "Guía de prácticas de Biología Molecular UTEQ", "page": 17, "documentId": "guia_biomol_2024" }
+    ]
+  }
+]

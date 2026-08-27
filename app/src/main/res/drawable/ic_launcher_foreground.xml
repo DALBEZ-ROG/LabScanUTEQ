@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Primer plano del icono: los cuatro vertices de un cuadro de deteccion, con una lente de
+    microscopio dentro. Es literalmente lo que hace la app.
+
+    Todo el dibujo se queda dentro del circulo seguro de 66dp centrado en 108dp que exigen los
+    iconos adaptativos, para que ningun lanzador recorte una esquina del cuadro.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Esquina superior izquierda -->
+    <path
+        android:pathData="M34,44 L34,36 A2,2 0 0,1 36,34 L44,34"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Esquina superior derecha -->
+    <path
+        android:pathData="M64,34 L72,34 A2,2 0 0,1 74,36 L74,44"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Esquina inferior derecha -->
+    <path
+        android:pathData="M74,64 L74,72 A2,2 0 0,1 72,74 L64,74"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- Esquina inferior izquierda -->
+    <path
+        android:pathData="M44,74 L36,74 A2,2 0 0,1 34,72 L34,64"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Lente: el objeto detectado dentro del cuadro -->
+    <path
+        android:pathData="M54,44 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4" />
+    <!-- Cuerpo del microscopio, insinuado -->
+    <path
+        android:pathData="M54,53 L54,62 M46,64 L62,64"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Camara en vivo: preview + ImageAnalysis (F1, F2). -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Consultas al backend RAG (F5). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--
+        Estado de la red (F5). No da acceso a nada, solo permite saber si hay conexion
+        validada. Sin este permiso, ConnectivityObserver no puede avisar de que se esta
+        trabajando sin conexion y cada consulta gastaria los 15 s de timeout completos.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Dictado de preguntas al asistente con SpeechRecognizer (F6). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- La app no tiene sentido sin camara: no debe instalarse en dispositivos sin ella. -->
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+
+    <!--
+        Android 11 (API 30) filtra la visibilidad de paquetes. Sin esta consulta,
+        SpeechRecognizer.isRecognitionAvailable() devuelve false y el dictado de F6
+        no funciona aunque el motor de voz este instalado.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <!-- Mismo motivo para el sintetizador de voz usado por TtsManager (F6). -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LabScanUTEQ">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.LabScanUTEQ.Starting"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

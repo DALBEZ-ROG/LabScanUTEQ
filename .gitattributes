@@ -1,0 +1,23 @@
+# Normaliza los finales de linea al entrar al repositorio.
+#
+# Sin esto, el proyecto se desarrolla en Windows (CRLF) y cualquiera que clone en macOS o
+# Linux ve el archivo entero como modificado, lo que hace ilegible cualquier diff y convierte
+# cada fusion en un conflicto.
+* text=auto eol=lf
+
+# El envoltorio de Gradle es un script de shell: con CRLF no arranca en macOS ni en Linux.
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Los de Windows tienen que conservar CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binarios: que Git no intente tocarlos nunca.
+*.jks binary
+*.keystore binary
+*.tflite binary
+*.png binary
+*.webp binary
+*.jpg binary
+*.jar binary

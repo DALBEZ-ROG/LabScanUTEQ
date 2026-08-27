@@ -1,0 +1,4 @@
+microscopio_binocular
+incubadora
+vortex
+camara_electroforesis

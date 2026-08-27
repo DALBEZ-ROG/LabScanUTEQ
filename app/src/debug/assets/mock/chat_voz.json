@@ -1,0 +1,18 @@
+{
+  "answer": "Baje la intensidad de la lámpara al mínimo con la perilla del reóstato. Retire la preparación de la platina y recién entonces accione el interruptor lateral. Deje el objetivo de cuatro aumentos en posición antes de cubrir el equipo.",
+  "hasSufficientContext": true,
+  "sources": [
+    {
+      "title": "Manual de usuario Olympus CX23",
+      "page": 8,
+      "documentId": "manual_cx23",
+      "snippet": "Antes de desconectar el equipo, gire el control de intensidad hasta el mínimo."
+    },
+    {
+      "title": "Guía de prácticas de Biotecnología UTEQ",
+      "page": 12,
+      "documentId": "guia_biotec_2024",
+      "snippet": "Al finalizar la práctica, deje el objetivo de menor aumento en posición de trabajo."
+    }
+  ]
+}

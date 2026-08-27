@@ -1,0 +1,30 @@
+{
+  "classId": "incubadora",
+  "displayName": "Incubadora de laboratorio",
+  "shortDescription": "Cámara de temperatura controlada para el cultivo de microorganismos.",
+  "function": "Mantener una temperatura estable, en general 35-37 °C, durante el tiempo necesario para que crezcan cultivos microbianos en placas o en medio líquido. El control se hace por termostato con sensor interno y resistencia calefactora.",
+  "components": ["Cámara interna de acero inoxidable", "Bandejas o parrillas regulables", "Panel de control digital", "Sensor de temperatura PT100", "Resistencia calefactora", "Puerta con empaque hermético", "Termómetro de contraste"],
+  "basicProcedure": [
+    "Verificar que la cámara esté limpia y sin material del ciclo anterior.",
+    "Encender el equipo y fijar la temperatura de trabajo en el panel digital.",
+    "Esperar a que la lectura se estabilice antes de introducir las muestras.",
+    "Contrastar la lectura del panel con el termómetro interno.",
+    "Colocar las placas invertidas y bien separadas para que circule el aire.",
+    "Registrar hora de entrada y temperatura en la bitácora del laboratorio.",
+    "Retirar las muestras al cumplirse el tiempo de incubación y cerrar la puerta."
+  ],
+  "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Mascarilla"],
+  "risks": [
+    "Quemadura por contacto con las superficies internas cuando el equipo está caliente.",
+    "Contaminación cruzada si se incuban cultivos sin identificar o mal sellados.",
+    "Pérdida del cultivo por apertura prolongada de la puerta durante la incubación."
+  ],
+  "relatedPractices": [
+    "Práctica 5: Siembra y recuento en placa",
+    "Práctica 8: Curva de crecimiento microbiano"
+  ],
+  "sources": [
+    { "title": "Manual de bioseguridad del laboratorio UTEQ", "page": 21, "documentId": "bioseguridad_uteq" },
+    { "title": "Guía de prácticas de Microbiología UTEQ", "page": 5, "documentId": "guia_micro_2024" }
+  ]
+}
