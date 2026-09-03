@@ -45,18 +45,41 @@ class CatalogJsonTest {
     }
 
     @Test
-    fun `los classId son unicos y coinciden con labels punto txt`() {
+    fun `los classId son unicos`() {
         val ids = catalog.map { it.classId }
         assertEquals("Hay classId repetidos", ids.size, ids.toSet().size)
+    }
 
+    /**
+     * Ninguna ficha puede referirse a una clase que el modelo no detecta.
+     *
+     * Esta es la direccion de la comprobacion que importa, y hasta 2026-09-03 estaba al
+     * reves: se exigia que **toda** clase de `labels.txt` tuviera ficha. Esa version paso a
+     * ser imposible de cumplir en cuanto llego el modelo real —4 fichas contra 50 clases— y
+     * dejo la suite en rojo. Ver D-029.
+     *
+     * La cobertura completa del catalogo NO es un invariante del proyecto: `catalog.json` es
+     * un respaldo **sin conexion** y la app ya resuelve la clase sin ficha con la ficha
+     * minima ("Ficha no disponible"). Quien tiene que responder de las 50 clases es el
+     * backend RAG, con los manuales reales y citando la fuente.
+     *
+     * Lo que si es un defecto silencioso es una ficha huerfana: nunca se mostrara, porque el
+     * modelo no puede emitir esa clase, y nadie se entera. Asi murieron `incubadora` y
+     * `vortex`, que sobrevivieron al cambio de `labels.txt` sin que ninguna prueba chistara.
+     */
+    @Test
+    fun `ninguna ficha apunta a una clase que el modelo no puede detectar`() {
         val labels = File("src/main/assets/labels.txt").readLines()
             .map { it.trim() }
             .filter { it.isNotEmpty() }
+            .toSet()
 
-        // Cada clase que el modelo puede detectar necesita ficha; si no, el estudiante toca
-        // una caja y no obtiene informacion.
-        val sinFicha = labels - ids.toSet()
-        assertTrue("Clases de labels.txt sin ficha en catalog.json: $sinFicha", sinFicha.isEmpty())
+        val huerfanas = catalog.map { it.classId } - labels
+        assertTrue(
+            "Fichas de catalog.json que no corresponden a ninguna clase de labels.txt " +
+                "(nunca se mostraran): $huerfanas",
+            huerfanas.isEmpty()
+        )
     }
 
     @Test

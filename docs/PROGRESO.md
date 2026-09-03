@@ -23,7 +23,7 @@ Estados: `PENDIENTE` · `EN CURSO` · `HECHO` · `BLOQUEADO`
 |---|---|---|---|
 | Autorización para fotografiar el laboratorio | | PENDIENTE | |
 | Dataset etiquetado en Roboflow (6–10 clases) | Mario | PENDIENTE | |
-| `model.tflite` + `labels.txt` | Mario | PENDIENTE | La app ya los acepta sin tocar código: copiar a assets y poner useStubDetector en false |
+| `model.tflite` + `labels.txt` | Mario | HECHO, SIN VERIFICAR EN TELÉFONO | Reexportado vía onnx2tf: entrada NHWC `[1,640,640,3]`, salida `[1,54,8400]`, 50 clases. Falta abrir Diagnóstico y apuntar a un equipo real. Ver D-028 |
 | Manuales y guías digitalizados para el RAG | | PENDIENTE | |
 | Backend RAG desplegado | Mario | PENDIENTE | La app ya habla el contrato completo contra un mock. Cuando exista: basta escribir la URL en Ajustes, sin recompilar |
 
@@ -1019,3 +1019,133 @@ repetir esta medicion; la instrumentacion ya esta puesta y escribe la linea sola
 El total se mide siempre desde el **ultimo parcial** —el instante real en que el estudiante deja
 de hablar— y no desde que la app lo detecta: la espera que cierra el turno es parte de lo que el
 estudiante percibe como demora, y descontarla seria hacerse trampas.
+
+---
+
+### 2026-09-03 — Primer intento de integración del modelo real de Mario
+
+**Qué se hizo.** Mario entregó `best.tflite` (YOLOv8n, 50 clases) y `labels.txt`. Se copiaron a
+`app/src/main/assets/` como `model.tflite` y `labels.txt`, y `useStubDetector` pasó a `false` en
+`model_config.json` (también `quantized` a `false`, el modelo es float32 sin cuantizar). Ningún
+`.kt` se tocó. `./gradlew assembleDebug` → **BUILD SUCCESSFUL**.
+
+**Verificación antes de dar el modelo por bueno.** Se inspeccionó el tensor real del `.tflite` con
+`ai-edge-litert` (Python), sin fiarse solo del documento de Mario:
+
+```
+INPUT:  [1, 3, 640, 640] float32   ← NCHW
+OUTPUT: [1, 54, 8400]    float32   ← 4 + 50 clases, TRANSPOSED
+```
+
+La salida cuadra con el contrato y con `labels.txt` (50 clases). **La entrada no**: es NCHW y tanto
+`docs/INTEGRACION_MODELO.md` como `YoloTfliteDetector.kt` asumen NHWC `[1, 640, 640, 3]`. Detalle
+completo, hipótesis del origen (probable export vía `ai-edge-torch` en vez de `onnx2tf`) y por qué
+no se tocó ningún `.kt` en **D-028** de `docs/DECISIONES.md`.
+
+**Qué pasa hoy en el teléfono.** No crashea (regla 2 de CLAUDE.md se respeta: `DetectorFactory` y
+`FrameAnalyzer` atrapan la falla), pero **no detecta nada y no muestra ningún aviso en pantalla**.
+La única pista visible es la pantalla de Diagnóstico, que va a mostrar la entrada como `1x3x640x640`
+en vez de `1x640x640x3`, y `adb logcat -s LabScan` repitiendo "Fallo al analizar un frame".
+
+**Resuelto el mismo día: modelo reexportado en NHWC.** Mario reexportó desde Colab saltándose el
+`format='tflite'` de Ultralytics: primero a ONNX, después `onnx2tf` (que existe para convertir
+NCHW→NHWC). El `model.tflite` de `assets/` es ese, verificado antes de copiarlo:
+
+```
+INPUT : images   [1, 640, 640, 3]  float32
+OUTPUT: output0  [1, 54, 8400]      float32   ← 50 clases, cuadra con labels.txt
+```
+
+**Segundo hallazgo en esa verificación.** Este export **no normaliza las coordenadas**: pasando
+ruido por el modelo, `cx,cy,w,h` salen entre 3,97 y 643,94 — píxeles, no 0..1. Se puso
+`"coordsNormalized": false` en `model_config.json`. Con `true` las cajas habrían salido 640 veces
+más grandes que la pantalla y el síntoma habría sido idéntico al del problema NCHW: ninguna caja,
+sin ningún error. Detalle en D-028.
+
+`./gradlew assembleDebug` → BUILD SUCCESSFUL. Config final: `useStubDetector: false`,
+`quantized: false`, `coordsNormalized: false`, `outputLayout: "TRANSPOSED"`, `inputSize: 640`.
+
+**VERIFICADO EN EL TELÉFONO el mismo día.** SM-A566E por depuración inalámbrica. Es la primera
+vez en el proyecto que corre un modelo entrenado para la UTEQ:
+
+```
+Modelo cargado: entrada 1x640x640x3 FLOAT32, salida 1x54x8400 FLOAT32, 50 clases, TRANSPOSED
+Detector real activo con model.tflite
+Camara enganchada, analisis=true
+Detecciones (242 ms total, 234 ms inferencia): microcentrifuga 51%
+Detecciones (285 ms total, 275 ms inferencia): microcentrifuga 57%
+```
+
+Entrada NHWC, 54 = 4 + 50, `labels=50` cuadra con el tensor, y **detecta con nombres reales de
+`labels.txt`**. La cadena entera —letterbox, NHWC, `coordsNormalized: false`, decodificación,
+NMS, etiquetas— queda confirmada ejecutando, no por cálculo.
+
+**Rendimiento medido: 234–307 ms de inferencia, ~3,2 FPS.** Muy por debajo del objetivo de ≥10 FPS
+de F7, y el salto adaptativo de frames ya está entrando (umbral de 250 ms).
+
+**Corrige un supuesto de la bitácora de F3/F7.** El YOLOv8n de COCO con el que se midieron los
+~100 ms pesaba **3,2 MB**, imposible para un float32 de 3,2 M parámetros (serían ~12,8 MB): era un
+modelo con pesos cuantizados y tensores de E/S float32, no un float32 puro. El modelo de Mario pesa
+**12,2 MB** y sí es float32 completo. Es decir, los 300 ms no son una regresión respecto a los
+100 ms: **nunca se había medido un float32 real en este proyecto**. Las proyecciones de la tabla de
+`docs/INTEGRACION_MODELO.md` están calculadas sobre esa base equivocada y hay que rehacerlas cuando
+exista el int8.
+
+**Qué quedó pendiente.**
+
+- **Export int8**, ahora obligatorio y no opcional: con 3,2 FPS la app no cumple F7. El
+  procedimiento con dataset de calibración quedó preparado; el margen de mejora es mayor de lo que
+  decía la proyección, justamente porque el punto de partida es un float32 real.
+- **Verificar los positivos contra equipos reales.** En la prueba detectó `microcentrifuga` al
+  45–57 % con la cámara apuntando a una escena cualquiera de escritorio: puede ser un falso
+  positivo. Con un umbral de 0,45 y un v1 entrenado con pocas fotos por clase, es lo esperable.
+  Hay que apuntar a los equipos del laboratorio y decidir el umbral con datos.
+- **Las 3 pruebas visuales de alineación de cajas no se han repetido con este modelo.** Las de F2
+  se hicieron con `StubDetector`, que emite cajas fijas. Falta ver que una caja real caiga encima
+  del equipo que la provocó.
+
+
+### 2026-09-03 (tarde) — Endurecimiento tras la integración, con permiso de Dariem
+
+**Autorización.** `CLAUDE.md` prohíbe tocar Kotlin cuando se trabaja con Mario. Dariem levantó la
+restricción para esta sesión, transmitido por Mario, a cambio de dejar constancia. Está en
+**D-029**.
+
+**Qué se arregló.**
+
+1. **Un modelo con la forma equivocada ya no falla en silencio.** `YoloTfliteDetector` daba NHWC
+   por sentado (`inputSize = inputShape[1]`). Con el export NCHW de la mañana eso valía 3, y el
+   fallo se manifestaba de la peor forma posible: Diagnóstico diciendo "Detector real activo",
+   sin banda de modo demostración, sin detectar nada, y con la única pista en `adb logcat`. Ahora
+   `validateInputShape()` lo rechaza al construir y `DetectorFactory` cae al `StubDetector` con
+   el motivo **en pantalla**.
+2. **`CatalogJsonTest` volvió a verde invirtiendo lo que comprueba.** Exigía que toda clase de
+   `labels.txt` tuviera ficha: imposible con 50 clases, y la suite estaba en rojo. Ahora exige lo
+   contrario —que ninguna ficha apunte a una clase inexistente—, que es lo que detecta
+   podredumbre real. Se eliminaron `incubadora` y `vortex` de `catalog.json`: eran clases que el
+   modelo ya no puede emitir, así que sus fichas no se mostrarían nunca.
+
+**No se inventaron 48 fichas técnicas, a propósito.** Fabricar EPP, riesgos y procedimientos para
+equipos reales que va a leer un estudiante de primer semestre es peligroso, y `catalog.json` es
+el único sitio de la app donde se muestra contenido sin que se vea la fuente. Las 50 clases las
+tiene que responder el backend RAG, con los manuales reales. Razonamiento completo en D-029.
+
+**Verificación.** `testDebugUnitTest --rerun-tasks` → **63 pruebas, 0 fallos** (antes 57 con 1 en
+rojo). `assembleDebug` y `lint` en verde. Pruebas nuevas: `YoloInputShapeTest`, 5 casos, incluido
+el `[1, 3, 640, 640]` real que causó el problema.
+
+**Qué quedó sin verificar, y por qué.** **Nada de esto se probó en el teléfono**: la depuración
+inalámbrica se cayó antes de poder reinstalar. Para el modelo actual el comportamiento es
+demostrablemente idéntico —`validateInputShape([1,640,640,3])` devuelve 640, igual que
+`inputShape[1]`— pero conviene reinstalar y confirmar que sigue detectando.
+
+**Sigue pendiente y no se tocó:** el defecto cosmético de F7 (la etiqueta de una caja pegada al
+borde superior se dibuja sobre la barra de estado). Se dejó fuera a propósito: es trabajo de
+maquetación cuyo resultado hay que juzgar a ojo en pantalla, y sin teléfono conectado no se puede
+verificar.
+- **`catalog.json` tiene 4 fichas de ejemplo y el modelo trae 50 clases.** Toda clase detectada que
+  no esté en el catálogo va a abrir la ficha mínima "Ficha no disponible" hasta que exista el
+  backend RAG o se amplíe el catálogo.
+- Sigue pendiente lo que ya documentó Mario en su nota de integración: 5 clases sin fotos
+  etiquetadas y 3 clases genéricas intrusas (`agitador`, `camara_electroforesis`, `refrigeradora`)
+  por corregir en Roboflow antes del entrenamiento final.

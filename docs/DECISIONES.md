@@ -737,3 +737,160 @@ veces por segundo incluso en una sala en silencio.
 bandera estática: la comprobación cuesta 2,5 s y no hay motivo para repetirla cada vez que el
 estudiante entra al modo de voz. Vuelve a intentarse al reiniciar la app, que es cuando podría haber
 cambiado porque el estudiante descargó el idioma desde los ajustes del sistema.
+
+## D-028 — Primer `model.tflite` real de Mario: entrada NCHW, el contrato pide NHWC — 2026-09-03
+
+Mario entregó `best.tflite` (YOLOv8n, 50 clases, exportado sin NMS) y `labels.txt`. Se copiaron a
+`assets/` como `model.tflite` y `labels.txt`, y `useStubDetector` pasó a `false` en
+`model_config.json`, siguiendo al pie de la letra docs/INTEGRACION_MODELO.md.
+
+**Verificación antes de dar el modelo por bueno.** Con `ai-edge-litert` (Python) se inspeccionó el
+tensor real, sin fiarse del documento de acompañamiento:
+
+```
+INPUT:  serving_default_args_0    [1, 3, 640, 640]  float32
+OUTPUT: serving_default_output_0  [1, 54, 8400]      float32
+```
+
+La salida cuadra con el contrato (54 = 4 + 50 clases, disposición `TRANSPOSED`, sin objectness). La
+**entrada no**: es `NCHW` (canal primero), y tanto docs/INTEGRACION_MODELO.md como
+`YoloTfliteDetector.kt` asumen `NHWC` — `[1, 640, 640, 3]`. El código lee
+`inputSize = inputShape[1]`, que con este tensor da **3**, no 640, y escribe el buffer de entrada
+como RGB intercalado por píxel en vez de tres planos de canal separados.
+
+**Qué falla y qué no.** `DetectorFactory` no lo detecta al construirse (el `require` solo comprueba
+que el tensor tenga 4 dimensiones) y `FrameAnalyzer.analyze()` atrapa cualquier excepción por
+frame, así que la app **no crashea** (regla 2 de CLAUDE.md se cumple) pero tampoco muestra ningún
+aviso: sencillamente no detecta nada, con "Fallo al analizar un frame" repitiéndose en
+`adb logcat` como única pista. La pantalla de Diagnóstico sí lo expone: entrada `1x3x640x640` en
+vez de `1x640x640x3`.
+
+**Decisión.** Se integró el modelo tal cual (Mario lo pidió así, para confirmar el hallazgo en el
+teléfono vía Diagnóstico y probar el resto del pipeline) en lugar de esperar un reexport. Ningún
+`.kt` se tocó — CLAUDE.md prohíbe modificar código Kotlin cuando se trabaja con Mario, y el arreglo
+de fondo (soportar NCHW o forzar el reexport en NHWC) es una decisión de Mario, no un parche de
+turno.
+
+**Hipótesis del origen.** Ultralytics puede exportar TFLite por dos caminos: el clásico vía ONNX +
+`onnx2tf` (da NHWC) o, en versiones recientes, vía `ai-edge-torch` (conserva el NCHW original de
+PyTorch). Los nombres de tensor (`serving_default_args_0` / `..._output_0_output`) son típicos de
+`ai-edge-torch`. La recomendación pendiente de confirmar con Mario: forzar el camino `onnx2tf` o
+fijar una versión de `ultralytics` que lo use por defecto, y volver a exportar.
+
+**Clases.** `labels.txt` trae 50 líneas, cuadra con las 50 clases del tensor de salida. Sigue
+pendiente lo que ya anotó Mario en su documento: 5 clases sin datos y 3 genéricas intrusas por
+corregir en Roboflow antes de la versión final — no bloquea esta integración, sí bloquea el
+entrenamiento definitivo.
+
+### Resuelto el mismo día: reexport vía `onnx2tf`
+
+Se reexportó saltándose por completo el `format='tflite'` de Ultralytics, que es el que elegía el
+backend equivocado. En su lugar, dos pasos explícitos en Colab:
+
+```python
+model.export(format='onnx', imgsz=640, opset=12, simplify=True, nms=False)
+!onnx2tf -i /content/best.onnx -o /content/tflite_nhwc
+```
+
+`onnx2tf` existe precisamente para convertir NCHW→NHWC, así que el resultado es determinista y no
+depende de qué versión de `ultralytics` esté instalada. Tensor verificado:
+
+```
+INPUT : images   [1, 640, 640, 3]  float32     ← NHWC, como pide el contrato
+OUTPUT: output0  [1, 54, 8400]      float32
+```
+
+Los nombres de tensor (`images` / `output0`, en vez de `serving_default_args_0` /
+`..._output_0_output`) confirman de paso la hipótesis del camino de export.
+
+**Segundo hallazgo, y por poco se cuela.** Este export **no normaliza las coordenadas**: pasando
+ruido aleatorio por el modelo, `cx,cy,w,h` salen en el rango 3,97 – 643,94, o sea píxeles del
+cuadrado de 640, no 0..1. El export propio de Ultralytics sí las normaliza; `onnx2tf` entrega la
+salida cruda del ONNX. Por eso `model_config.json` va con **`"coordsNormalized": false`**, que es
+lo que hace a `YoloDecoder` dividir entre `inputSize`. Con `true` las cajas habrían salido 640
+veces más grandes que la pantalla, es decir invisibles, y el síntoma —ninguna caja dibujada— es
+idéntico al del problema NCHW. Lo cubre la sección 5 de docs/INTEGRACION_MODELO.md; se comprobó
+por inferencia antes de instalar, no en el teléfono.
+
+**Estado final de `model_config.json`:** `useStubDetector: false`, `quantized: false` (el modelo es
+float32), `coordsNormalized: false`, `outputLayout: "TRANSPOSED"`, `inputSize: 640`.
+`./gradlew assembleDebug` → BUILD SUCCESSFUL. Ningún `.kt` tocado en toda la integración.
+
+**Pendiente de rendimiento.** El modelo es float32 a 640, que en el SM-A566E costaba ~100 ms de
+inferencia con el YOLOv8n de COCO (F7). El export int8 que recomienda docs/INTEGRACION_MODELO.md
+sigue sin hacerse; si los FPS no alcanzan, ese es el siguiente paso, no un cambio de código.
+
+## D-029 — Un modelo con la forma equivocada ahora falla fuerte, y el catálogo deja de exigir lo imposible — 2026-09-03
+
+**Autorización.** `CLAUDE.md` prohíbe tocar código Kotlin cuando se trabaja con Mario. Dariem
+levantó esa restricción expresamente para esta sesión, transmitido por Mario, a cambio de dejar
+documentado lo que se cambió. Esta entrada es esa constancia. Cambios en `YoloTfliteDetector.kt`,
+`CatalogJsonTest.kt`, `catalog.json` y una prueba nueva, `YoloInputShapeTest.kt`.
+
+### 1. La forma del tensor de entrada se valida al construir
+
+`YoloTfliteDetector` leía `inputSize = inputShape[1]` dando por sentado NHWC. Con el export NCHW
+de D-028 eso valía **3**: se reservaba un buffer para una imagen de 3x3 píxeles y `writeInput`
+volcaba RGB intercalado donde el modelo esperaba tres planos de canal.
+
+**Lo que importa no es el fallo, es cómo se manifestaba.** El intérprete reventaba dentro de
+`detect()`, que corre en `FrameAnalyzer.analyze()`, donde toda excepción se atrapa por frame para
+que un frame malo no tumbe la cámara (regla 3 de CLAUDE.md). El resultado era la peor combinación
+posible:
+
+- el Diagnóstico decía "Detector real activo",
+- **no** salía la banda de modo demostración,
+- la app no detectaba absolutamente nada,
+- y la única pista era una línea repitiéndose en `adb logcat`.
+
+Es decir: indistinguible, desde la pantalla, de un modelo que simplemente no reconoce nada de lo
+que tiene delante. Se perdió una sesión entera antes de encontrarlo.
+
+Ahora `validateInputShape()` comprueba las 4 dimensiones, que el eje de canales sea el último,
+que valga 3 y que la entrada sea cuadrada; si algo falla lanza `ModelMismatchException`, que
+`DetectorFactory` ya atrapa para caer al `StubDetector` **con el motivo visible en pantalla**. Eso
+es lo que la regla 2 de CLAUDE.md pretendía desde el principio.
+
+El mensaje distingue el caso NCHW y dice cómo arreglarlo (`onnx2tf`), pero solo cuando el patrón
+encaja: un modelo de 1 canal se rechaza sin mencionar NCHW, para no mandar a nadie a reexportar
+por el motivo equivocado.
+
+La función es `internal` y pura —aritmética sobre un `IntArray`— para poder probarla en la JVM,
+igual que `BoxMapper`, y por el mismo motivo: son las dos partes del proyecto donde un error no
+se ve, se sufre. `YoloInputShapeTest` la cubre con 5 casos, incluido el `[1, 3, 640, 640]` real.
+El `companion object` pasó de `private` a `internal`; sigue sin salir del módulo.
+
+**Comportamiento con el modelo actual: idéntico.** Para `[1, 640, 640, 3]` la función devuelve
+640, exactamente lo que hacía `inputShape[1]`.
+
+### 2. `CatalogJsonTest` exigía una cobertura que ya no puede existir
+
+La prueba `los classId son unicos y coinciden con labels punto txt` exigía que **toda** clase de
+`labels.txt` tuviera ficha en `catalog.json`. Con las 4 clases de ejemplo se cumplía; con las 50
+clases reales del modelo pasó a ser imposible y dejó la suite en rojo (57 pruebas, 1 fallo).
+
+**No se rellenó el catálogo con 48 fichas inventadas, y es una decisión deliberada.** Fabricar
+EPP, riesgos y procedimientos de encendido para equipos reales de laboratorio, que va a leer un
+estudiante de primer semestre sin experiencia, es peligroso: es exactamente el tipo de contenido
+donde equivocarse tiene consecuencias físicas. Además contradice el principio que sostiene todo
+el diseño —la regla 6 de CLAUDE.md, "toda respuesta muestra su fuente"— y `catalog.json` es
+justamente el único sitio donde la app enseña contenido sin que el estudiante vea de dónde salió.
+Quien tiene que responder de las 50 clases es el backend RAG, con los manuales reales y citando
+página.
+
+Se invirtió la comprobación a lo que sí es un invariante y sí detecta podredumbre real:
+**ninguna ficha puede apuntar a una clase que el modelo no detecta.** Una ficha huérfana no se
+mostrará jamás y nadie se entera. Así murieron `incubadora` y `vortex`, que sobrevivieron al
+cambio de `labels.txt` sin que ninguna prueba chistara; se eliminaron de `catalog.json`, que
+queda con `microscopio_binocular` y `camara_electroforesis`, las dos únicas que sí son clases
+reales del modelo.
+
+La cobertura completa del catálogo **no** es un invariante del proyecto: es un respaldo sin
+conexión, y la app ya resuelve la clase sin ficha con la ficha mínima "Ficha no disponible".
+
+### Verificación
+
+`./gradlew testDebugUnitTest --rerun-tasks` → **63 pruebas, 0 fallos** (eran 57 con 1 en rojo).
+`assembleDebug` y `lint` en verde. **No se pudo verificar en el teléfono**: la depuración
+inalámbrica se cayó al terminar. El comportamiento con el modelo actual es demostrablemente el
+mismo, pero conviene reinstalar y confirmar que sigue detectando.

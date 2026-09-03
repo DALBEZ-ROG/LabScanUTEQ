@@ -116,9 +116,12 @@ class YoloTfliteDetector(
         outputTensor = output.toInfo()
 
         // El tamano de entrada sale del tensor, nunca de una constante. Forma [1, H, W, 3].
-        val inputShape = input.shape()
-        require(inputShape.size == 4) { "Entrada inesperada: ${inputShape.joinToString("x")}" }
-        inputSize = inputShape[1]
+        inputSize = try {
+            validateInputShape(input.shape())
+        } catch (mismatch: ModelMismatchException) {
+            close()
+            throw mismatch
+        }
         if (inputSize != config.inputSize) {
             Log.w(
                 App.LOG_TAG,
@@ -322,12 +325,74 @@ class YoloTfliteDetector(
         gpuDelegate = null
     }
 
-    private companion object {
+    // `internal` y no `private` para que `validateInputShape` sea comprobable en la JVM.
+    // Sigue sin ser API publica: no sale del modulo.
+    internal companion object {
         /** Multiplicar es mas barato que dividir, y se hace 1 228 800 veces por frame. */
         const val INV_255 = 1f / 255f
 
         const val THREADS = 4
         const val CHANNELS = 3
+
+        /** Indice del eje de canales en NHWC. En NCHW seria 1, y es justo lo que se rechaza. */
+        const val CHANNELS_AXIS = 3
+
+        /**
+         * Comprueba que la entrada sea NHWC cuadrada y devuelve el lado del cuadrado.
+         *
+         * Es `internal` y pura —solo aritmetica sobre un `IntArray`, sin nada de Android ni de
+         * TensorFlow— para que `YoloInputShapeTest` la cubra en la JVM. La cadena de
+         * transformaciones de coordenadas ya se prueba asi (`BoxMapperTest`) y por el mismo
+         * motivo: son las dos partes donde un error no se ve, se sufre.
+         *
+         * ### Por que existe
+         *
+         * El 2026-09-03 llego un export de Ultralytics en **NCHW**, `[1, 3, 640, 640]`. Sin esta
+         * guarda, `shape[1]` valia 3: se reservaba un buffer para una imagen de 3x3 pixeles y
+         * `writeInput` volcaba RGB intercalado donde el modelo esperaba tres planos de canal.
+         *
+         * Lo grave no era el fallo sino **como se manifestaba**. El interprete reventaba dentro
+         * de `detect()`, que corre en `FrameAnalyzer.analyze()`, donde toda excepcion se atrapa
+         * por frame para que un frame malo no tumbe la camara (regla 3 de CLAUDE.md). Resultado:
+         * el Diagnostico decia "Detector real activo", **no** salia la banda de modo
+         * demostracion, y la app sencillamente no detectaba nada. La unica pista era una linea
+         * repitiendose en `adb logcat`.
+         *
+         * Fallando aqui, en construccion, `DetectorFactory` lo atrapa y cae al `StubDetector`
+         * con el motivo **visible en pantalla**, que es lo que la regla 2 de CLAUDE.md pretendia
+         * desde el principio. Ver D-028 y D-029.
+         */
+        internal fun validateInputShape(shape: IntArray): Int {
+            if (shape.size != 4) {
+                throw ModelMismatchException(
+                    "La entrada del modelo tiene ${shape.size} dimensiones " +
+                        "(${shape.joinToString("x")}); se esperaban 4: [1, lado, lado, $CHANNELS]."
+                )
+            }
+
+            if (shape[CHANNELS_AXIS] != CHANNELS) {
+                val pista = if (shape[1] == CHANNELS) {
+                    " Parece un export NCHW (canales primero): hay que rehacerlo exportando a " +
+                        "ONNX y convirtiendo con onnx2tf, que reordena los ejes."
+                } else {
+                    ""
+                }
+                throw ModelMismatchException(
+                    "El modelo declara la entrada ${shape.joinToString("x")}. Se esperaba NHWC " +
+                        "[1, lado, lado, $CHANNELS], con los canales al final.$pista " +
+                        "Ver docs/INTEGRACION_MODELO.md."
+                )
+            }
+
+            if (shape[1] != shape[2]) {
+                throw ModelMismatchException(
+                    "La entrada del modelo no es cuadrada: ${shape.joinToString("x")}. " +
+                        "El letterbox de la app siempre produce un cuadrado."
+                )
+            }
+
+            return shape[1]
+        }
 
         /**
          * Mapea el `.tflite` en memoria en lugar de leerlo a un array.

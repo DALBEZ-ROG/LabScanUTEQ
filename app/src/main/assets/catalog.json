@@ -24,54 +24,6 @@
     ]
   },
   {
-    "classId": "incubadora",
-    "displayName": "Incubadora de laboratorio",
-    "shortDescription": "Cámara de temperatura controlada para el cultivo de microorganismos.",
-    "function": "Mantener una temperatura estable, en general 35-37 °C, durante el tiempo necesario para que crezcan cultivos microbianos en placas o en medio líquido.",
-    "components": ["Cámara interna de acero inoxidable", "Bandejas o parrillas regulables", "Panel de control digital", "Sensor de temperatura", "Resistencia calefactora", "Puerta con empaque hermético"],
-    "basicProcedure": [
-      "Verificar que la cámara esté limpia y sin material del ciclo anterior.",
-      "Encender el equipo y fijar la temperatura de trabajo en el panel digital.",
-      "Esperar a que la lectura se estabilice antes de introducir las muestras.",
-      "Colocar las placas invertidas y bien separadas para que circule el aire.",
-      "Registrar hora de entrada y temperatura en la bitácora del laboratorio.",
-      "Retirar las muestras al cumplirse el tiempo de incubación y cerrar la puerta."
-    ],
-    "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Mascarilla"],
-    "risks": [
-      "Quemadura por contacto con las superficies internas cuando el equipo está caliente.",
-      "Contaminación cruzada si se incuban cultivos sin identificar o mal sellados."
-    ],
-    "relatedPractices": ["Práctica 5: Siembra y recuento en placa"],
-    "sources": [
-      { "title": "Manual de bioseguridad del laboratorio UTEQ", "page": 21, "documentId": "bioseguridad_uteq" }
-    ]
-  },
-  {
-    "classId": "vortex",
-    "displayName": "Agitador vórtex",
-    "shortDescription": "Agitador de tubos por movimiento orbital de alta frecuencia.",
-    "function": "Mezclar de forma rápida y homogénea el contenido de tubos de ensayo, microtubos o viales, mediante un cabezal que gira de manera excéntrica y genera un remolino en el líquido.",
-    "components": ["Cabezal de goma", "Selector de velocidad", "Interruptor de modo continuo o por contacto", "Base antideslizante", "Motor excéntrico"],
-    "basicProcedure": [
-      "Verificar que el tubo esté bien tapado antes de agitarlo.",
-      "Seleccionar el modo por contacto para agitaciones cortas.",
-      "Apoyar el tubo sobre el cabezal y presionar suavemente, sin forzar.",
-      "Agitar de 5 a 15 segundos, hasta que la mezcla se vea homogénea.",
-      "Retirar el tubo y dejar que el cabezal se detenga por completo.",
-      "Limpiar el cabezal con alcohol al 70 % al terminar."
-    ],
-    "ppe": ["Bata de laboratorio", "Guantes de nitrilo", "Gafas de seguridad"],
-    "risks": [
-      "Salpicadura o formación de aerosoles si el tubo está mal tapado o demasiado lleno.",
-      "Atrapamiento de cabello largo o mangas sueltas en el cabezal en movimiento."
-    ],
-    "relatedPractices": ["Práctica 2: Preparación de diluciones seriadas"],
-    "sources": [
-      { "title": "Guía de prácticas de Biotecnología UTEQ", "page": 8, "documentId": "guia_biotec_2024" }
-    ]
-  },
-  {
     "classId": "camara_electroforesis",
     "displayName": "Cámara de electroforesis horizontal",
     "shortDescription": "Cuba para separar fragmentos de ADN en gel de agarosa por carga y tamaño.",
