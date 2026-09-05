@@ -894,3 +894,81 @@ conexión, y la app ya resuelve la clase sin ficha con la ficha mínima "Ficha n
 `assembleDebug` y `lint` en verde. **No se pudo verificar en el teléfono**: la depuración
 inalámbrica se cayó al terminar. El comportamiento con el modelo actual es demostrablemente el
 mismo, pero conviene reinstalar y confirmar que sigue detectando.
+
+## D-030 — Se descarta YOLOv8m y se queda YOLOv8n, medido — 2026-09-05
+
+El profesor de Mario recomendó entrenar con `yolov8m` en lugar de `yolov8n`. Se entrenaron **los
+dos** sobre el mismo dataset, con la misma semilla y el mismo número de épocas, y se evaluaron
+sobre el mismo split de test. **Se queda `yolov8n`.**
+
+### Los números
+
+| | mAP50 | mAP50-95 | Precisión | Recall | Inferencia | Tamaño `.tflite` |
+|---|---|---|---|---|---|---|
+| `yolov8n` | **0,8374** | 0,5102 | 0,7733 | 0,7989 | 275 ms (medido en SM-A566E) | 12,2 MB |
+| `yolov8m` | 0,8305 | **0,5283** | **0,8227** | 0,796 | ~2 290 ms (proyectado) | 103,7 MB |
+
+El modelo mediano **no es mejor**: pierde en mAP50, gana por poco en mAP50-95 y precisión, empata
+en recall. A cambio cuesta 8,3 veces más cómputo y 8,5 veces más tamaño.
+
+### Cómo se obtuvo el coste, para que nadie lo repita mal
+
+La cifra de `yolov8m` es una **proyección, no una medida**, y conviene decir de dónde sale porque
+en este proyecto ya hubo una tabla de rendimiento construida sobre una base equivocada (ver la
+bitácora del 2026-09-03). Se ejecutaron los dos `.tflite` reales en la CPU de la PC de desarrollo,
+misma entrada y mismo número de hilos: mediana de **44,6 ms** para `n` y **371,6 ms** para `m`, o
+sea **8,32x**. Esa relación se aplicó a los 275 ms que `n` costaba **medidos en el teléfono**.
+Coincide con la relación teórica de FLOPs (8,7 contra 78,9 GFLOPs, 9,1x), lo que da confianza en
+el orden de magnitud. Falta la medida directa de `m` en el dispositivo.
+
+A 2,3 s por frame la app es inservible para dibujar cajas sobre la cámara en vivo, sea cual sea
+el mAP.
+
+### Por qué el modelo grande no ganó, que es lo que hay que entender
+
+**El dataset es demasiado pequeño para que la capacidad extra se note.** El split de test tiene
+**48 imágenes y 48 instancias** repartidas entre 28 clases, la mayoría con 1 o 2 ejemplos. Con un
+solo ejemplo por clase el mAP de esa clase es casi binario: sale 0,995 o sale 0. Diferencias de
+0,7 puntos entre dos modelos sobre esa base **no son distinguibles del ruido**, y así hay que
+leerlas: no es que `n` sea mejor que `m`, es que con estos datos no se puede saber.
+
+Además, de las 50 clases del modelo solo **28 aparecen en el test**. Sobre las otras 22 no hay
+ninguna evidencia.
+
+La recomendación del profesor no es incorrecta en general —con un dataset grande `yolov8m` suele
+ganar—; lo que ocurre es que aquí **el cuello de botella son los datos, no el modelo**. Ocho
+veces más parámetros necesitan más datos, no los mismos.
+
+### El dataset sigue sin corregir, y se nota en la tabla por clase
+
+`labels.txt` del reentrenamiento es **idéntico byte por byte** al anterior: las 3 clases genéricas
+intrusas y las 5 sin anotar siguen ahí. El efecto es visible:
+
+```
+camara_de_electroforesis_b2      1  1      0      0      0      0
+camara_electroforesis            2  2      1      0  0.495  0.297
+```
+
+La clase genérica `camara_electroforesis` se está comiendo las detecciones de la específica
+`camara_de_electroforesis_b2`, que colapsó a cero. Es exactamente el fallo que la nota de
+integración de Mario predijo en agosto.
+
+### Qué modelo quedó instalado, y por qué no fue por precisión
+
+Se cambió el `model.tflite` del proyecto por el `yolov8n` del reentrenamiento (150 épocas). **No
+porque detecte mejor** —las métricas del anterior eran sobre *validación* y las nuevas sobre
+*test*, así que no son comparables y la diferencia real es desconocida— sino por
+**reproducibilidad**: el `best.pt` del modelo anterior se perdió al reiniciarse el runtime de
+Colab y su cuaderno tampoco existe, con lo que era un binario huérfano de 12 MB imposible de
+regenerar. El nuevo tiene los pesos en Drive, métricas documentadas sobre test y un cuaderno
+repetible.
+
+Para una entrega académica, poder decir de dónde salió el modelo pesa más que dos décimas de mAP
+que además están dentro del ruido.
+
+### Verificación
+
+`testDebugUnitTest --rerun-tasks` → 63 pruebas, 0 fallos. `assembleDebug` en verde. Tensores
+comprobados antes de copiar: entrada `[1, 640, 640, 3]` float32, salida `[1, 54, 8400]`, cajas en
+píxeles (7,1–648,9) → `coordsNormalized: false`, igual que antes. **Sin verificar en el
+teléfono**: no hubo dispositivo conectado en esta sesión.

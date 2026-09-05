@@ -84,6 +84,33 @@ Los dos están documentados en `docs/DECISIONES.md` → **D-028**.
   45–57 % apuntando a una escena cualquiera: probablemente un falso positivo, esperable en un
   v1 con pocas fotos por clase.
 
+### Actualización del 2026-09-05 — YOLOv8m probado y descartado
+
+El profesor recomendó `yolov8m`. Se entrenaron **los dos** sobre el mismo dataset, misma semilla
+y mismas épocas, y se evaluaron sobre el mismo split de test:
+
+| | mAP50 | mAP50-95 | Precisión | Recall | Inferencia | Tamaño |
+|---|---|---|---|---|---|---|
+| `yolov8n` | **0,8374** | 0,5102 | 0,7733 | 0,7989 | 275 ms | 12,2 MB |
+| `yolov8m` | 0,8305 | **0,5283** | **0,8227** | 0,796 | ~2 290 ms | 103,7 MB |
+
+**`yolov8m` no gana y cuesta 8,3 veces más cómputo y 8,5 veces más tamaño.** Y las diferencias
+son ruido: el test tiene 48 imágenes y 48 instancias entre 28 clases, y 22 de las 50 clases no
+aparecen. La recomendación del profesor no es mala en general —con datos suficientes `m` suele
+ganar—; el problema es que **aquí el cuello de botella son los datos**. Ver **D-030**.
+
+Se instaló el `yolov8n` del reentrenamiento, **por reproducibilidad y no por precisión**: el
+modelo anterior tenía su `best.pt` perdido y su cuaderno tampoco existía, así que era un binario
+de 12 MB imposible de regenerar.
+
+**Sigue pendiente y ahora es lo único que importa:** corregir el dataset. El `labels.txt` del
+reentrenamiento es idéntico byte por byte al anterior, así que nada de lo listado arriba se
+arregló. Se nota en los resultados: `camara_electroforesis` (la genérica intrusa) se come las
+detecciones de `camara_de_electroforesis_b2`, que quedó en **0 en las cuatro métricas**.
+
+**Sin verificar en el teléfono:** no hubo dispositivo conectado. Los 275 ms de la tabla son del
+modelo anterior; los del nuevo están por medir.
+
 ---
 
 ## Tarea 2 — El backend RAG

@@ -1149,3 +1149,51 @@ verificar.
 - Sigue pendiente lo que ya documentó Mario en su nota de integración: 5 clases sin fotos
   etiquetadas y 3 clases genéricas intrusas (`agitador`, `camara_electroforesis`, `refrigeradora`)
   por corregir en Roboflow antes del entrenamiento final.
+
+
+### 2026-09-05 — Reentrenamiento, YOLOv8m descartado con datos, y modelo nuevo instalado
+
+**Qué se hizo.** El profesor de Mario recomendó `yolov8m` en lugar de `yolov8n`. Se entrenaron los
+**dos** sobre el mismo dataset, misma semilla, mismas épocas, y se evaluaron sobre el mismo split
+de test.
+
+| | mAP50 | mAP50-95 | Precisión | Recall | Inferencia | Tamaño |
+|---|---|---|---|---|---|---|
+| `yolov8n` | **0,8374** | 0,5102 | 0,7733 | 0,7989 | 275 ms (medido) | 12,2 MB |
+| `yolov8m` | 0,8305 | **0,5283** | **0,8227** | 0,796 | ~2 290 ms (proyectado) | 103,7 MB |
+
+**`yolov8m` no gana.** Pierde en mAP50, gana por poco en mAP50-95 y precisión, empata en recall, y
+cuesta 8,3 veces más cómputo y 8,5 veces más tamaño. A 2,3 s por frame no sirve para dibujar cajas
+sobre la cámara en vivo. Razonamiento completo, y cómo se obtuvo la proyección sin repetir el
+error de base de la tabla del 2026-09-03, en **D-030**.
+
+**Lo importante no es cuál ganó, sino por qué no se puede saber.** El split de test tiene
+**48 imágenes y 48 instancias** entre 28 clases, la mayoría con 1 o 2 ejemplos; y 22 de las 50
+clases no aparecen en el test. Diferencias de 0,7 puntos sobre esa base son ruido. El cuello de
+botella del proyecto **son los datos, no el modelo**.
+
+**El dataset sigue sin corregir.** El `labels.txt` del reentrenamiento es idéntico byte por byte
+al anterior, así que las 3 clases intrusas y las 5 sin anotar siguen ahí. Se ve en la tabla por
+clase: `camara_electroforesis` (la genérica) se come las detecciones de
+`camara_de_electroforesis_b2`, que colapsó a 0 en las cuatro métricas.
+
+**Se cambió el modelo instalado** por el `yolov8n` del reentrenamiento (150 épocas). No por
+precisión —las métricas del anterior eran sobre validación y las nuevas sobre test, así que no son
+comparables— sino porque **el anterior era irreproducible**: su `best.pt` se perdió al reiniciarse
+el runtime de Colab y su cuaderno tampoco existe. El nuevo tiene los pesos en Drive, métricas
+sobre test y un cuaderno repetible.
+
+`model_config.json` no necesitó cambios: el modelo nuevo es igual de float32, NHWC 640,
+`TRANSPOSED` y con las cajas en píxeles.
+
+**Verificación.** Tensores comprobados antes de copiar (`[1,640,640,3]` float32 →
+`[1,54,8400]`, cajas 7,1–648,9). `testDebugUnitTest --rerun-tasks` → **63 pruebas, 0 fallos**.
+`assembleDebug` en verde.
+
+**Sin verificar en el teléfono.** No hubo dispositivo conectado en esta sesión. Falta reinstalar,
+confirmar en el log que carga y detecta, y **medir los FPS reales del modelo nuevo** — la cifra de
+275 ms de la tabla es del modelo anterior, no de este.
+
+**Lo que de verdad desbloquea el siguiente salto:** corregir las 3 clases intrusas, anotar las 5
+que faltan y subir de 1-2 fotos por clase a 20-30. Con eso `yolov8n` debería pasar holgadamente
+de 0,83.
