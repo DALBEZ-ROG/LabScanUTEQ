@@ -186,12 +186,13 @@ compilar y probar sin pedirle el archivo a nadie. Si prefieres sacarlo de la his
 distribuirlo aparte, es una decisión razonable — pero hazla pronto, porque cada versión nueva del
 modelo añade otros 12 MB, y déjala escrita en `docs/DECISIONES.md`.
 
-## 6. Lo primero que deberías hacer
+## 6. Lo primero que deberías hacer — y solo lo puedes hacer tú
 
-**Reinstalar y confirmar que sigue detectando.** Los cambios de la tarde no se pudieron probar en
-el teléfono: la depuración inalámbrica se cayó antes de poder reinstalar. Las 63 pruebas pasan y
-el comportamiento con este modelo es demostrablemente idéntico, pero eso no sustituye a verlo
-funcionando.
+**El teléfono es tuyo.** Mario no lo tiene, así que **nada de lo hecho el 3 y el 5 de septiembre
+está verificado en dispositivo**. Ni el endurecimiento del detector, ni el cambio de
+`catalog.json`, ni el modelo nuevo del día 5. Las 63 pruebas JVM pasan y `assembleDebug` está en
+verde, pero eso no sustituye a verlo funcionando, y en este proyecto ya hubo un fallo que
+**solo** se manifestaba en el teléfono y era invisible desde las pruebas (D-028).
 
 ```
 adb uninstall ec.edu.uteq.labscan
@@ -199,9 +200,29 @@ adb uninstall ec.edu.uteq.labscan
 adb logcat -s LabScan
 ```
 
-Tiene que aparecer:
+**1. Que carga y detecta.** Tiene que aparecer:
 
 ```
 Modelo cargado: entrada 1x640x640x3 FLOAT32, salida 1x54x8400 FLOAT32, 50 clases, TRANSPOSED
 Detector real activo con model.tflite
 ```
+
+Si en vez de eso sale la banda de modo demostración, mira el motivo en Diagnóstico: desde D-029
+un modelo con la forma equivocada **sí** avisa en pantalla en lugar de fallar callado.
+
+**2. Los FPS del modelo nuevo, que es la cifra que falta en la tabla de D-030.** El log de
+detecciones los trae:
+
+```
+Detecciones (NNN ms total, NNN ms inferencia): <clase> NN%
+```
+
+Los 275 ms documentados son del modelo **anterior**. Anota los del nuevo en `docs/PROGRESO.md`.
+
+**3. Que las cajas caen encima del equipo.** Es la verificación que nunca se ha hecho con un
+modelo real: las tres pruebas visuales de F2 se hicieron con `StubDetector` y cajas fijas, y el
+camino `coordsNormalized: false` del decodificador **jamás se ha ejecutado contra un modelo real
+en pantalla**. Apunta a un equipo del laboratorio y mira si el recuadro lo envuelve o está
+corrido.
+
+Si algo de esto sale mal, avísale a Mario: los tres puntos dependen del modelo, no de tu código.
