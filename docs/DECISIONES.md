@@ -972,3 +972,42 @@ que además están dentro del ruido.
 comprobados antes de copiar: entrada `[1, 640, 640, 3]` float32, salida `[1, 54, 8400]`, cajas en
 píxeles (7,1–648,9) → `coordsNormalized: false`, igual que antes. **Sin verificar en el
 teléfono**: no hubo dispositivo conectado en esta sesión.
+
+## D-031 — La variante de depuración apunta al backend real, y la IP del PC es configurable — 2026-09-09
+
+Al preparar la primera prueba del chat contra el backend real desde el teléfono, ninguna de las
+dos variantes servía:
+
+| | `USE_MOCK_API` | HTTP en claro |
+|---|---|---|
+| `debug` | `true` → respuestas del mock, la red no se usaba | Solo `10.0.2.2`, `10.0.3.2`, `localhost`, `127.0.0.1` |
+| `release` | `false` | Prohibido del todo: no declara `networkSecurityConfig` y `targetSdk 35` bloquea el tráfico en claro |
+
+El fallo del `debug` era el peligroso: la app habría contestado con los JSON de `assets/mock/`
+y nadie se habría enterado de que el backend no se estaba usando. Se habría dado por probado
+algo que no se probó.
+
+### Qué se cambió
+
+1. **`USE_MOCK_API` en `debug` pasa a `false`.** El backend simulado existía porque el backend
+   real no existía; ya existe, está indexado con 3628 fragmentos y responde. Se conserva el
+   camino de vuelta con `-Plabscan.useMock=true` para desarrollar sin backend.
+2. **`BASE_URL` de `debug` sale de `labscan.devHost`** en `gradle.properties`, con `10.0.2.2`
+   como valor por defecto para quien trabaje contra el emulador.
+3. **La IP LAN del PC se añade a `network_security_config.xml`.** Android exige IP literal para
+   permitir HTTP en claro y no admite subredes; es la limitación que ya anotaba D-012 y que el
+   propio archivo documentaba como pendiente.
+
+La IP vive por tanto en **dos sitios que tienen que coincidir**: `gradle.properties` y el
+`network_security_config.xml`. No hay forma de tener una sola fuente: el primero es Kotlin
+generado y el segundo es un recurso XML que Android lee antes de que exista `BuildConfig`.
+Si el router reparte otra IP hay que cambiarla en los dos y recompilar.
+
+`BASE_URL` sigue siendo solo el valor inicial: Ajustes → URL del servidor lo sobrescribe en
+caliente, sin recompilar (F7).
+
+### Verificación
+
+`BuildConfig` generado: `BASE_URL = "http://192.168.100.25:8000/"`, `USE_MOCK_API = false`.
+`testDebugUnitTest --rerun-tasks` → 63 pruebas, 0 fallos. `assembleDebug` correcto.
+**Sin probar en el teléfono**: sigue sin haber dispositivo en esta máquina.

@@ -47,10 +47,22 @@ android {
     buildTypes {
         debug {
             // Backend RAG local. Contrato en docs/CONTRATO_API.md.
-            // 10.0.2.2 es el host del PC visto desde el emulador.
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000/\"")
-            // F5 enciende el MockRagServer con esta bandera.
-            buildConfigField("boolean", "USE_MOCK_API", "true")
+            //
+            // La IP se lee de gradle.properties (labscan.devHost) para no tener que editar
+            // este archivo cada vez que el router reparte otra. Ese mismo valor tiene que
+            // aparecer en src/debug/res/xml/network_security_config.xml, porque Android
+            // exige IP literal para permitir HTTP en claro y no admite subredes (D-012).
+            //
+            // 10.0.2.2 es el host del PC visto desde el emulador; sirve como valor por
+            // defecto para quien no tenga un telefono delante.
+            val devHost = (project.findProperty("labscan.devHost") as String?) ?: "10.0.2.2"
+            buildConfigField("String", "BASE_URL", "\"http://$devHost:8000/\"")
+
+            // El backend simulado existia porque el backend real no existia. Ya existe, esta
+            // indexado y responde, asi que la variante de depuracion apunta a la red de
+            // verdad. Para volver a trabajar sin backend: -Plabscan.useMock=true
+            val useMock = (project.findProperty("labscan.useMock") as String?)?.toBoolean() ?: false
+            buildConfigField("boolean", "USE_MOCK_API", "$useMock")
         }
         release {
             // Ofuscacion y reduccion. Las reglas de proguard-rules.pro preservan lo que

@@ -28,5 +28,11 @@
         <!-- Backend corriendo en el propio dispositivo, o reenviado con adb reverse. -->
         <domain includeSubdomains="false">localhost</domain>
         <domain includeSubdomains="false">127.0.0.1</domain>
+        <!--
+            IP LAN del PC de Mario, que es donde corre el backend RAG. Tiene que coincidir
+            con labscan.devHost de gradle.properties. Si el router reparte otra IP hay que
+            cambiarla en los dos sitios y recompilar: no hay forma de expresar la subred.
+        -->
+        <domain includeSubdomains="false">192.168.100.25</domain>
     </domain-config>
 </network-security-config>
