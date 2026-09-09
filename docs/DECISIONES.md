@@ -1074,16 +1074,23 @@ La prueba concluyente: la carpeta `Microcentrifuga` **es esa misma Labnet Prism 
 clasifica bien, con 1.00 de confianza, en la foto que memorizó — y se equivoca sobre el mismo
 aparato visto desde otro ángulo.
 
-### La causa raíz, en las marcas de tiempo
+### Sobre las marcas de tiempo: conclusión retirada
 
-```
-Microcentrifuga  11 fotos, todas entre las 18:57:53 y las 18:57:54
-Qubit            11 fotos, todas a las 18:58:49
-```
+La primera versión de esta entrada afirmaba que cada clase se había fotografiado en una ráfaga de
+uno o dos segundos, porque las 11 fotos de `Microcentrifuga` llevan la hora 18:57:53–18:57:54 y
+las 11 de `Qubit` las 18:58:49.
 
-Cada clase se fotografió en **una ráfaga de uno o dos segundos desde la misma posición**. No son
-11 vistas: son 11 fotogramas casi idénticos. El modelo ha visto **una sola vista por equipo**.
-El espectrofotómetro tiene 4 fotos, y una es una imagen de catálogo bajada de internet.
+**Mario corrigió el dato: esa hora es la de recepción por WhatsApp, no la de captura.** Copió las
+fotos a las carpetas de golpe, así que todas quedaron con la misma marca. El nombre de archivo de
+WhatsApp no dice nada sobre cuándo se tomó la foto, y se usó como si lo dijera.
+
+Queda retirada la afirmación sobre las ráfagas. **La cantidad real de vistas distintas por equipo
+está sin medir**, y habría que mirarlo sobre las imágenes, no sobre sus nombres.
+
+Lo que sí se midió y sigue en pie es lo de arriba: el modelo clasifica la Prism R al 1.00 en la
+foto que ya vio y falla sobre el mismo aparato desde otro ángulo. Eso es memorización, y no
+depende de cuándo se tomaran las fotos. El espectrofotómetro sí tiene solo 4 imágenes, y una es
+de catálogo bajada de internet.
 
 ### Qué NO lo arregla
 
@@ -1108,3 +1115,27 @@ El mAP50 de 0,837 (D-030) se midió sobre un split de test tomado del mismo lote
 que **mide memorización, no generalización**. La prueba honesta del sistema es exactamente lo que
 hizo Mario: apuntar el teléfono a un equipo real. Conviene decirlo así en el informe en vez de
 citar el mAP a secas.
+
+## D-034 — La depuración permite tráfico en claro a cualquier host — 2026-09-09
+
+Mario cambió de red, el router le dio otra IP (`192.168.100.25` → `172.20.135.199`) y la app dejó
+de alcanzar el backend: *"El asistente no está disponible en este momento"*.
+
+**Lo grave no era la IP, era que cambiarla en Ajustes no arreglaba nada.** La pantalla de Ajustes
+sobrescribe la URL en caliente (F7), pero el `network_security_config` llevaba una **lista blanca
+de IP literales compilada dentro del APK**. Android bloqueaba el tráfico en claro hacia cualquier
+dirección que no estuviera en esa lista, así que la única salida era editar el XML, editar
+`gradle.properties` y **recompilar** — cada vez que cambiara de red.
+
+Android no admite subredes en este archivo (D-012), así que no hay forma de escribir
+"todo 192.168.x.x". La única alternativa que no obliga a recompilar es permitirlo todo.
+
+La variante de depuración pasa a `<base-config cleartextTrafficPermitted="true" />`.
+
+**El permiso sigue sin poder colarse en la app publicada:** el archivo vive en `app/src/debug/`,
+la variante de release no lo tiene ni declara `networkSecurityConfig`, y por tanto hereda el
+comportamiento por defecto de `targetSdk 35`, que es prohibir todo el tráfico en claro. Esa
+separación era el motivo original del diseño y se conserva intacta.
+
+`labscan.devHost` queda como simple valor por defecto del APK, ya sin obligación de coincidir con
+ningún otro archivo.

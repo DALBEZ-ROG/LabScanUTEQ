@@ -17,22 +17,23 @@
       2. poner esa misma IP en BASE_URL de la variante debug, en app/build.gradle.kts.
 -->
 <network-security-config>
-    <!-- Todo lo que no aparezca abajo sigue exigiendo HTTPS, tambien en depuracion. -->
-    <base-config cleartextTrafficPermitted="false" />
+    <!--
+        Trafico en claro permitido para CUALQUIER host, solo en depuracion.
 
-    <domain-config cleartextTrafficPermitted="true">
-        <!-- Host del PC visto desde el emulador de Android Studio. -->
-        <domain includeSubdomains="false">10.0.2.2</domain>
-        <!-- Lo mismo en Genymotion. -->
-        <domain includeSubdomains="false">10.0.3.2</domain>
-        <!-- Backend corriendo en el propio dispositivo, o reenviado con adb reverse. -->
-        <domain includeSubdomains="false">localhost</domain>
-        <domain includeSubdomains="false">127.0.0.1</domain>
-        <!--
-            IP LAN del PC de Mario, que es donde corre el backend RAG. Tiene que coincidir
-            con labscan.devHost de gradle.properties. Si el router reparte otra IP hay que
-            cambiarla en los dos sitios y recompilar: no hay forma de expresar la subred.
-        -->
-        <domain includeSubdomains="false">192.168.100.25</domain>
-    </domain-config>
+        Antes esto era una lista blanca de IP literales (10.0.2.2, localhost y la IP LAN del
+        PC). Se cambio el 2026-09-09 despues de perder una sesion de pruebas por ello: Mario
+        cambio de red, el router le dio otra IP, y la app dejo de alcanzar el backend. Lo
+        peor era que **cambiar la URL en Ajustes no arreglaba nada**, porque la lista blanca
+        va compilada dentro del APK: hacia falta editar este archivo, editar
+        gradle.properties y recompilar, cada vez que cambiara la red.
+
+        Android no admite subredes aqui (ver D-012), asi que no hay forma de escribir
+        "todo 192.168.x.x". La unica alternativa que no obliga a recompilar es permitirlo
+        todo, y en una variante de depuracion es aceptable.
+
+        La variante de release NO tiene este archivo ni declara networkSecurityConfig, asi
+        que hereda el comportamiento por defecto de targetSdk 35: trafico en claro prohibido.
+        El permiso no puede colarse en la app publicada.
+    -->
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>
