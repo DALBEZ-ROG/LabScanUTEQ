@@ -1040,3 +1040,71 @@ veía mucho más que cuando se anotó.
 
 `assembleDebug`, `lint` y 63 pruebas en verde. **Sin ver en pantalla**: no hay teléfono conectado
 a esta máquina y el resultado de un cambio visual hay que juzgarlo a ojo. Que lo mire Dariem.
+
+## D-033 — Por qué el modelo acierta en las fotos y falla en el laboratorio — 2026-09-09
+
+Mario apuntó la app a una microcentrífuga **Labnet Prism R** en el laboratorio y la etiquetó como
+`espectrofotometro_visible_digital_unico_1205` al **89 %**. Su lectura fue "solo detecta
+espectrómetro". La medición dice otra cosa.
+
+### Lo que se midió
+
+Se pasó el `model.tflite` instalado por 30 fotos de las carpetas originales de Mario, 3 de cada
+uno de 10 equipos distintos:
+
+```
+espectrofotómetro → espectrofotometro_visible_digital_unico_1205   0.90 0.80 0.93
+microcentrífuga   → microcentrifuga                                1.00 1.00 0.97
+NanoDrop          → nanodrop_lite_plus                             0.92 0.97 0.96
+Ohaus Frontier    → ohaus_frontier_5718r                           0.89 0.93 0.97
+Qubit             → qubit_quantitation                             0.96 0.92 0.93
+microscopio       → microscopio_binocular                          0.81 0.79 0.94
+autoclave         → autoclave                                      0.94 0.82 0.53
+termociclador     → termociclador                                  0.96 0.97 0.92
+```
+
+**29 aciertos de 30, con confianza alta, y sin colapsar a ninguna clase.** El modelo no está roto.
+
+### Por qué falla igualmente en el laboratorio
+
+Esas 30 fotos **son las de entrenamiento**: las carpetas de `OneDrive\Documentos\ProyectoMobil`
+son las que se subieron a Roboflow. El modelo las reconoce porque las memorizó.
+
+La prueba concluyente: la carpeta `Microcentrifuga` **es esa misma Labnet Prism R**. El modelo la
+clasifica bien, con 1.00 de confianza, en la foto que memorizó — y se equivoca sobre el mismo
+aparato visto desde otro ángulo.
+
+### La causa raíz, en las marcas de tiempo
+
+```
+Microcentrifuga  11 fotos, todas entre las 18:57:53 y las 18:57:54
+Qubit            11 fotos, todas a las 18:58:49
+```
+
+Cada clase se fotografió en **una ráfaga de uno o dos segundos desde la misma posición**. No son
+11 vistas: son 11 fotogramas casi idénticos. El modelo ha visto **una sola vista por equipo**.
+El espectrofotómetro tiene 4 fotos, y una es una imagen de catálogo bajada de internet.
+
+### Qué NO lo arregla
+
+- **Más épocas.** El modelo ya ajusta perfectamente lo que tiene.
+- **Un modelo más grande.** Ya se probó: `yolov8m` no mejoró a `yolov8n` (D-030), por esto mismo.
+- **Bajar el umbral de confianza.** Da la respuesta equivocada con menos seguridad.
+
+### Qué sí
+
+**Fotos de verdad distintas por equipo: 20–30, dando la vuelta al aparato.** Distintos ángulos,
+alturas, distancias, con y sin luz de ventana, con el equipo encendido y apagado, con objetos
+alrededor y sin ellos. Una vuelta completa de un minuto por equipo produce más variedad útil que
+mil fotogramas del mismo encuadre.
+
+Y las fotos que Mario está tomando ahora con el teléfono en el laboratorio **son exactamente el
+tipo de dato que falta**: capturadas con la misma cámara, a la misma altura y con la misma luz
+con la que la app va a trabajar. Añadirlas a Roboflow es la mejora más barata disponible.
+
+### Lo que esto implica para las métricas del informe
+
+El mAP50 de 0,837 (D-030) se midió sobre un split de test tomado del mismo lote de ráfagas, así
+que **mide memorización, no generalización**. La prueba honesta del sistema es exactamente lo que
+hizo Mario: apuntar el teléfono a un equipo real. Conviene decirlo así en el informe en vez de
+citar el mAP a secas.
