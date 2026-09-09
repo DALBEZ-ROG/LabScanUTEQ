@@ -1011,3 +1011,32 @@ caliente, sin recompilar (F7).
 `BuildConfig` generado: `BASE_URL = "http://192.168.100.25:8000/"`, `USE_MOCK_API = false`.
 `testDebugUnitTest --rerun-tasks` → 63 pruebas, 0 fallos. `assembleDebug` correcto.
 **Sin probar en el teléfono**: sigue sin haber dispositivo en esta máquina.
+
+## D-032 — Halo oscuro bajo el borde de la caja y etiqueta legible fuera de la barra de estado — 2026-09-09
+
+Petición de Mario tras verlo en el teléfono: el cuadro de detección se veía mal.
+
+**El problema no era el grosor, era el contraste.** Un borde verde de 3 dp sobre imagen de
+cámara en vivo desaparece en cuanto el fondo es claro y, peor, cuando el propio equipo es
+verdoso — pasa con las cabinas y con varias carcasas del laboratorio. Subir el grosor tapa más
+el objeto y no resuelve nada.
+
+Se dibuja un **trazo negro al 55 % por debajo** del borde de color, 1,5 dp más ancho por cada
+lado. El borde de color va encima y lo tapa por el centro, así que del halo solo se ven los dos
+filos. El cuadro se lee igual de bien sobre cualquier fondo sin cambiar de color ni engordar.
+
+**La etiqueta** pasa de 13 sp a 15 sp, de `Medium` a `SemiBold`, el relleno de 6/3 dp a 9/5 dp y
+el fondo de 0,65 a 0,82 de opacidad.
+
+**Y se cierra el defecto cosmético que quedó abierto en F7**: la etiqueta de una caja pegada al
+techo se dibujaba sobre la barra de estado y se solapaba con el reloj. El `Canvas` ocupa toda la
+pantalla y no sabe nada de las barras del sistema, así que ahora recibe `topInset`
+—`WindowInsets.statusBars`, leído en composición porque no se puede consultar desde el
+`DrawScope`— y nunca dibuja por encima de esa altura: si no cabe arriba respetando el límite, la
+etiqueta pasa a dibujarse dentro de la caja. Con 50 clases y varias cajas a la vez ese solape se
+veía mucho más que cuando se anotó.
+
+### Verificación
+
+`assembleDebug`, `lint` y 63 pruebas en verde. **Sin ver en pantalla**: no hay teléfono conectado
+a esta máquina y el resultado de un cambio visual hay que juzgarlo a ojo. Que lo mire Dariem.

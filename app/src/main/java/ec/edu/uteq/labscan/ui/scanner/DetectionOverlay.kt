@@ -2,6 +2,8 @@ package ec.edu.uteq.labscan.ui.scanner
 
 import android.graphics.RectF
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -18,6 +20,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextMeasurer
@@ -57,6 +60,12 @@ fun DetectionOverlay(
     modifier: Modifier = Modifier
 ) {
     val textMeasurer = rememberTextMeasurer()
+
+    // Altura de la barra de estado, en pixeles. Se lee aqui porque WindowInsets solo se
+    // puede consultar en composicion, no dentro del DrawScope.
+    val topInset = with(LocalDensity.current) {
+        WindowInsets.statusBars.getTop(this).toFloat()
+    }
 
     // Suavizado del movimiento de las cajas. El detector entrega unas 9 listas por segundo y
     // la pantalla refresca a 60 o mas: sin esto la caja da tirones y tiembla. Ver BoxSmoother.
@@ -145,7 +154,8 @@ fun DetectionOverlay(
                 textMeasurer = textMeasurer,
                 labelFormat = labelFormat,
                 isSelected = highlighted === detection,
-                dimmed = highlighted != null && highlighted !== detection
+                dimmed = highlighted != null && highlighted !== detection,
+                topInset = topInset
             )
         }
     }
@@ -161,12 +171,32 @@ private fun DrawScope.drawDetection(
     textMeasurer: TextMeasurer,
     labelFormat: String,
     isSelected: Boolean,
-    dimmed: Boolean
+    dimmed: Boolean,
+    /** Altura de la barra de estado: la etiqueta nunca se dibuja por encima. */
+    topInset: Float
 ) {
     val strokeWidth = if (isSelected) SELECTED_STROKE_DP.dp.toPx() else STROKE_DP.dp.toPx()
     val corner = CornerRadius(8.dp.toPx())
     val alpha = if (dimmed) DIMMED_ALPHA else 1f
     val boxColor = if (isSelected) SelectionAmber else UteqGreenLight
+
+    // Halo oscuro DEBAJO del borde de color.
+    //
+    // Una linea verde fina sobre imagen de camara en vivo desaparece en cuanto el fondo es
+    // claro, o peor, cuando el propio equipo es verdoso: pasa con las cabinas y con varias
+    // carcasas del laboratorio. Un trazo negro semitransparente algo mas ancho por detras
+    // da un borde de contraste y hace que el cuadro se lea igual de bien sobre cualquier
+    // fondo, sin cambiar el color ni el grosor aparente.
+    //
+    // Se dibuja primero y mas ancho: el borde de color va encima y lo tapa por el centro,
+    // asi que lo unico que se ve del halo son los dos filos.
+    drawRoundRect(
+        color = Color.Black.copy(alpha = HALO_ALPHA * alpha),
+        topLeft = Offset(box.left, box.top),
+        size = Size(box.width(), box.height()),
+        cornerRadius = corner,
+        style = Stroke(width = strokeWidth + HALO_EXTRA_DP.dp.toPx() * 2)
+    )
 
     drawRoundRect(
         color = boxColor.copy(alpha = alpha),
@@ -195,28 +225,35 @@ private fun DrawScope.drawDetection(
         text = AnnotatedString(labelFormat.format(name, percent)),
         style = TextStyle(
             color = Color.White.copy(alpha = alpha),
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Medium
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold
         )
     )
 
-    val paddingX = 6.dp.toPx()
-    val paddingY = 3.dp.toPx()
+    val paddingX = 9.dp.toPx()
+    val paddingY = 5.dp.toPx()
     val labelWidth = layout.size.width + paddingX * 2
     val labelHeight = layout.size.height + paddingY * 2
 
-    // La etiqueta va sobre el borde superior. Si no cabe arriba, porque la caja toca el
-    // techo de la pantalla, se dibuja por dentro para que no quede cortada.
-    val fitsAbove = box.top - labelHeight >= 0f
-    val labelTop = if (fitsAbove) box.top - labelHeight else box.top
+    // La etiqueta va sobre el borde superior, pero nunca por encima de `topInset`.
+    //
+    // `topInset` es la altura de la barra de estado. Sin este limite, la etiqueta de una
+    // caja pegada al techo se dibujaba sobre el reloj y la bateria: el `Canvas` ocupa toda
+    // la pantalla y no sabe nada de las barras del sistema. Era el defecto cosmetico que
+    // quedo abierto en F7, y con 50 clases y varias cajas a la vez se ve mucho mas que antes.
+    //
+    // Si no cabe arriba respetando ese limite, la etiqueta pasa a dibujarse DENTRO de la
+    // caja, que es donde siempre hay sitio.
+    val fitsAbove = box.top - labelHeight >= topInset
+    val labelTop = if (fitsAbove) box.top - labelHeight else maxOf(box.top, topInset)
     // Tampoco puede salirse por la derecha.
     val labelLeft = box.left.coerceIn(0f, (size.width - labelWidth).coerceAtLeast(0f))
 
     drawRoundRect(
-        color = Color.Black.copy(alpha = 0.65f * alpha),
+        color = Color.Black.copy(alpha = LABEL_BACKGROUND_ALPHA * alpha),
         topLeft = Offset(labelLeft, labelTop),
         size = Size(labelWidth, labelHeight),
-        cornerRadius = CornerRadius(4.dp.toPx())
+        cornerRadius = CornerRadius(6.dp.toPx())
     )
     drawText(
         textLayoutResult = layout,
@@ -248,6 +285,15 @@ private fun DrawScope.drawCenterGuides() {
         drawLine(guide, Offset(x, size.height - tick), Offset(x, size.height), thickness)
     }
 }
+
+/** Cuanto sobresale el halo oscuro por cada lado del borde de color, en dp. */
+private const val HALO_EXTRA_DP = 1.5f
+
+/** Opacidad del halo. Suficiente para dar contraste sin ensuciar la imagen. */
+private const val HALO_ALPHA = 0.55f
+
+/** Opacidad del fondo de la etiqueta. Antes 0,65: se leia mal sobre fondos claros. */
+private const val LABEL_BACKGROUND_ALPHA = 0.82f
 
 /** Grosor del borde de una caja normal, en dp. */
 private const val STROKE_DP = 3
