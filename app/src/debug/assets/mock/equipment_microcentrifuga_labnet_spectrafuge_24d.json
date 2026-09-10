@@ -1,0 +1,50 @@
+{
+  "classId": "microcentrifuga_labnet_spectrafuge_24d",
+  "displayName": "Microcentrífuga Labnet Spectrafuge 24D",
+  "shortDescription": "Equipo de laboratorio que centrifuga volúmenes pequeños en microtubos tipo Eppendorf (0.2-2 mL) mediante rotación a alta velocidad.",
+  "function": "Separa componentes de muestras según su densidad o realiza spin-down rápido de reactivos. Utiliza un rotor de ángulo fijo que gira hasta 13,300 rpm, generando fuerza centrífuga que desplaza las partículas más densas hacia el fondo del tubo.",
+  "components": [
+    "Rotor para microtubos",
+    "Tapa de seguridad con enclavamiento",
+    "Panel de control (velocidad/RCF, tiempo)",
+    "Sistema de refrigeración (en modelos refrigerados)",
+    "Display digital de tiempo y velocidad/RCF"
+  ],
+  "basicProcedure": [
+    "Instalar el equipo sobre una superficie rígida y nivelada con al menos 15 cm de espacio libre alrededor",
+    "Verificar que los microtubos estén bien cerrados antes de colocarlos en el rotor",
+    "Balancear el rotor colocando tubos de peso equivalente en posiciones opuestas (diferencia de peso ≤0.1 g)",
+    "Colocar la tapa del rotor y cerrar la tapa de la centrifuga",
+    "Girar la perilla derecha para ajustar la velocidad (500-13,300 rpm) o RCF (100-16,300 xg)",
+    "Girar la perilla izquierda para ajustar el tiempo (0.5-30 min)",
+    "Presionar la perilla de tiempo para iniciar la corrida",
+    "Esperar a que el rotor se detenga por completo antes de abrir la tapa",
+    "Retirar los tubos con cuidado, verificando que no existan fugas ni roturas"
+  ],
+  "ppe": [
+    "Guantes de nitrilo",
+    "Gafas de seguridad",
+    "Bata o mandil de laboratorio",
+    "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+  ],
+  "risks": [
+    "Rotura de microtubos por exceso de velocidad o desbalance",
+    "Exposición a aerosoles biológicos si un tubo se rompe",
+    "Lesiones por contacto con partes móviles si se abre la tapa durante el funcionamiento"
+  ],
+  "relatedPractices": [],
+  "sources": [
+    {
+      "title": "Guia de referencia general - Microcentrifuga Labnet Spectrafuge 24D",
+      "page": null,
+      "documentId": "guia_de_referencia_general_microcentrifuga_labnet_spectrafuge_24d",
+      "snippet": null
+    },
+    {
+      "title": "Normas de seguridad - Microcentrifuga Labnet Spectrafuge 24D",
+      "page": null,
+      "documentId": "normas_de_seguridad_microcentrifuga_labnet_spectrafuge_24d",
+      "snippet": null
+    }
+  ]
+}

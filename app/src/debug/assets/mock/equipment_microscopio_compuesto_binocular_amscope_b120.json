@@ -1,0 +1,49 @@
+{
+  "classId": "microscopio_compuesto_binocular_amscope_b120",
+  "displayName": "Microscopio Compuesto Binocular AmScope B120",
+  "shortDescription": "Microscopio óptico binocular que magnifica estructuras microscópicas mediante un sistema de lentes objetivo y ocular con iluminación LED.",
+  "function": "Observar y magnificar estructuras microscópicas como células, tejidos y microorganismos para su identificación y análisis morfológico. Utiliza luz transmitida desde la base y permite aumentos de hasta 1000X mediante la combinación de objetivos de 4X, 10X, 40X y 100X con oculares de 10X.",
+  "components": [
+    "Base e iluminación LED de 1W",
+    "Condensador y diafragma",
+    "Platina porta-muestras con carro mecánico",
+    "Objetivos de distintos aumentos (4X, 10X, 40X, 100X) en revolver",
+    "Oculares binoculares",
+    "Mandos de enfoque macrométrico y micrométrico",
+    "Cabezal binocular Siedentopf con inclinación 30 grados y rotación 360 grados"
+  ],
+  "basicProcedure": [
+    "Encender la fuente de luz y ajustar la intensidad al mínimo antes de iniciar",
+    "Colocar la muestra (portaobjetos) en la platina y sujetarla con las pinzas del carro mecánico",
+    "Seleccionar el objetivo de menor aumento y enfocar utilizando el mando macrométrico y luego el micrométrico",
+    "Ajustar el condensador y el diafragma para optimizar el contraste e iluminación",
+    "Cambiar de objetivo según sea necesario, reenfocando con el mando micrométrico",
+    "Al finalizar, reducir la intensidad de luz, retirar la muestra y dejar el objetivo de menor aumento en posición"
+  ],
+  "ppe": [
+    "Bata o mandil de laboratorio",
+    "Gafas de seguridad",
+    "Guantes según la naturaleza de la muestra",
+    "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+  ],
+  "risks": [
+    "Fatiga visual por uso prolongado",
+    "Exposición a muestras biológicas o químicas en las láminas",
+    "Daño a componentes ópticos por fuerza excesiva en los mandos de enfoque"
+  ],
+  "relatedPractices": [],
+  "sources": [
+    {
+      "title": "Guia de referencia general - Microscopio compuesto binocular AmScope B120",
+      "page": null,
+      "documentId": "guia_de_referencia_general_microscopio_compuesto_binocular_amscope_b120",
+      "snippet": null
+    },
+    {
+      "title": "Normas de seguridad - Microscopio compuesto binocular AmScope B120",
+      "page": null,
+      "documentId": "normas_de_seguridad_microscopio_compuesto_binocular_amscope_b120",
+      "snippet": null
+    }
+  ]
+}

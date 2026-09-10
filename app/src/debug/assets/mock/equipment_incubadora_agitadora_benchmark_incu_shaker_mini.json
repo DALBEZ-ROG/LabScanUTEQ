@@ -1,0 +1,56 @@
+{
+  "classId": "incubadora_agitadora_benchmark_incu_shaker_mini",
+  "displayName": "Incubadora Agitadora Benchmark Incu-Shaker Mini",
+  "shortDescription": "Equipo que combina agitación orbital y control de temperatura para el cultivo de microorganismos en medio líquido. Proporciona aireación y homogeneidad del cultivo durante la incubación.",
+  "function": "Cultivar bacterias y levaduras en medio líquido mediante agitación orbital controlada y mantenimiento de temperatura constante. Replica condiciones óptimas de crecimiento favoreciendo la aireación y distribución uniforme de nutrientes en el cultivo.",
+  "components": [
+    "Cámara con control de temperatura",
+    "Plataforma orbital con clamps",
+    "Panel de control (temperatura, velocidad, tiempo)",
+    "Sistema de calefacción y, en algunos modelos, refrigeración",
+    "Puerta con visor",
+    "Interruptor de poder",
+    "Pantalla táctil"
+  ],
+  "basicProcedure": [
+    "Colocar el interruptor de poder en posición ON",
+    "Esperar a que la pantalla se estabilice en la vista básica de operación",
+    "Programar la temperatura de incubación requerida usando la pantalla táctil",
+    "Esperar la estabilización de la temperatura",
+    "Fijar los recipientes de cultivo a la plataforma con los clamps correspondientes",
+    "Programar la velocidad de agitación (RPM) según el protocolo",
+    "Programar el tiempo de incubación",
+    "Cerrar la puerta y verificar que no existan vibraciones anormales",
+    "Monitorear periódicamente sin abrir la puerta innecesariamente",
+    "Detener la agitación al finalizar",
+    "Retirar los recipientes",
+    "Apagar el equipo"
+  ],
+  "ppe": [
+    "Guantes de nitrilo",
+    "Bata de laboratorio",
+    "Gafas de seguridad",
+    "Cabello recogido sin accesorios sueltos"
+  ],
+  "risks": [
+    "Exposición a microorganismos en caso de derrame o rotura de recipientes",
+    "Atrapamiento en el mecanismo de agitación",
+    "Quemaduras por contacto con superficies calientes",
+    "Lesiones por vibración anormal del equipo"
+  ],
+  "relatedPractices": [],
+  "sources": [
+    {
+      "title": "Guia de referencia general - Incubadora agitadora Benchmark Scientific Incu-Shaker Mini",
+      "page": null,
+      "documentId": "guia_de_referencia_general_incubadora_agitadora_benchmark_scientific_incu_shaker_mini",
+      "snippet": null
+    },
+    {
+      "title": "Normas de seguridad - Incubadora agitadora Benchmark Scientific Incu-Shaker Mini",
+      "page": null,
+      "documentId": "normas_de_seguridad_incubadora_agitadora_benchmark_scientific_incu_shaker_mini",
+      "snippet": null
+    }
+  ]
+}

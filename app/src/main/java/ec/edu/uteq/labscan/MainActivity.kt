@@ -125,11 +125,11 @@ fun LabScanApp(navController: NavHostController = rememberNavController()) {
             )
         }
         composable(Routes.DIAGNOSTICS) {
-            DiagnosticsScreen(onBack = { navController.popBackStack() })
+            DiagnosticsScreen(onBack = { navController.volverAtras() })
         }
         composable(Routes.SETTINGS) {
             SettingsScreen(
-                onBack = { navController.popBackStack() },
+                onBack = { navController.volverAtras() },
                 onOpenDiagnostics = { navController.navigate(Routes.DIAGNOSTICS) }
             )
         }
@@ -143,7 +143,7 @@ fun LabScanApp(navController: NavHostController = rememberNavController()) {
                 ChatScreen(
                     classId = entry.arguments?.getString(Routes.ARG_CLASS_ID),
                     chatViewModel = navController.conversationViewModel(),
-                    onBack = { navController.popBackStack() },
+                    onBack = { navController.volverAtras() },
                     onOpenVoice = { classId ->
                         navController.navigate(Routes.voice(classId))
                     }
@@ -168,9 +168,33 @@ fun LabScanApp(navController: NavHostController = rememberNavController()) {
                             popUpTo(Routes.VOICE) { inclusive = true }
                         }
                     },
-                    onHangUp = { navController.popBackStack() }
+                    onHangUp = { navController.volverAtras() }
                 )
             }
+        }
+    }
+}
+
+/**
+ * Vuelve atras, y si no hay nada a lo que volver, va al escaner.
+ *
+ * `popBackStack()` a secas devuelve `false` y **no hace nada** cuando la pila esta vacia. Lo
+ * que se ve entonces es que la flecha de atras no responde, o que el gesto del sistema cierra
+ * la app desde una pantalla interior. Reportado el 2026-09-10 desde el chat.
+ *
+ * La pila puede quedarse vacia por caminos que no son evidentes: el sistema mata el proceso
+ * en segundo plano y lo restaura en la pantalla en la que estaba, o una navegacion con
+ * `popUpTo` inclusivo se lleva por delante lo que habia debajo, como hace la transcripcion de
+ * la llamada de voz.
+ *
+ * Desde el escaner, que es la pantalla inicial, atras SI cierra la app, que es lo que Android
+ * espera.
+ */
+private fun NavHostController.volverAtras() {
+    if (!popBackStack()) {
+        navigate(Routes.SCANNER) {
+            popUpTo(graph.id) { inclusive = true }
+            launchSingleTop = true
         }
     }
 }
