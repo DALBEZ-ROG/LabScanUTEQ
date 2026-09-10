@@ -1275,3 +1275,123 @@ fragmentos junto a unas normas de 3 y exige que las normas lleguen a la ficha.
 identificadores de fragmento, que decía 3628 indexados cuando había 739. Los dos se comportaban
 como si todo funcionara. Conviene desconfiar de cualquier parte de este sistema cuyo fallo se
 manifieste como "salió menos de lo que esperaba" en vez de como una excepción.
+
+## D-039 — AGP baja a 9.2.1 porque Android Studio no sincroniza con 9.3.2 — 2026-09-10
+
+El IDE fallaba el sync con *"The project is using an incompatible version (AGP 9.3.2) of the
+Android Gradle plugin. Latest supported version is AGP 9.2.1"*. Lo desconcertante era que
+`./gradlew assembleDebug` funcionaba: el problema es solo del modelo de sincronización de
+Android Studio, no de la compilación.
+
+La versión máxima no estaba en el panel de Build, que la cortaba a media línea. Se sacó del log
+del IDE, en `%LOCALAPPDATA%\Google\AndroidStudio2026.1.1\log\idea.log`.
+
+Se baja el AGP en vez de exigir que todo el equipo actualice el IDE. Dariem trabaja sobre este
+mismo repositorio y una versión de AGP que su Studio no soporte lo deja sin poder abrir el
+proyecto.
+
+AGP 9.2 no acepta el bloque `optimization { }` sin `android.r8.gradual.support=true`, así que
+esa bandera va a `gradle.properties`. **No se tocó la configuración de R8**: el APK de release
+sigue compilando ofuscado y reducido igual que antes, verificado con `assembleRelease`.
+
+## D-040 — La app encuentra el backend sola por mDNS — 2026-09-10
+
+El backend corre en el portátil de Mario, que recibe una IP en la universidad y otra en su casa.
+Cada cambio de red obligaba a mirar `ipconfig` y teclear la dirección en Ajustes; el 2026-09-09
+se perdió una sesión de pruebas entera por eso (D-034).
+
+El servidor se anuncia como `_labscan._tcp` con `zeroconf` y la app lo busca con `NsdManager`.
+
+**Prioridad: lo escrito en Ajustes, luego lo encontrado, luego la URL de compilación.** Si
+alguien se tomó la molestia de escribir una dirección, esa gana. Un descubrimiento automático
+que pisa lo escrito a mano es imposible de depurar, porque la app deja de ir al sitio que el
+propio Ajustes muestra en pantalla. Ajustes indica si encontró servidor y si lo está ignorando,
+con un botón para borrar el campo y usarlo.
+
+Tres cosas que costaron encontrarse y conviene no repetir:
+
+- **Se anuncia una sola dirección, no todas.** Este portátil tiene `192.168.100.25` (el wifi) y
+  `172.23.208.1` (un adaptador virtual, inalcanzable desde el teléfono). Anunciando las dos, el
+  resolutor de Android elige la que quiera, y cuando elige mal el fallo se ve como un tiempo de
+  espera agotado, no como un error de configuración.
+- **Hay que usar la API asíncrona de zeroconf.** La síncrona, llamada desde el ciclo de vida de
+  FastAPI que ya corre sobre asyncio, falla con `EventLoopBlocked`.
+- **`allow_name_change=True`.** Al reiniciar el servidor, el anuncio anterior sigue unos
+  segundos en la red y zeroconf lanza `NonUniqueNameException`, cuyo mensaje viene **vacío** y
+  deja un aviso imposible de interpretar.
+
+**mDNS no atraviesa routers**, y muchas redes de campus bloquean multicast o aíslan a los
+clientes. Esto es una comodidad, no un reemplazo del campo manual.
+
+## D-041 — El asistente busca en internet cuando los manuales no cubren la pregunta — 2026-09-10
+
+Hasta ahora el backend no contestaba lo que no estuviera en los manuales. Esa regla no era
+timidez: quien pregunta es un estudiante de primer semestre delante de una autoclave, y una
+respuesta inventada con aire de autoridad es peor que un "no lo sé".
+
+Pero "no lo sé" también tiene un costo. Al Qubit se le preguntaba cómo se apaga y contestaba
+información insuficiente, teniendo respuesta.
+
+Se busca en internet con la herramienta de búsqueda web de la API de Anthropic, bajo cuatro
+condiciones:
+
+1. **Solo cuando los manuales no dan la respuesta.** Dos caminos llevan ahí: la recuperación no
+   devolvió fragmentos, o devolvió fragmentos que no contestan. El segundo caso no se puede
+   detectar desde fuera, así que el modelo lo declara escribiendo `SIN_RESPUESTA_EN_DOCUMENTOS`
+   y nada más (regla 2 del prompt). Sin esa marca, una pregunta cuyos fragmentos rondan el tema
+   sin contestarlo se quedaba sin respuesta y sin buscar, que es justo lo que pasaba con "cómo
+   limpio los objetivos con aceite de inmersión".
+2. **Nunca con el índice vacío.** Un índice vacío no significa que la pregunta no esté cubierta,
+   significa que nadie ejecutó `ingest`. Buscar entonces mandaría todas las preguntas a internet
+   y el sistema parecería funcionar con el RAG entero apagado.
+3. **Solo se devuelven las páginas CITADAS, nunca las consultadas.** Medido sobre tres preguntas
+   reales, las citas resultaron ser el mejor indicador de si la búsqueda sirvió:
+
+   | Pregunta | Citas | Resultado |
+   |---|---|---|
+   | Qubit Q32857, "cómo se apaga" | 0 | no encontró el procedimiento |
+   | Purificador DO2, "cambio de filtro" | 1 | encontró algo general |
+   | Microscopio B120, "limpiar objetivos" | 5 | respuesta completa |
+
+   Cero citas significa que el modelo no apoyó la respuesta en ninguna página, y las que
+   consultó son anuncios de eBay y fichas de tienda. Sin citas se cae al mensaje de siempre.
+4. **La respuesta va marcada.** `fromWeb: true` y las fuentes como `Web: dominio`. La app lo
+   avisa con un encabezado antes del texto, no solo en las fuentes.
+
+Detalles que hicieron falta y no son evidentes:
+
+- **`tool_choice` obligatorio.** Sin forzar la herramienta, el modelo decidía por su cuenta y la
+  mitad de las veces contestaba de memoria sin buscar, que es lo que este backend no debe hacer.
+- **Solo se toma el texto posterior a la última búsqueda.** El modelo intercala frases de
+  trámite entre búsqueda y búsqueda ("Necesito buscar el manual del Q32857"), y juntando todos
+  los bloques esa frase encabezaba lo que leía el estudiante.
+- **Un conjunto de "vistas" por lista al deduplicar.** Compartirlo vaciaba las citas siempre: el
+  bloque de resultados llega antes que el texto, así que cada URL entraba primero como
+  consultada y luego se descartaba por repetida al aparecer como cita. El síntoma era que la
+  búsqueda no devolvía nada nunca. Hay prueba de regresión.
+
+**El riesgo que queda.** Internet está lleno de páginas de otro modelo del mismo aparato: al
+Qubit Q32857 los primeros resultados eran del Qubit 4. La consulta incluye marca y modelo
+exactos y el prompt obliga a avisarlo, y en las pruebas avisó. Para procedimientos de seguridad
+sigue siendo peor que el manual, y la respuesta remite al docente.
+
+Se apaga con `WEB_SEARCH_FALLBACK=false` en el `.env`. Puede interesar para la entrega, si se
+quiere demostrar que el sistema solo habla de los manuales del laboratorio.
+
+## D-042 — Las fuentes citadas se rehacen para que se puedan leer — 2026-09-10
+
+La ficha del Qubit mostraba once líneas grises idénticas, todas el mismo manual, cambiando solo
+el número de página del final. Ocupaban media pantalla y no informaban de nada.
+
+Dos cambios, uno en cada lado:
+
+- **El backend cita un documento por línea en las fichas**, no una página por línea. Una ficha es
+  el resumen de toda la documentación del equipo, no la respuesta a una pregunta concreta, así
+  que la página no aporta: nadie va a ir a comprobar once sitios. En total, 494 líneas de fuente
+  pasaron a 129, y ninguna ficha supera las tres. **La respuesta del chat sí conserva la
+  página**, que es donde de verdad sirve.
+- **La app las dibuja como un bloque con fondo propio**, cada fuente con su icono según el
+  origen, el título en el color del texto normal y la página debajo en pequeño.
+
+El icono es lo que hace visible de un vistazo que una fuente es de internet y no un manual del
+laboratorio, que es la parte que importa de D-041.

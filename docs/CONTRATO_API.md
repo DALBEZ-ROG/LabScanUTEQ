@@ -127,6 +127,39 @@ Respuesta:
 La app muestra ese mensaje con un estilo visual distinto (fondo ámbar) y **no** lee la sección
 de fuentes en voz alta.
 
+### `fromWeb`, respuestas que no salen de los manuales
+
+Desde el 2026-09-10 el backend puede responder **buscando en internet** cuando los manuales del
+laboratorio no cubren la pregunta. Esas respuestas llevan `fromWeb: true` y sus fuentes son
+direcciones web:
+
+```json
+{
+  "answer": "Esto no está en los manuales del laboratorio. Lo encontré en internet...",
+  "hasSufficientContext": true,
+  "fromWeb": true,
+  "sources": [
+    { "title": "Web: evidentscientific.com", "documentId": "https://evidentscientific.com/...", "page": null }
+  ]
+}
+```
+
+Reglas del campo:
+
+- **Es opcional y su valor por defecto es `false`.** Un backend anterior no lo envía y la app lo
+  interpreta como "vino de los manuales", que es lo correcto. No es un cambio de contrato que
+  rompa nada.
+- `hasSufficientContext` sigue significando "hay una respuesta que dar", no "salió del manual".
+  Lo que distingue las dos cosas es `fromWeb`.
+- Las fuentes web traen la dirección completa en `documentId` y el dominio en `title`, con el
+  prefijo `Web:`. Nunca traen `page`.
+- La app **tiene que avisarlo en pantalla antes del texto de la respuesta**, no solo en las
+  fuentes. Lo hace con un encabezado y un icono de globo terráqueo en la propia burbuja.
+
+Cuándo se activa la búsqueda: solo si la recuperación local no devolvió fragmentos, **o** si los
+devolvió pero el modelo declaró que no responden la pregunta. Y nunca con el índice vacío, que
+es señal de un backend a medio montar y no de una pregunta no cubierta. Ver D-041.
+
 ---
 
 ## Error estándar
@@ -148,6 +181,7 @@ Códigos previstos: `EQUIPMENT_NOT_FOUND`, `INDEX_NOT_READY`, `LLM_UNAVAILABLE`,
 | 404 en `/api/equipment` | Cae al catálogo local |
 | 5xx en `/api/chat` | Mensaje de error reintentables con botón "Reintentar" |
 | `hasSufficientContext: false` | Muestra la respuesta con estilo de advertencia, sin fuentes |
+| `fromWeb: true` | Encabezado con globo terráqueo en la burbuja, y las fuentes con icono de web |
 | Sin red **en modo de voz** | Lo dice en voz alta una vez y sale del modo (única excepción a "los errores no se leen", ver D-025) |
 | 5xx **en modo de voz** | Lo muestra en pantalla, no lo lee, y sigue escuchando para que el estudiante repita |
 
