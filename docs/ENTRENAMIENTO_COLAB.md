@@ -57,9 +57,16 @@ print(DATA)
 
 ## Celda 4 — Verificar las clases ANTES de entrenar
 
-Si esta lista no coincide con `app/src/main/assets/labels.txt`, el modelo detectara
-bien pero la app pondra el nombre equivocado en cada cuadro. **Copia esta salida y
-mandala**, para actualizar `labels.txt` y `catalog.json`.
+**Esta es la celda mas importante del cuaderno.** El dataset v2 tiene **54 clases**, y la
+lista que se espera esta en `docs/labels_v2.txt`. La celda compara las dos.
+
+Si no coinciden, el modelo detectara bien y la app pondra **el nombre equivocado** en cada
+cuadro. Es el peor tipo de fallo, porque parece que todo funciona.
+
+Ojo con una cosa que Roboflow no hace solo: subir las fotos en carpetas por clase **no crea
+los cuadros delimitadores**. Roboflow puede tomar el nombre de la carpeta como etiqueta, pero
+alguien tiene que dibujar la caja de cada equipo. Si el proyecto tiene fotos sin anotar, no
+entran al entrenamiento y esta celda te lo va a ensenar en el conteo por split.
 
 ```python
 import yaml, glob
@@ -78,6 +85,27 @@ for split in ["train", "valid", "test"]:
 
 Lo importante de la ultima parte: cuantas imagenes hay por split. Si `test` da 0, la
 celda 6 no puede evaluar y hay que usar `split="val"`.
+
+Y la comparacion contra lo que el backend ya tiene indexado. Pega el contenido de
+`docs/labels_v2.txt` en la variable `ESPERADAS` y ejecuta:
+
+```python
+ESPERADAS = """
+agitador_calentador_thermo_scientific_cimarec
+agitador_calentador_thermo_scientific_cimarec_plus
+...pega aqui las 54 lineas de docs/labels_v2.txt...
+""".split()
+
+sobran = [n for n in names if n not in ESPERADAS]
+faltan = [n for n in ESPERADAS if n not in names]
+print("en Roboflow y no esperadas:", sobran or "ninguna")
+print("esperadas y no en Roboflow:", faltan or "ninguna")
+print("orden identico:", names == ESPERADAS)
+```
+
+Las tres lineas tienen que decir "ninguna", "ninguna" y "True". Si el orden no coincide
+pero las clases si, no pasa nada grave: se regenera `labels.txt` con el orden de Roboflow,
+que es el que manda.
 
 ## Celda 5 — Entrenar
 
@@ -257,3 +285,49 @@ files.download("/content/drive/MyDrive/labscan/labels.txt")
 4. Los `.tflite` en `C:\Users\Mario\Downloads\`.
 
 Con eso se integran los dos modelos y se mide en el telefono cual conviene.
+
+---
+
+## Celda 12 — La integracion en la app, y por que va al final
+
+Tres archivos de `app/src/main/assets/` cambian **a la vez o ninguno**:
+
+| Archivo | Cambia a |
+|---|---|
+| `model.tflite` | El modelo nuevo de 54 clases |
+| `labels.txt` | Las 54 lineas de `docs/labels_v2.txt` |
+| `catalog.json` | Sus dos fichas, con los `classId` nuevos |
+
+**No se puede adelantar el cambio de `labels.txt`.** El detector compara las lineas de
+`labels.txt` con el ancho del tensor de salida:
+
+```kotlin
+if (labels.size != spec.numClasses) { close(); throw ModelMismatchException(...) }
+```
+
+El modelo que hay hoy en la app emite 50 clases. Poner 54 lineas sin cambiar el `.tflite`
+lanza esa excepcion, `DetectorFactory` cae al `StubDetector` y la app se queda dibujando
+cuadros falsos con un aviso. Dariem tiene el telefono con la version que funciona, asi que
+`labels.txt` se queda con las 50 clases viejas hasta que llegue el modelo nuevo.
+
+Por eso la lista de 54 esta esperando en `docs/labels_v2.txt` y no en `assets/`.
+
+Cuando llegue el modelo, el cambio completo es:
+
+```bash
+cp ~/Downloads/best_float32.tflite app/src/main/assets/model.tflite
+cp docs/labels_v2.txt              app/src/main/assets/labels.txt
+./gradlew test          # CatalogJsonTest avisa de las fichas huerfanas
+./gradlew installDebug
+```
+
+`CatalogJsonTest` va a fallar a proposito la primera vez: las dos fichas de `catalog.json`
+usan `microscopio_binocular` y `camara_electroforesis`, que ya no son clases del modelo.
+Sus equivalentes en el dataset v2 son `microscopio_compuesto_binocular_amscope_b120` y
+`camara_de_electroforesis_owl_easycast_b2`.
+
+Si eliges el `.tflite` int8, ademas pon `"quantized": true` en `model_config.json`. Es solo
+informativo, porque el detector mira el tipo real del tensor, pero deja la configuracion
+diciendo la verdad.
+
+El backend RAG **ya esta indexado con las 54 clases**, asi que no hay que tocarlo.

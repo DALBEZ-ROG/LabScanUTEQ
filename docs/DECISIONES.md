@@ -1139,3 +1139,102 @@ separación era el motivo original del diseño y se conserva intacta.
 
 `labscan.devHost` queda como simple valor por defecto del APK, ya sin obligación de coincidir con
 ningún otro archivo.
+
+## D-035 — El corpus del RAG pasa a las 54 clases del dataset v2 — 2026-09-09
+
+Mario entregó `ProyectoMobil`, un paquete con **54 clases**, 746 fotos organizadas para subir a
+Roboflow, y para cada clase dos documentos: una guía de referencia y unas normas de seguridad.
+
+El corpus anterior cubría las 50 clases viejas con 18 manuales de fabricante y 28 copias de la
+norma de bioseguridad de la OMS. Varias clases se renombraron, se dividieron o desaparecieron,
+así que las carpetas de `manuals/` ya no correspondían a ninguna clase detectable.
+
+**No se eligió entre un corpus y el otro: conviven.** `top_k` es 4, así que la recuperación se
+queda con los cuatro fragmentos más parecidos a la pregunta, vengan del documento que vengan.
+Medido sobre el índice real:
+
+| Pregunta | Qué gana |
+|---|---|
+| "qué protección necesito para abrir la autoclave" | las normas de seguridad, 0,610 |
+| "cómo se equilibra el rotor antes de centrifugar" | el manual Ohaus, páginas 125, 59, 63 y 9 |
+
+Cada tipo de documento gana el tipo de pregunta para el que sirve. Los 21 manuales reales de la
+entrega anterior se recolocaron bajo los nombres de clase nuevos con
+`tools/migrar_manuales_v2.py`, que lleva la tabla de equivalencias explícita.
+
+**Los documentos del paquete nuevo no son documentación de fabricante**, y su propia primera
+página lo dice. Como `ingest.py` usa el nombre del archivo como título de la cita, y ese título
+es lo que el estudiante lee en pantalla, los archivos se nombraron para que la diferencia se vea
+sin abrir nada: `Manual del fabricante - …`, `Referencia de familia - …`, `Guía de referencia
+general - …`, `Normas de seguridad - …`.
+
+Resultado: 54 clases, 129 documentos, 1888 fragmentos. 15 clases con manual del modelo exacto,
+6 con referencia de familia, las 54 con guía y normas.
+
+### Tres documentos se descartaron a propósito
+
+- **Manual del vortex Labnet VX-200.** Esa clase era una identificación equivocada: al leer las
+  fotos resultó ser una microcentrífuga Labnet Spectrafuge 24D. El manual es de un aparato que
+  el laboratorio no tiene.
+- **Referencia Cleaver multiSUB.** Son cubetas **horizontales** de tipo submarino; el equipo del
+  laboratorio es la maxFILL CSU33, que es **vertical**. Citarlo enseñaría el procedimiento
+  equivocado para montar el gel.
+- **Manual de bioseguridad de la OMS.** Ahora las 54 clases tienen normas propias, y 125 páginas
+  de texto genérico por carpeta desplazarían a los fragmentos específicos del equipo. Sigue
+  guardado en `manuals_v1_2026-09-05/`.
+
+## D-036 — El troceado baja a 200 palabras porque los documentos nuevos son de dos páginas — 2026-09-09
+
+`chunk_words` valía 500, heredado de cuando el corpus eran manuales de fabricante de 150 páginas.
+Con la entrega v2 la mayoría de los documentos ocupan dos páginas, así que **un documento entero
+cabía en un solo fragmento**: su vector acababa siendo el promedio de descripción, componentes,
+uso, mantenimiento y especificaciones a la vez. Parecido a todo y a nada.
+
+Síntoma que lo destapó: `microscopio_compuesto_binocular_amscope_b120` devolvía **cero
+fragmentos** a "cómo enfoco la muestra", teniendo la respuesta escrita en su documento.
+
+Se midió sobre 14 clases al azar, con 6 preguntas típicas de un estudiante y 3 ajenas al
+laboratorio, la similitud del mejor fragmento de cada clase:
+
+| Troceado | Pregunta útil, mediana | Útiles bajo 0,35 | Pregunta ajena, mediana |
+|---|---|---|---|
+| 500 palabras | 0,356 | 49 % | 0,172 |
+| 300 palabras | 0,390 | 36 % | 0,185 |
+| **200 palabras** | **0,412** | **21 %** | 0,217 |
+
+`chunk_words` pasa a 200, `chunk_overlap_words` a 60, y `similarity_threshold` de 0,35 a 0,30.
+
+**Ningún umbral separa del todo los dos grupos.** Se elige equivocarse hacia recuperar de más
+porque la búsqueda ya está filtrada por `equipment_id`: lo peor que puede pasar es entregarle al
+modelo cuatro fragmentos del equipo correcto que no responden la pregunta, y la regla 2 del
+prompt hace que entonces conteste que la documentación no lo cubre. Equivocarse hacia el otro
+lado deja sin respuesta a un estudiante que preguntó algo legítimo, y eso no se ve en ningún log.
+
+**El umbral vive en dos sitios y el `.env` manda.** `app/config.py` trae el valor por defecto,
+pero `SIMILARITY_THRESHOLD` del `.env` lo pisa. Cambiar solo `config.py` no tuvo ningún efecto y
+costó una vuelta entera de reindexado entender por qué. Los dos quedan en 0,30, y `config.py` lo
+avisa en un comentario.
+
+### Lo que sigue sin resolver
+
+"pasos para encender el equipo" sigue devolviendo cero fragmentos en el microscopio, aunque su
+documento diga *"Encender la fuente de luz y ajustar la intensidad al mínimo antes de iniciar"*.
+Es límite del modelo de embeddings multilingüe con esa formulación concreta, no falta de
+documento. No se bajó más el umbral por esto: a 0,25 empiezan a colarse preguntas ajenas.
+
+## D-037 — `labels.txt` no se adelanta al modelo — 2026-09-09
+
+Las 54 clases del dataset v2 esperan en `docs/labels_v2.txt`, **no** en `assets/labels.txt`.
+
+El detector compara las líneas de `labels.txt` con el ancho del tensor de salida y lanza
+`ModelMismatchException` si no cuadran (D-029). El modelo que hay hoy en la app emite 50 clases:
+poner las 54 líneas sin cambiar el `.tflite` haría que `DetectorFactory` cayera al `StubDetector`
+y la app dibujara cuadros falsos. Dariem tiene el teléfono con la versión que funciona.
+
+Los tres archivos cambian a la vez o ninguno: `model.tflite`, `labels.txt` y `catalog.json`. El
+procedimiento completo está en `docs/ENTRENAMIENTO_COLAB.md`, celda 12.
+
+Cuando se haga el cambio, `CatalogJsonTest` va a fallar a propósito: sus dos fichas usan
+`microscopio_binocular` y `camara_electroforesis`, que no son clases del dataset v2. Sus
+equivalentes son `microscopio_compuesto_binocular_amscope_b120` y
+`camara_de_electroforesis_owl_easycast_b2`.

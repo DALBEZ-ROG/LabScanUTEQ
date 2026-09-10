@@ -22,10 +22,10 @@ Estados: `PENDIENTE` · `EN CURSO` · `HECHO` · `BLOQUEADO`
 | Ítem | Responsable | Estado | Fecha comprometida |
 |---|---|---|---|
 | Autorización para fotografiar el laboratorio | | PENDIENTE | |
-| Dataset etiquetado en Roboflow (6–10 clases) | Mario | PENDIENTE | |
+| Dataset etiquetado en Roboflow | Mario | EN CURSO | v2 con 54 clases y 746 fotos. Lista de clases en `docs/labels_v2.txt`. Falta entrenar: `docs/ENTRENAMIENTO_COLAB.md` |
 | `model.tflite` + `labels.txt` | Mario | HECHO, SIN VERIFICAR EN TELÉFONO | Reexportado vía onnx2tf: entrada NHWC `[1,640,640,3]`, salida `[1,54,8400]`, 50 clases. Falta abrir Diagnóstico y apuntar a un equipo real. Ver D-028 |
-| Manuales y guías digitalizados para el RAG | | PENDIENTE | |
-| Backend RAG desplegado | Mario | PENDIENTE | La app ya habla el contrato completo contra un mock. Cuando exista: basta escribir la URL en Ajustes, sin recompilar |
+| Manuales y guías digitalizados para el RAG | Mario | HECHO | 54 clases, 129 documentos, 1888 fragmentos indexados. 15 clases con manual del fabricante. Ver D-035 |
+| Backend RAG desplegado | Mario | HECHO, CORRE EN EL PC DE MARIO | Repositorio aparte: `labscan-rag`. Verificado desde el teléfono el 2026-09-09 (`GET /api/health` 200). No está en un servidor: hay que levantarlo con `uvicorn` y poner la IP del PC en Ajustes |
 
 ## Bitácora
 
@@ -1197,3 +1197,51 @@ confirmar en el log que carga y detecta, y **medir los FPS reales del modelo nue
 **Lo que de verdad desbloquea el siguiente salto:** corregir las 3 clases intrusas, anotar las 5
 que faltan y subir de 1-2 fotos por clase a 20-30. Con eso `yolov8n` debería pasar holgadamente
 de 0,83.
+
+### 2026-09-09 — Corpus del RAG a 54 clases y cuaderno de reentrenamiento
+
+**Qué se hizo.**
+
+- **El backend RAG pasa al dataset v2.** Mario entregó `ProyectoMobil`: 54 clases, 746 fotos
+  listas para Roboflow, y por cada clase una guía de referencia y unas normas de seguridad.
+  `manuals/` se reconstruyó entero con `tools/migrar_manuales_v2.py`, que lleva la tabla de
+  equivalencias explícita entre los nombres de clase viejos y los nuevos.
+
+  **Los 21 manuales reales de la entrega anterior no se perdieron:** se recolocaron bajo el
+  nombre de clase que les toca ahora y conviven con los documentos nuevos en la misma carpeta.
+  Con `top_k = 4` cada tipo de documento gana el tipo de pregunta para el que sirve. Ver D-035.
+
+  Resultado: 54 clases, 129 documentos, **1888 fragmentos**. 15 clases con manual del modelo
+  exacto, 6 con referencia de familia, las 54 con guía y normas.
+
+- **Tres documentos se descartaron a propósito** y quedan guardados en
+  `manuals_v1_2026-09-05/`: el manual del vortex VX-200 (esa clase era una identificación
+  equivocada, es una microcentrífuga), la referencia Cleaver multiSUB (horizontal, y el equipo
+  del laboratorio es vertical) y el manual de bioseguridad de la OMS.
+
+- **El troceado bajó de 500 a 200 palabras.** Los documentos nuevos son de dos páginas y cabían
+  enteros en un solo fragmento, cuyo vector se parecía a todo y a nada. El microscopio devolvía
+  cero fragmentos a "cómo enfoco la muestra" teniendo la respuesta escrita. Medido sobre 14
+  clases y 9 preguntas antes de cambiar nada. Ver D-036.
+
+- **`docs/ENTRENAMIENTO_COLAB.md`**, el cuaderno de reentrenamiento en 12 celdas, con el porqué
+  de cada decisión: montar Drive, la línea que falta en el snippet de Roboflow, la verificación
+  de clases contra `docs/labels_v2.txt`, el export vía ONNX y onnx2tf, la calibración int8 con
+  imágenes reales y la comprobación de que el tensor sale NHWC.
+
+**Qué quedó pendiente.**
+
+- **Entrenar.** Es la tarea de Mario ahora mismo. El objetivo de rendimiento sigue siendo el
+  del informe de depuración: 2,7 FPS medidos contra ≥10 de meta, y el export int8 es la palanca
+  sin usar.
+
+- **`labels.txt` sigue con las 50 clases viejas, a propósito.** Los 54 nombres esperan en
+  `docs/labels_v2.txt`. Cambiarlos antes de que llegue el `.tflite` nuevo tumbaría la app al
+  `StubDetector`, y Dariem tiene el teléfono con la versión que funciona. Ver D-037.
+
+- **Revisar las fichas generadas antes de la entrega.** `storage/equipment_cards.json` se
+  regeneró con el corpus nuevo. Las de equipos peligrosos (autoclaves, centrífugas, cabinas)
+  las tiene que leer una persona.
+
+- "pasos para encender el equipo" sigue sin recuperar nada en el microscopio. Es límite del
+  modelo de embeddings, no falta de documento.
