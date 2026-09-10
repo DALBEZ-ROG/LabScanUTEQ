@@ -82,6 +82,7 @@ fun SettingsScreen(
     val storedThreshold by settings
         .confidenceThreshold(container.modelConfig.confidenceThreshold)
         .collectAsStateWithLifecycle(initialValue = container.modelConfig.confidenceThreshold)
+    val autoOpen by settings.autoOpenSheet.collectAsStateWithLifecycle(initialValue = true)
     val storedUrl by settings.backendUrl.collectAsStateWithLifecycle(initialValue = "")
 
     // Direccion anunciada por el backend en la red local. Es informativa: quien manda sigue
@@ -160,6 +161,15 @@ fun SettingsScreen(
             }
 
             HorizontalDivider()
+            SwitchRow(
+                title = stringResource(R.string.ajustes_apertura_automatica),
+                description = stringResource(R.string.ajustes_apertura_automatica_detalle),
+                checked = autoOpen,
+                onCheckedChange = { enabled ->
+                    scope.launch { settings.setAutoOpenSheet(enabled) }
+                }
+            )
+
             SectionTitle(stringResource(R.string.ajustes_seccion_asistente))
 
             SwitchRow(

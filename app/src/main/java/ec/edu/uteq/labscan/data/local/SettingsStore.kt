@@ -95,6 +95,22 @@ class SettingsStore(context: Context) {
     }
 
     /**
+     * Si la ficha se abre sola cuando una deteccion supera [AUTO_OPEN_CONFIDENCE].
+     *
+     * **Activada por defecto.** El estudiante entra al laboratorio con el telefono en una
+     * mano; obligarle a acertar en un cuadro que se mueve para ver la ficha es justo la
+     * friccion que hace que la app no se use.
+     *
+     * Se puede apagar porque en una mesa con varios equipos parecidos la ficha puede abrirse
+     * sola una y otra vez, y en medio de una demostracion eso es peor que un toque de mas.
+     */
+    val autoOpenSheet: Flow<Boolean> = preferences.map { it[AUTO_OPEN] ?: DEFAULT_AUTO_OPEN }
+
+    suspend fun setAutoOpenSheet(enabled: Boolean) {
+        store.edit { it[AUTO_OPEN] = enabled }
+    }
+
+    /**
      * URL del backend RAG, vacia si se usa la de la variante de compilacion.
      *
      * Es editable porque durante las pruebas el backend cambia de direccion cada vez que se
@@ -116,8 +132,20 @@ class SettingsStore(context: Context) {
         private val CONFIDENCE = floatPreferencesKey("confidence_threshold")
         private val DEFAULT_CAMERA = stringPreferencesKey("default_camera")
         private val BACKEND_URL = stringPreferencesKey("backend_url")
+        private val AUTO_OPEN = booleanPreferencesKey("auto_open_sheet")
+
+        /**
+         * Confianza a partir de la cual la ficha se abre sola.
+         *
+         * 0,70 y no el umbral de dibujo (0,45): una cosa es dibujar un cuadro, que si se
+         * equivoca solo estorba, y otra abrir una ficha a pantalla completa, que si se
+         * equivoca interrumpe. El listón para actuar solo tiene que ser más alto que el
+         * listón para sugerir.
+         */
+        const val AUTO_OPEN_CONFIDENCE = 0.70f
 
         private const val DEFAULT_AUTO_READ = true
+        private const val DEFAULT_AUTO_OPEN = true
         private const val CAMERA_BACK = "BACK"
         private const val CAMERA_FRONT = "FRONT"
     }

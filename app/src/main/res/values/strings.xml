@@ -149,6 +149,8 @@
     <string name="ajustes_backend_encontrado">Servidor encontrado solo en la red: %1$s</string>
     <string name="ajustes_backend_encontrado_ignorado">Se encontró %1$s en la red, pero manda la dirección que escribió arriba. Borre el campo para usar el encontrado.</string>
     <string name="ajustes_backend_usar_encontrado">Usar el encontrado</string>
+    <string name="ajustes_apertura_automatica">Abrir la ficha sola</string>
+    <string name="ajustes_apertura_automatica_detalle">Cuando un equipo se reconoce con más del 70 % de confianza, su ficha se abre sin tener que tocar el cuadro. Apáguelo si en una mesa con varios equipos se abre demasiado.</string>
     <string name="chat_desde_web_titulo">Respuesta de internet, no del manual</string>
     <string name="chat_icono_fuente_web">Fuente de internet</string>
     <string name="ficha_fuente_web">Internet</string>

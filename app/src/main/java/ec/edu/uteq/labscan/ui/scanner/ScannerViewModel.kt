@@ -130,6 +130,25 @@ class ScannerViewModel(
      */
     private var initialFacingApplied = false
 
+    // --- Apertura automatica de la ficha -------------------------------------------------
+
+    /** Si esta activada en Ajustes. Se lee sin suspender desde el hilo de analisis. */
+    @Volatile
+    private var autoOpenEnabled = true
+
+    /**
+     * Clase que el estudiante acaba de cerrar.
+     *
+     * Sin esto, cerrar la ficha de un equipo que sigue delante de la camara la vuelve a abrir
+     * en el siguiente fotograma y la app queda inservible. Se olvida en cuanto esa clase deja
+     * de detectarse, para que volver a apuntarla si la abra.
+     */
+    private var dismissedClassId: String? = null
+
+    /** Clase candidata y cuantos fotogramas seguidos lleva. Ver [autoOpenIfConfident]. */
+    private var candidateClassId: String? = null
+    private var candidateFrames = 0
+
     /** `true` mientras se lee la ficha en voz alta. El boton pasa a "Detener". */
     val isSpeaking: StateFlow<Boolean> = ttsManager.isSpeaking
 
@@ -162,6 +181,12 @@ class ScannerViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ConnectionState.ONLINE)
 
     init {
+        // La preferencia se lee en un campo suelto porque quien la consulta es el hilo de
+        // analisis, que no puede suspenderse para preguntarle a DataStore.
+        settingsStore.autoOpenSheet
+            .onEach { autoOpenEnabled = it }
+            .launchIn(viewModelScope)
+
         settingsStore.defaultCameraBack
             .onEach { back ->
                 if (initialFacingApplied) return@onEach
@@ -237,6 +262,7 @@ class ScannerViewModel(
         if (_selectedDetection.value != null) return
 
         _detections.value = result.detections
+        autoOpenIfConfident(result.detections)
         _frameGeometry.value = FrameGeometry(
             width = result.frameWidth,
             height = result.frameHeight,
@@ -245,6 +271,53 @@ class ScannerViewModel(
         )
     }
 
+
+    /**
+     * Abre la ficha sola cuando una deteccion es lo bastante buena y lo bastante estable.
+     *
+     * Dos condiciones, y las dos hacen falta:
+     *
+     * - **Confianza** por encima de [SettingsStore.AUTO_OPEN_CONFIDENCE]. El umbral de dibujo
+     *   es mas bajo a proposito: dibujar un cuadro de mas solo estorba, abrir una ficha de mas
+     *   interrumpe.
+     * - **Estabilidad**, [FRAMES_PARA_ABRIR] fotogramas seguidos con la misma clase. El
+     *   detector cambia de opinion entre fotogramas contiguos, sobre todo entre equipos
+     *   parecidos, y sin esta condicion la ficha se abriria con el primer parpadeo.
+     *
+     * Se llama desde el hilo de analisis. No toca nada que no sea seguro entre hilos:
+     * `onDetectionSelected` solo escribe `MutableStateFlow.value` y lanza una corrutina.
+     */
+    private fun autoOpenIfConfident(detections: List<Detection>) {
+        if (!autoOpenEnabled) return
+
+        val best = detections
+            .filter { it.score >= SettingsStore.AUTO_OPEN_CONFIDENCE }
+            .maxByOrNull { it.score }
+
+        if (best == null) {
+            candidateClassId = null
+            candidateFrames = 0
+            // Lo que se cerro deja de estar vetado cuando desaparece de la vista. Asi, apuntar
+            // otra vez al mismo equipo vuelve a abrir su ficha, que es lo que se espera.
+            dismissedClassId = null
+            return
+        }
+
+        if (best.classId == dismissedClassId) return
+
+        if (best.classId == candidateClassId) {
+            candidateFrames++
+        } else {
+            candidateClassId = best.classId
+            candidateFrames = 1
+        }
+
+        if (candidateFrames >= FRAMES_PARA_ABRIR) {
+            candidateFrames = 0
+            Log.d(App.LOG_TAG, "Apertura automatica: ${best.classId} ${best.score}")
+            onDetectionSelected(best)
+        }
+    }
 
     /**
      * El estudiante toco el overlay.
@@ -318,6 +391,10 @@ class ScannerViewModel(
     /** Cierra la ficha y reanuda la deteccion en vivo. */
     fun onSheetDismissed() {
         Log.d(App.LOG_TAG, "Ficha cerrada")
+        // Para que la apertura automatica no la vuelva a abrir en el siguiente fotograma.
+        dismissedClassId = _selectedDetection.value?.classId
+        candidateClassId = null
+        candidateFrames = 0
         // La voz no puede sobrevivir a la ficha que la origino.
         ttsManager.stop()
         onDetectionSelected(null)
@@ -354,6 +431,17 @@ class ScannerViewModel(
          * Factoria manual. Es lo que sustituye a Hilt: saca el [Detector] del
          * [AppContainer] y se lo pasa al ViewModel por constructor.
          */
+        /**
+         * Fotogramas seguidos con la misma clase antes de abrir la ficha sola.
+         *
+         * Dos, que a los 2,7 fotogramas por segundo medidos en el telefono son unos 0,7
+         * segundos. Suficiente para descartar un parpadeo del detector y poco para que no se
+         * sienta lento. Si el rendimiento sube con el modelo cuantizado habra que revisarlo,
+         * porque a 10 fotogramas por segundo dos son 0,2 segundos y volveria a abrirse con
+         * cualquier parpadeo.
+         */
+        private const val FRAMES_PARA_ABRIR = 2
+
         fun factory(container: AppContainer): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
