@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -142,7 +143,7 @@ fun LabScanApp(navController: NavHostController = rememberNavController()) {
             ) { entry ->
                 ChatScreen(
                     classId = entry.arguments?.getString(Routes.ARG_CLASS_ID),
-                    chatViewModel = navController.conversationViewModel(),
+                    chatViewModel = navController.conversationViewModel(entry),
                     onBack = { navController.volverAtras() },
                     onOpenVoice = { classId ->
                         navController.navigate(Routes.voice(classId))
@@ -155,7 +156,7 @@ fun LabScanApp(navController: NavHostController = rememberNavController()) {
             ) { entry ->
                 VoiceCallScreen(
                     classId = entry.arguments?.getString(Routes.ARG_CLASS_ID),
-                    chatViewModel = navController.conversationViewModel(),
+                    chatViewModel = navController.conversationViewModel(entry),
                     // Ver la transcripcion saca la pantalla de voz de la pila en lugar de
                     // apilar el chat encima. Es lo coherente con lo que pasa de todos modos:
                     // al dejar de estar compuesta, la pantalla de voz cierra el microfono y
@@ -191,11 +192,15 @@ fun LabScanApp(navController: NavHostController = rememberNavController()) {
  * espera.
  */
 private fun NavHostController.volverAtras() {
-    if (!popBackStack()) {
-        navigate(Routes.SCANNER) {
-            popUpTo(graph.id) { inclusive = true }
-            launchSingleTop = true
-        }
+    if (popBackStack()) return
+
+    // `popUpTo(graph.id) { inclusive = true }` era lo que habia aqui y es una forma
+    // peligrosa: vacia el grafo RAIZ, incluida la propia entrada que lo sostiene, y deja al
+    // controlador sin nada. Apuntar al escaner es equivalente para lo que se quiere, que es
+    // "quedate solo con el escaner", y no puede dejar la pila vacia.
+    navigate(Routes.SCANNER) {
+        popUpTo(Routes.SCANNER) { inclusive = true }
+        launchSingleTop = true
     }
 }
 
@@ -214,12 +219,23 @@ private fun optionalClassId() = navArgument(Routes.ARG_CLASS_ID) {
  * tanto historial.
  */
 @Composable
-private fun NavHostController.conversationViewModel(): ChatViewModel {
+private fun NavHostController.conversationViewModel(entry: NavBackStackEntry): ChatViewModel {
     val context = LocalContext.current
     val container = remember(context) { context.appContainer }
-    val parentEntry = remember(currentBackStackEntry) {
-        getBackStackEntry(Routes.CONVERSATION)
-    }
+
+    // Se recuerda contra la entrada de ESTA pantalla, no contra `currentBackStackEntry`.
+    //
+    // Con `currentBackStackEntry` la app se cerraba al colgar la llamada de voz y al volver
+    // atras desde el chat, que eran el mismo fallo visto dos veces. Al desapilar la ultima
+    // pantalla del subgrafo, el subgrafo se desapila con ella; `currentBackStackEntry` cambia,
+    // el `remember` se reevalua, y `getBackStackEntry` lanza IllegalArgumentException porque
+    // la ruta ya no esta en la pila. Se ve como "se cerro la aplicacion", no como un error de
+    // navegacion, y por eso costo encontrarlo.
+    //
+    // La entrada propia de la pantalla es estable mientras la pantalla existe, asi que la
+    // busqueda se hace una sola vez y no se repite durante el desapilado.
+    val parentEntry = remember(entry) { getBackStackEntry(Routes.CONVERSATION) }
+
     return viewModel(
         viewModelStoreOwner = parentEntry,
         factory = ChatViewModel.factory(container)
