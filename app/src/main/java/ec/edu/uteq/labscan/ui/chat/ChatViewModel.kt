@@ -37,7 +37,9 @@ data class ChatMessage(
     val author: Author,
     val text: String,
     val sources: List<SourceDto> = emptyList(),
-    val hasSufficientContext: Boolean = true
+    val hasSufficientContext: Boolean = true,
+    /** `true` si el backend contesto buscando en internet, no con los manuales. */
+    val fromWeb: Boolean = false
 )
 
 /**
@@ -226,7 +228,8 @@ class ChatViewModel(
                         author = Author.ASSISTANT,
                         text = answer.answer,
                         sources = answer.sources,
-                        hasSufficientContext = answer.hasSufficientContext
+                        hasSufficientContext = answer.hasSufficientContext,
+                        fromWeb = answer.fromWeb
                     )
                     _uiState.update {
                         it.copy(messages = it.messages + message, isSending = false, error = null)

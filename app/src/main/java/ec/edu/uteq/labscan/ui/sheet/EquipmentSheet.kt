@@ -3,8 +3,6 @@ package ec.edu.uteq.labscan.ui.sheet
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -14,15 +12,19 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.HealthAndSafety
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.filled.RecordVoiceOver
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AssistChip
@@ -34,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -411,26 +414,59 @@ private fun RiskList(risks: List<String>) {
  */
 @Composable
 private fun SourcesFooter(sources: List<SourceDto>) {
-    Column(
-        modifier = Modifier.padding(top = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
     ) {
-        Text(
-            text = stringResource(R.string.ficha_fuentes),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        sources.forEach { source ->
-            val page = source.page
+        Column(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                text = if (page != null) {
-                    stringResource(R.string.ficha_fuente_pagina, source.title, page)
-                } else {
-                    source.title
-                },
-                style = MaterialTheme.typography.bodySmall,
+                text = stringResource(R.string.ficha_fuentes),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+
+            sources.forEach { source ->
+                // Una fuente de internet no puede parecerse a un manual del laboratorio. El
+                // icono es lo primero que se ve, antes de leer el titulo.
+                val esWeb = source.documentId.startsWith("http")
+                val page = source.page
+
+                Row(verticalAlignment = Alignment.Top) {
+                    Icon(
+                        imageVector = if (esWeb) Icons.Filled.Public else Icons.Filled.Description,
+                        contentDescription = stringResource(
+                            if (esWeb) R.string.ficha_fuente_web else R.string.ficha_fuente_manual
+                        ),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(end = 10.dp, top = 2.dp)
+                            .size(16.dp)
+                    )
+                    Column {
+                        Text(
+                            text = source.title,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        // La pagina va en su propia linea y mas pequena. Antes se pegaba al
+                        // titulo, y con el mismo manual citado once veces la pantalla eran
+                        // once lineas casi identicas que solo cambiaban en el numero final.
+                        if (page != null) {
+                            Text(
+                                text = stringResource(R.string.ficha_fuente_solo_pagina, page),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

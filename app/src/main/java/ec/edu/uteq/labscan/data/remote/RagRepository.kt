@@ -54,7 +54,12 @@ data class ChatTurn(
 data class ChatAnswer(
     val answer: String,
     val hasSufficientContext: Boolean,
-    val sources: List<SourceDto>
+    val sources: List<SourceDto>,
+    /**
+     * `true` si el backend respondio buscando en internet en vez de con los manuales del
+     * laboratorio. La UI lo avisa en la propia burbuja: ver `ChatBubbles.kt`.
+     */
+    val fromWeb: Boolean = false
 )
 
 /**
@@ -181,7 +186,8 @@ class RagRepository(
                     // El contrato ya manda `sources` vacio cuando no hay contexto, pero se
                     // fuerza aqui: la regla 6 dice que no se citan fuentes de una respuesta
                     // que el propio backend marca como insuficiente.
-                    sources = if (response.hasSufficientContext) response.sources else emptyList()
+                    sources = if (response.hasSufficientContext) response.sources else emptyList(),
+                    fromWeb = response.fromWeb
                 )
             )
         } catch (cancellation: CancellationException) {

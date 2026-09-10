@@ -62,5 +62,13 @@ data class ChatRequestDto(
 data class ChatResponseDto(
     val answer: String = "",
     val hasSufficientContext: Boolean = false,
-    val sources: List<SourceDto> = emptyList()
+    val sources: List<SourceDto> = emptyList(),
+    /**
+     * `true` cuando la respuesta NO salio de los manuales del laboratorio sino de una
+     * busqueda en internet que hizo el backend.
+     *
+     * Tiene valor por defecto porque un backend anterior no lo envia, y en ese caso la
+     * respuesta viene de los manuales, que es lo que dice `false`.
+     */
+    val fromWeb: Boolean = false
 )

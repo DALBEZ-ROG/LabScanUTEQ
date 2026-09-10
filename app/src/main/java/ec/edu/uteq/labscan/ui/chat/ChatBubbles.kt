@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.AssistChip
@@ -116,6 +117,30 @@ fun ChatBubble(
                     }
                 }
 
+                // Una respuesta salida de internet tiene que distinguirse de una salida del
+                // manual del laboratorio ANTES de leerla, no despues de mirar las fuentes.
+                // Quien pregunta es un estudiante de primer semestre delante del equipo.
+                if (!isUser && message.fromWeb) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Public,
+                            contentDescription = null,
+                            tint = foreground,
+                            modifier = Modifier
+                                .padding(end = 6.dp)
+                                .size(18.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.chat_desde_web_titulo),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = foreground
+                        )
+                    }
+                }
+
                 Text(
                     text = message.text,
                     style = MaterialTheme.typography.bodyMedium,
@@ -190,9 +215,15 @@ private fun SourceChips(sources: List<SourceDto>) {
                     )
                 },
                 leadingIcon = {
+                    // El icono es lo que se ve antes de leer el texto del chip, asi que es
+                    // donde tiene que notarse que una fuente es de internet.
+                    val esWeb = source.documentId.startsWith("http")
                     Icon(
-                        imageVector = Icons.Filled.Description,
-                        contentDescription = stringResource(R.string.chat_icono_fuente),
+                        imageVector = if (esWeb) Icons.Filled.Public else Icons.Filled.Description,
+                        contentDescription = stringResource(
+                            if (esWeb) R.string.chat_icono_fuente_web
+                            else R.string.chat_icono_fuente
+                        ),
                         modifier = Modifier.size(AssistChipDefaults.IconSize)
                     )
                 }

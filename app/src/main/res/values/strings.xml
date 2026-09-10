@@ -149,6 +149,11 @@
     <string name="ajustes_backend_encontrado">Servidor encontrado solo en la red: %1$s</string>
     <string name="ajustes_backend_encontrado_ignorado">Se encontró %1$s en la red, pero manda la dirección que escribió arriba. Borre el campo para usar el encontrado.</string>
     <string name="ajustes_backend_usar_encontrado">Usar el encontrado</string>
+    <string name="chat_desde_web_titulo">Respuesta de internet, no del manual</string>
+    <string name="chat_icono_fuente_web">Fuente de internet</string>
+    <string name="ficha_fuente_web">Internet</string>
+    <string name="ficha_fuente_manual">Documento del laboratorio</string>
+    <string name="ficha_fuente_solo_pagina">Página %1$d</string>
     <string name="ajustes_diagnostico_detalle">Forma del tensor, clases y rendimiento del modelo.</string>
     <string name="acerca_titulo">Acerca de</string>
     <string name="acerca_app">LabScan UTEQ: asistente móvil de detección de equipos de laboratorio con reconocimiento visual y consulta por voz.</string>
