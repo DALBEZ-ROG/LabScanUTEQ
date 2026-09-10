@@ -179,12 +179,20 @@ def a_yolo(caja, escala, pad_x, pad_y, ancho, alto):
     if x2 <= x1 or y2 <= y1:
         return None
 
-    return (
-        ((x1 + x2) / 2) / ancho,
-        ((y1 + y2) / 2) / alto,
-        (x2 - x1) / ancho,
-        (y2 - y1) / alto,
-    )
+    # Se normaliza, se REDONDEA a los mismos 6 decimales con los que se va a escribir, y se
+    # vuelve a recortar. Redondear despues de calcular el centro y el ancho hacia arriba deja
+    # esquinas en 1.000001, y Roboflow las marca como "Trimmed Annotations" al subirlas.
+    # Pasaba en 38 de las 727 etiquetas. No dana nada, pero el aviso hace dudar de si el
+    # dataset esta bien.
+    e1 = min(max(round(x1 / ancho, 6), 0.0), 1.0)
+    f1 = min(max(round(y1 / alto, 6), 0.0), 1.0)
+    e2 = min(max(round(x2 / ancho, 6), 0.0), 1.0)
+    f2 = min(max(round(y2 / alto, 6), 0.0), 1.0)
+
+    if e2 <= e1 or f2 <= f1:
+        return None
+
+    return (e1 + e2) / 2, (f1 + f2) / 2, e2 - e1, f2 - f1
 
 
 def main() -> int:
