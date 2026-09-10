@@ -107,6 +107,41 @@ Las tres lineas tienen que decir "ninguna", "ninguna" y "True". Si el orden no c
 pero las clases si, no pasa nada grave: se regenera `labels.txt` con el orden de Roboflow,
 que es el que manda.
 
+## Celda 4b — Comprobar que el dataset trae CUADROS, y no solo etiquetas
+
+Esta celda existe por lo que paso el 2026-09-09 y costo una sesion entera.
+
+```python
+import glob, os
+etiquetas = glob.glob(f"{dataset.location}/**/labels/*.txt", recursive=True)
+yamls = glob.glob("/content/**/data.yaml", recursive=True)
+print("archivos de etiquetas:", len(etiquetas))
+print("data.yaml encontrados:", yamls)
+if not etiquetas or not yamls:
+    print("
+PARA. El dataset NO es de deteccion de objetos.")
+    print("Mira si la estructura es train/<clase>/*.jpg: eso es una exportacion")
+    print("de CLASIFICACION y sus fotos no tienen cuadros delimitadores.")
+```
+
+Tiene que imprimir miles de archivos de etiquetas y una ruta de `data.yaml`.
+
+**Si imprime 0 etiquetas y ningun yaml**, el proyecto de Roboflow se creo como
+**Classification** en vez de **Object Detection**. Las fotos estan subidas pero nadie
+dibujo las cajas, y con eso no se puede entrenar un detector. La estructura delatora es
+`train/<nombre_de_clase>/foto.jpg`; la correcta es `train/images/` y `train/labels/`.
+
+No hay atajo de codigo para esto. Hay que crear el proyecto como Object Detection y anotar.
+Lo unico que acelera de verdad es usar **Label Assist con un modelo propio**: el detector
+v1 que ya esta entrenado sabe reconocer casi los mismos aparatos y puede predibujar las
+cajas para luego corregirlas.
+
+**Lo que NO se debe hacer:** generar una caja que ocupe la foto entera para cada imagen.
+Es tentador porque son 746 archivos de texto en un minuto, pero le ensena al modelo que el
+objeto siempre ocupa toda la pantalla. El resultado es un detector que dibuja un cuadro
+alrededor de todo lo que ve y que no sirve para lo que hace esta app, que es senalar cada
+equipo dentro de la escena.
+
 ## Celda 5 — Entrenar
 
 ```python
