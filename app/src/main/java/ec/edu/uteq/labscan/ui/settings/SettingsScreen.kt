@@ -17,6 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -43,6 +45,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ec.edu.uteq.labscan.BuildConfig
@@ -83,6 +87,7 @@ fun SettingsScreen(
         .confidenceThreshold(container.modelConfig.confidenceThreshold)
         .collectAsStateWithLifecycle(initialValue = container.modelConfig.confidenceThreshold)
     val autoOpen by settings.autoOpenSheet.collectAsStateWithLifecycle(initialValue = true)
+    val storedKey by settings.anthropicApiKey.collectAsStateWithLifecycle(initialValue = "")
     val storedUrl by settings.backendUrl.collectAsStateWithLifecycle(initialValue = "")
 
     // Direccion anunciada por el backend en la red local. Es informativa: quien manda sigue
@@ -94,6 +99,12 @@ fun SettingsScreen(
     // escribir cada uno en DataStore seria absurdo. Se guarda al soltar.
     var threshold by remember { mutableStateOf(storedThreshold) }
     LaunchedEffect(storedThreshold) { threshold = storedThreshold }
+
+    var keyDraft by remember { mutableStateOf(storedKey) }
+    LaunchedEffect(storedKey) { keyDraft = storedKey }
+    var keyVisible by remember { mutableStateOf(false) }
+    // Vacio es valido: significa "todavia no la he puesto", no "esta mal escrita".
+    val keyLooksValid = keyDraft.isBlank() || keyDraft.trim().startsWith("sk-ant-")
 
     var urlDraft by remember { mutableStateOf(storedUrl) }
     LaunchedEffect(storedUrl) { urlDraft = storedUrl }
@@ -171,6 +182,49 @@ fun SettingsScreen(
             )
 
             SectionTitle(stringResource(R.string.ajustes_seccion_asistente))
+
+            SettingBlock(
+                title = stringResource(R.string.ajustes_clave_api),
+                description = stringResource(R.string.ajustes_clave_api_detalle)
+            ) {
+                OutlinedTextField(
+                    value = keyDraft,
+                    onValueChange = { keyDraft = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    isError = !keyLooksValid,
+                    // Oculta por defecto: es una credencial y la pantalla se ve desde atras en
+                    // un laboratorio compartido.
+                    visualTransformation =
+                        if (keyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    placeholder = { Text("sk-ant-...") },
+                    trailingIcon = {
+                        IconButton(onClick = { keyVisible = !keyVisible }) {
+                            Icon(
+                                imageVector = if (keyVisible) Icons.Filled.VisibilityOff
+                                else Icons.Filled.Visibility,
+                                contentDescription = stringResource(
+                                    if (keyVisible) R.string.ajustes_clave_api_ocultar
+                                    else R.string.ajustes_clave_api_mostrar
+                                )
+                            )
+                        }
+                    },
+                    supportingText = {
+                        Text(
+                            text = stringResource(
+                                if (keyLooksValid) R.string.ajustes_clave_api_ayuda
+                                else R.string.ajustes_clave_api_invalida
+                            )
+                        )
+                    }
+                )
+                LaunchedEffect(keyDraft, keyLooksValid) {
+                    if (keyLooksValid && keyDraft != storedKey) {
+                        settings.setAnthropicApiKey(keyDraft)
+                    }
+                }
+            }
 
             SwitchRow(
                 title = stringResource(R.string.ajustes_lectura_automatica),

@@ -84,8 +84,22 @@ class RagRepository(
     private val api: LabScanApi,
     private val catalog: EquipmentCatalog,
     private val connectivity: ConnectivityObserver,
+    private val directAssistant: DirectAssistant,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
+
+    /**
+     * Clave de la API del estudiante, o cadena vacia.
+     *
+     * La escribe `AppContainer.observeSettings` desde DataStore. Se lee sin suspender porque
+     * quien la consulta ya esta dentro de una corrutina de entrada y salida y no tiene sentido
+     * volver a suspenderse por un valor que cabe en un campo.
+     *
+     * `@Volatile` porque la escribe el hilo principal y la leen los de entrada y salida.
+     */
+    @Volatile
+    var apiKey: String = ""
+
 
     /**
      * Comprueba si el backend puede atender.
@@ -96,6 +110,14 @@ class RagRepository(
      */
     suspend fun health(): Boolean = withContext(ioDispatcher) {
         if (!connectivity.isOnlineNow()) return@withContext false
+
+        // Con la clave del estudiante puesta, el asistente esta disponible aunque no haya
+        // ningun backend en pie: se habla con Claude directamente.
+        //
+        // Sin esto la app seguia mostrando "El asistente no esta disponible" con la clave
+        // configurada y todo funcionando, que es exactamente la queja que motivo este cambio:
+        // el aviso miraba al sitio equivocado.
+        if (apiKey.isNotBlank()) return@withContext true
         try {
             api.health().isHealthy
         } catch (cancellation: CancellationException) {
@@ -168,6 +190,25 @@ class RagRepository(
         if (!connectivity.isOnlineNow()) {
             return@withContext Result.failure(RagError.NoConnection())
         }
+
+        // CAMINO PREFERENTE desde la revision del 2026-09-10: si el estudiante puso su clave,
+        // se habla con Claude directamente y no hace falta que nadie tenga un PC encendido.
+        //
+        // La fuente entonces es la ficha del equipo, que viaja dentro del APK, en vez de los
+        // 1888 fragmentos del backend. Es menos profundo y se acepta a cambio de que la app
+        // funcione sola. El corpus completo son unos 837 000 tokens y no cabe en el contexto
+        // del modelo, asi que sin servidor no hay forma de buscar en el.
+        if (apiKey.isNotBlank()) {
+            val ficha = classId?.takeIf { it.isNotBlank() }?.let { catalog.find(it).equipment }
+            return@withContext directAssistant.ask(
+                apiKey = apiKey,
+                question = message,
+                equipment = ficha,
+                history = history.truncateForRequest(),
+                voiceMode = voiceMode
+            )
+        }
+
         try {
             val response = api.chat(
                 ChatRequestDto(

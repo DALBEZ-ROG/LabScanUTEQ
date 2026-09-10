@@ -149,6 +149,17 @@
     <string name="ajustes_backend_encontrado">Servidor encontrado solo en la red: %1$s</string>
     <string name="ajustes_backend_encontrado_ignorado">Se encontró %1$s en la red, pero manda la dirección que escribió arriba. Borre el campo para usar el encontrado.</string>
     <string name="ajustes_backend_usar_encontrado">Usar el encontrado</string>
+    <string name="ajustes_clave_api">Su clave de Claude</string>
+    <string name="ajustes_clave_api_detalle">El asistente responde con su propia cuenta de Anthropic. La clave se guarda solo en este teléfono y nunca se comparte.</string>
+    <string name="ajustes_clave_api_ayuda">Se saca en console.anthropic.com, en API Keys. Empieza por sk-ant-</string>
+    <string name="ajustes_clave_api_invalida">Una clave de Anthropic empieza por sk-ant-</string>
+    <string name="ajustes_clave_api_mostrar">Mostrar la clave</string>
+    <string name="ajustes_clave_api_ocultar">Ocultar la clave</string>
+    <string name="ajustes_clave_api_guardada">Clave guardada. El asistente ya puede responder.</string>
+    <string name="clave_dialogo_titulo">Configure el asistente</string>
+    <string name="clave_dialogo_cuerpo">Para preguntarle al asistente hace falta su clave de Claude. La cámara y las fichas técnicas funcionan sin ella.</string>
+    <string name="clave_dialogo_guardar">Guardar</string>
+    <string name="clave_dialogo_luego">Ahora no</string>
     <string name="ajustes_apertura_automatica">Abrir la ficha sola</string>
     <string name="ajustes_apertura_automatica_detalle">Cuando un equipo se reconoce con más del 70 % de confianza, su ficha se abre sin tener que tocar el cuadro. Apáguelo si en una mesa con varios equipos se abre demasiado.</string>
     <string name="chat_desde_web_titulo">Respuesta de internet, no del manual</string>

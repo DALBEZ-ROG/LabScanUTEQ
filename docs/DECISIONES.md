@@ -1489,3 +1489,72 @@ una ficha sin procedimiento o sin riesgos es peor que ninguna: parece completa.
 de los documentos indexados, y ahora se muestran en pantalla aunque no haya backend que las
 corrija. Las de autoclave, centrífuga, esterilizadores y cabinas las tiene que leer una
 persona antes de la entrega.
+
+## D-044 — El asistente pasa a hablar con Claude desde el teléfono, con la clave del estudiante — 2026-09-10
+
+En la revisión el docente rechazó que la app dependa de un servidor. El caso que lo destapó:
+la presentación terminó, se cerró el portátil, él abrió el APK en su teléfono y el asistente
+decía que no estaba disponible.
+
+Ahora, si el estudiante escribe su clave de Anthropic en Ajustes, la app llama a Claude
+**directamente** y no hace falta que nadie tenga un PC encendido. La app se la pide al abrirse
+por primera vez, y el diálogo se puede posponer porque la cámara y las fichas no la necesitan.
+
+### Lo que se pierde, y por qué no había alternativa
+
+El backend buscaba entre **1888 fragmentos** de los manuales. Sin servidor no se puede: el
+corpus completo son unos **837 000 tokens** medidos, contra los 200 000 de ventana del modelo.
+No es que sea caro, es que no cabe.
+
+Lo que sí cabe, y de sobra, es la **ficha del equipo que el estudiante está mirando**, que ya
+viajaba dentro del APK desde que se metieron las 54. Son unos 670 tokens de entrada por
+pregunta, medidos contra la API real. La respuesta sale de ahí y cita las fuentes que la propia
+ficha declara, así que la regla 6 de CLAUDE.md se sigue cumpliendo.
+
+| | Backend RAG | Camino directo |
+|---|---|---|
+| Fuente | 1888 fragmentos de manuales | la ficha del equipo |
+| Búsqueda | semántica sobre el corpus | ninguna, va la ficha entera |
+| Necesita | un PC encendido y alcanzable | solo la clave del estudiante |
+| Coste | lo pagaba Mario | lo paga cada estudiante |
+
+**El backend no se borra.** Sin clave configurada, la app sigue usándolo exactamente como
+antes. Es el camino mejor cuando existe; ya no es el único.
+
+### Sobre la clave
+
+Es la clave **del estudiante**, escrita por él en su teléfono. Eso es distinto de lo que se
+rechazó siempre en este proyecto, que era meter la clave del proyecto en el APK: un APK se
+descompila en minutos y sería la cuenta de todos la que se gasta. Aquí cada uno consume la
+suya.
+
+Se guarda en DataStore, en el almacenamiento privado de la app, en claro. Cifrarla exigiría
+`androidx.security`, una dependencia nueva, y protege poco más: en un teléfono sin rootear ese
+directorio ya no es legible por otras aplicaciones. **No se escribe nunca en el registro.**
+
+### Detalles que costaron encontrarse
+
+**La comprobación de salud miraba al sitio equivocado.** El aviso de "el asistente no está
+disponible" salía de preguntarle al backend, así que seguía apareciendo con la clave puesta y
+todo funcionando. Ahora, con clave, el asistente está disponible por definición.
+
+**El cliente HTTP del asistente directo es propio**, no el común de la app. El común lleva el
+`BaseUrlInterceptor`, que reescribe el destino de cada petición hacia el backend elegido en
+Ajustes; el destino aquí tiene que ser siempre `api.anthropic.com`.
+
+**No se añadió el SDK de Anthropic.** Para una sola llamada POST no compensa arrastrar una
+dependencia pensada para servidor (regla 8 de CLAUDE.md). El cuerpo se arma a mano con
+kotlinx.serialization, que el proyecto ya usa.
+
+**Sin equipo seleccionado no se llama al modelo**, igual que hacía el backend: sin ficha no hay
+fuente que citar, y un modelo al que se pregunta sin fuentes responde de memoria y suena igual
+de seguro.
+
+### Verificado
+
+Con el backend **apagado** y el túnel cerrado, la app arranca, no muestra ningún aviso y no
+vuelve a pedir la clave. Y la misma petición que arma la app, enviada a la API real, devuelve
+200 con el equipo de protección correcto de la autoclave y la advertencia de esperar a que baje
+la presión.
+
+Pendiente: la app solo detecta bien en horizontal. Se mira después.

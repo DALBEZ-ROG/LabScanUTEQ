@@ -6,6 +6,7 @@ import ec.edu.uteq.labscan.data.local.EquipmentCatalog
 import ec.edu.uteq.labscan.data.local.SettingsStore
 import ec.edu.uteq.labscan.data.remote.BaseUrlInterceptor
 import ec.edu.uteq.labscan.data.remote.ConnectivityObserver
+import ec.edu.uteq.labscan.data.remote.DirectAssistant
 import ec.edu.uteq.labscan.data.remote.LabScanApi
 import ec.edu.uteq.labscan.data.remote.MockInterceptor
 import ec.edu.uteq.labscan.data.remote.NetworkTimeouts
@@ -169,11 +170,31 @@ class AppContainer(private val context: Context) {
      * Fachada de datos del asistente. Es lo unico que la UI conoce de la capa de red: ni la
      * pantalla ni el ViewModel ven Retrofit, OkHttp ni una excepcion de red.
      */
+    /**
+     * Asistente que habla con Claude directamente con la clave del estudiante, sin backend.
+     *
+     * Comparte el `OkHttpClient` de la app pero **no** su `BaseUrlInterceptor`: ese reescribe
+     * el destino de cada peticion hacia el backend elegido en Ajustes, y aqui el destino tiene
+     * que ser siempre api.anthropic.com. Por eso se construye un cliente propio a partir del
+     * comun, que hereda los tiempos de espera y no los interceptores.
+     */
+    val directAssistant: DirectAssistant by lazy {
+        DirectAssistant(
+            client = OkHttpClient.Builder()
+                .connectTimeout(NetworkTimeouts.CONNECT_SECONDS, TimeUnit.SECONDS)
+                .readTimeout(NetworkTimeouts.READ_SECONDS, TimeUnit.SECONDS)
+                .writeTimeout(NetworkTimeouts.WRITE_SECONDS, TimeUnit.SECONDS)
+                .build(),
+            json = json
+        )
+    }
+
     val ragRepository: RagRepository by lazy {
         RagRepository(
             api = labScanApi,
             catalog = equipmentCatalog,
-            connectivity = connectivityObserver
+            connectivity = connectivityObserver,
+            directAssistant = directAssistant
         )
     }
 
@@ -230,6 +251,13 @@ class AppContainer(private val context: Context) {
 
         settingsStore.backendUrl
             .onEach { baseUrlInterceptor.override = it }
+            .launchIn(scope)
+
+        // La clave del estudiante llega al repositorio por la misma via que la URL: alguien
+        // tiene que recoger el flujo y empujar el valor, porque quien la usa corre en un hilo
+        // de entrada y salida y no puede consultar DataStore.
+        settingsStore.anthropicApiKey
+            .onEach { ragRepository.apiKey = it }
             .launchIn(scope)
 
         // La direccion encontrada en la red entra por una via distinta de la manual, y no

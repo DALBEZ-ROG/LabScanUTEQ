@@ -95,6 +95,24 @@ class SettingsStore(context: Context) {
     }
 
     /**
+     * Clave de la API de Anthropic **del estudiante**.
+     *
+     * Vacia mientras no la haya escrito, y entonces el asistente no puede responder.
+     *
+     * Es su clave, en su telefono, y por eso puede vivir aqui: lo que nunca debe ocurrir es
+     * meter la clave del proyecto dentro del APK, porque un APK se descompila en minutos y
+     * seria la cuenta de todos la que se gasta. DataStore guarda en el almacenamiento privado
+     * de la app, que otras aplicaciones no pueden leer.
+     *
+     * **No se registra nunca en el log.** Ver `DirectAssistant`.
+     */
+    val anthropicApiKey: Flow<String> = preferences.map { it[API_KEY].orEmpty() }
+
+    suspend fun setAnthropicApiKey(key: String) {
+        store.edit { it[API_KEY] = key.trim() }
+    }
+
+    /**
      * Si la ficha se abre sola cuando una deteccion supera [AUTO_OPEN_CONFIDENCE].
      *
      * **Activada por defecto.** El estudiante entra al laboratorio con el telefono en una
@@ -133,6 +151,7 @@ class SettingsStore(context: Context) {
         private val DEFAULT_CAMERA = stringPreferencesKey("default_camera")
         private val BACKEND_URL = stringPreferencesKey("backend_url")
         private val AUTO_OPEN = booleanPreferencesKey("auto_open_sheet")
+        private val API_KEY = stringPreferencesKey("anthropic_api_key")
 
         /**
          * Confianza a partir de la cual la ficha se abre sola.

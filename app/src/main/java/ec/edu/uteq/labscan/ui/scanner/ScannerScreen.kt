@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Insights
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,9 +33,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -41,7 +45,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -50,6 +58,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -70,6 +79,7 @@ import ec.edu.uteq.labscan.ui.common.openApplicationSettings
 import ec.edu.uteq.labscan.ui.common.rememberRuntimePermission
 import ec.edu.uteq.labscan.ui.sheet.EquipmentSheet
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 /**
  * Pantalla principal de LabScan UTEQ.
@@ -303,6 +313,13 @@ private fun CameraPreviewContent(
                 .padding(16.dp)
         )
     }
+
+    // Lo primero que ve un estudiante que abre la app por primera vez.
+    //
+    // Se pide aqui y no en una pantalla de bienvenida a proposito: la camara y las 54 fichas
+    // funcionan sin clave, asi que bloquear la entrada seria mentir sobre lo que hace falta.
+    // El dialogo se puede posponer y la app sigue sirviendo para lo que sirve sin ella.
+    ApiKeyDialog()
 
     // La hoja se declara fuera del Box: ModalBottomSheet se dibuja en su propia ventana y
     // no debe participar en el apilado de la vista previa.
@@ -553,3 +570,63 @@ private fun CameraPermissionContent(
     }
 }
 
+
+/**
+ * Pide la clave de Claude la primera vez, si no hay ninguna guardada.
+ *
+ * Solo aparece una vez por arranque: si el estudiante la pospone, no vuelve a molestarle
+ * hasta la proxima vez que abra la app. La alternativa, insistir en cada vuelta al escaner,
+ * convierte un aviso util en algo que se cierra sin leer.
+ */
+@Composable
+private fun ApiKeyDialog() {
+    val context = LocalContext.current
+    val container = remember(context) { context.appContainer }
+    val settings = remember(container) { container.settingsStore }
+    val scope = rememberCoroutineScope()
+
+    val storedKey by settings.anthropicApiKey.collectAsStateWithLifecycle(initialValue = null)
+    var pospuesto by rememberSaveable { mutableStateOf(false) }
+    var borrador by rememberSaveable { mutableStateOf("") }
+
+    // `null` mientras DataStore no ha contestado todavia: sin esto el dialogo parpadea al
+    // abrir la app aunque la clave ya este guardada.
+    val clave = storedKey ?: return
+    if (clave.isNotBlank() || pospuesto) return
+
+    val valida = borrador.trim().startsWith("sk-ant-")
+
+    AlertDialog(
+        onDismissRequest = { pospuesto = true },
+        title = { Text(stringResource(R.string.clave_dialogo_titulo)) },
+        text = {
+            Column {
+                Text(stringResource(R.string.clave_dialogo_cuerpo))
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = borrador,
+                    onValueChange = { borrador = it },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("sk-ant-...") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    supportingText = { Text(stringResource(R.string.ajustes_clave_api_ayuda)) }
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = valida,
+                onClick = {
+                    scope.launch { settings.setAnthropicApiKey(borrador) }
+                    pospuesto = true
+                }
+            ) { Text(stringResource(R.string.clave_dialogo_guardar)) }
+        },
+        dismissButton = {
+            TextButton(onClick = { pospuesto = true }) {
+                Text(stringResource(R.string.clave_dialogo_luego))
+            }
+        }
+    )
+}
