@@ -38,14 +38,42 @@ class BaseUrlInterceptor : Interceptor {
     @Volatile
     var override: String = ""
 
+    /**
+     * URL del backend encontrado solo en la red, o vacia. La escribe [ServerDiscovery].
+     *
+     * Va **detras** de [override] a proposito. Si el estudiante se tomo la molestia de
+     * escribir una direccion en Ajustes, esa gana: puede estar apuntando adrede a otro PC,
+     * o a uno que el anuncio mDNS no alcanza. Un descubrimiento automatico que pisa lo que
+     * alguien escribio a mano es imposible de depurar, porque la app deja de ir al sitio
+     * que el propio Ajustes esta mostrando en pantalla.
+     */
+    @Volatile
+    var discovered: String = ""
+
+    /** De donde salio la direccion que se esta usando. Lo muestra la pantalla de Ajustes. */
+    enum class Origen { MANUAL, RED, FABRICA }
+
+    /**
+     * Orden de preferencia: lo escrito en Ajustes, luego lo encontrado en la red, y si no,
+     * la URL de la variante de compilacion.
+     */
+    fun origenActual(): Origen = when {
+        override.isNotBlank() && override.toHttpUrlOrNull() != null -> Origen.MANUAL
+        discovered.isNotBlank() -> Origen.RED
+        else -> Origen.FABRICA
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val target = override.takeIf { it.isNotBlank() }?.toHttpUrlOrNull()
+
+        val manual = override.takeIf { it.isNotBlank() }?.toHttpUrlOrNull()
+        if (manual == null && override.isNotBlank()) {
+            Log.w(App.LOG_TAG, "URL de backend invalida en Ajustes; se busca otra")
+        }
+
+        val target = manual ?: discovered.takeIf { it.isNotBlank() }?.toHttpUrlOrNull()
 
         if (target == null) {
-            if (override.isNotBlank()) {
-                Log.w(App.LOG_TAG, "URL de backend invalida en Ajustes; se usa la de fabrica")
-            }
             return chain.proceed(request)
         }
 

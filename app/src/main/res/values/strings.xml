@@ -145,6 +145,10 @@
     <string name="ajustes_backend_detalle">Déjelo vacío para usar el de fábrica: %1$s</string>
     <string name="ajustes_backend_ayuda">Ejemplo: http://192.168.1.50:8000/</string>
     <string name="ajustes_backend_invalida">Esa dirección no es válida. Debe empezar por http:// o https://</string>
+    <string name="ajustes_backend_buscado">Buscando el servidor en la red…</string>
+    <string name="ajustes_backend_encontrado">Servidor encontrado solo en la red: %1$s</string>
+    <string name="ajustes_backend_encontrado_ignorado">Se encontró %1$s en la red, pero manda la dirección que escribió arriba. Borre el campo para usar el encontrado.</string>
+    <string name="ajustes_backend_usar_encontrado">Usar el encontrado</string>
     <string name="ajustes_diagnostico_detalle">Forma del tensor, clases y rendimiento del modelo.</string>
     <string name="acerca_titulo">Acerca de</string>
     <string name="acerca_app">LabScan UTEQ: asistente móvil de detección de equipos de laboratorio con reconocimiento visual y consulta por voz.</string>

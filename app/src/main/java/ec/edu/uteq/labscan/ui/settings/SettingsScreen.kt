@@ -4,8 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,8 +50,8 @@ import ec.edu.uteq.labscan.R
 import ec.edu.uteq.labscan.appContainer
 import ec.edu.uteq.labscan.data.local.SettingsStore
 import ec.edu.uteq.labscan.data.remote.isValidBackendUrl
-import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 /** Altura minima de toque recomendada por Material. Nada interactivo baja de aqui. */
 private val MIN_TOUCH_TARGET = 48.dp
@@ -80,6 +83,11 @@ fun SettingsScreen(
         .confidenceThreshold(container.modelConfig.confidenceThreshold)
         .collectAsStateWithLifecycle(initialValue = container.modelConfig.confidenceThreshold)
     val storedUrl by settings.backendUrl.collectAsStateWithLifecycle(initialValue = "")
+
+    // Direccion anunciada por el backend en la red local. Es informativa: quien manda sigue
+    // siendo lo escrito abajo. Ver BaseUrlInterceptor.
+    val urlEnRed by container.serverDiscovery.serverUrl
+        .collectAsStateWithLifecycle(initialValue = null)
 
     // El deslizador necesita estado local: arrastrarlo emite decenas de valores por segundo y
     // escribir cada uno en DataStore seria absurdo. Se guarda al soltar.
@@ -188,6 +196,39 @@ fun SettingsScreen(
                 LaunchedEffect(urlDraft, urlIsValid) {
                     if (urlIsValid && urlDraft != storedUrl) {
                         settings.setBackendUrl(urlDraft)
+                    }
+                }
+
+                // Que se vea si el descubrimiento automatico esta encontrando algo. Sin esto,
+                // cuando la app va al servidor equivocado no hay forma de saber si es que no
+                // encontro ninguno o que encontro uno y lo esta ignorando.
+                val encontrado = urlEnRed
+                Spacer(Modifier.height(8.dp))
+                when {
+                    encontrado == null -> Text(
+                        text = stringResource(R.string.ajustes_backend_buscado),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    urlDraft.isBlank() -> Text(
+                        text = stringResource(R.string.ajustes_backend_encontrado, encontrado),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    else -> Column {
+                        Text(
+                            text = stringResource(
+                                R.string.ajustes_backend_encontrado_ignorado,
+                                encontrado
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        TextButton(onClick = { urlDraft = "" }) {
+                            Text(stringResource(R.string.ajustes_backend_usar_encontrado))
+                        }
                     }
                 }
             }

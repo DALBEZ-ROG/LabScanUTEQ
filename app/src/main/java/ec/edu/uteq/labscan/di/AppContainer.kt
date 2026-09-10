@@ -10,6 +10,7 @@ import ec.edu.uteq.labscan.data.remote.LabScanApi
 import ec.edu.uteq.labscan.data.remote.MockInterceptor
 import ec.edu.uteq.labscan.data.remote.NetworkTimeouts
 import ec.edu.uteq.labscan.data.remote.RagRepository
+import ec.edu.uteq.labscan.data.remote.ServerDiscovery
 import ec.edu.uteq.labscan.detection.Detector
 import ec.edu.uteq.labscan.detection.DetectorFactory
 import ec.edu.uteq.labscan.detection.DetectorStatus
@@ -114,6 +115,12 @@ class AppContainer(private val context: Context) {
     val connectivityObserver: ConnectivityObserver by lazy {
         ConnectivityObserver(applicationContext)
     }
+
+    /**
+     * Busca el backend en la red local por mDNS, para no tener que escribir la IP cada vez
+     * que el PC cambia de red. Lo que se encuentre va detras de lo escrito en Ajustes.
+     */
+    val serverDiscovery: ServerDiscovery by lazy { ServerDiscovery(applicationContext) }
 
     /**
      * Cliente HTTP unico de la app.
@@ -224,6 +231,14 @@ class AppContainer(private val context: Context) {
         settingsStore.backendUrl
             .onEach { baseUrlInterceptor.override = it }
             .launchIn(scope)
+
+        // La direccion encontrada en la red entra por una via distinta de la manual, y no
+        // por la misma variable, justamente para que no se pisen. Ver BaseUrlInterceptor.
+        serverDiscovery.serverUrl
+            .onEach { baseUrlInterceptor.discovered = it.orEmpty() }
+            .launchIn(scope)
+
+        serverDiscovery.start()
     }
 
     /** Medidor de FPS y latencia, compartido entre el HUD del scanner y el Diagnostico. */
@@ -252,6 +267,7 @@ class AppContainer(private val context: Context) {
      * enlazar y viven lo que vive el proceso.
      */
     fun close() {
+        serverDiscovery.stop()
         detector.close()
         ttsManager.shutdown()
         sttManager.release()
