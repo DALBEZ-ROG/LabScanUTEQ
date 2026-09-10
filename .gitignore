@@ -49,3 +49,6 @@ desktop.ini
 /runs/
 *.pt
 *.onnx
+
+# Cache de Python de las herramientas.
+tools/__pycache__/

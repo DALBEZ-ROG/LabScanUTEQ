@@ -26,8 +26,12 @@ dibujadas y la clase correcta. El trabajo pasa de dibujar 748 cajas a revisarlas
         --fotos "C:/Users/Mario/OneDrive/Documentos/ProyectoMobil/roboflow_upload" \
         --salida "C:/Users/Mario/Downloads/preetiquetado"
 
-Despues: comprimir la carpeta de salida y subirla a Roboflow, que reconoce el formato YOLOv8
-y trae las cajas puestas.
+Despues: subir la carpeta de salida a Roboflow, que reconoce el formato YOLOv8 y trae las
+cajas puestas.
+
+Al subir, en el dialogo de reparto **cambiar "Use Existing Values" por un reparto 70/15/15**.
+Aqui todo esta en `train/`, asi que respetar lo existente deja 0 % de validacion y 0 % de
+test, y entonces no hay nada con que medir el modelo.
 """
 
 from __future__ import annotations
@@ -300,6 +304,11 @@ def main() -> int:
         resumen.append((clase, len(imagenes), con_caja))
         print(f"  {clase:<52} {con_caja:>3}/{len(imagenes):<3}")
 
+    # Todas las fotos van a `train/` porque el reparto lo hace Roboflow al crear la version,
+    # que es donde ademas se aplican sus aumentos y su preprocesado.
+    #
+    # OJO al subir: Roboflow propone "Use Existing Values" y, como aqui todo esta en train,
+    # eso deja 100 % entrenamiento y 0 % validacion. Hay que cambiarlo a 70 / 15 / 15.
     (salida / "data.yaml").write_text(
         "train: train/images\n"
         "val: train/images\n"
