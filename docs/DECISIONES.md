@@ -1238,3 +1238,40 @@ Cuando se haga el cambio, `CatalogJsonTest` va a fallar a propósito: sus dos fi
 `microscopio_binocular` y `camara_electroforesis`, que no son clases del dataset v2. Sus
 equivalentes son `microscopio_compuesto_binocular_amscope_b120` y
 `camara_de_electroforesis_owl_easycast_b2`.
+
+## D-038 — Las fichas de los equipos mejor documentados salían sin equipo de protección — 2026-09-09
+
+Al validar las 54 fichas generadas con el corpus v2, siete no tenían nada en `ppe`. No eran
+siete cualesquiera: eran **exactamente las siete clases con manual de fabricante**, que además
+son de las más peligrosas del laboratorio. Centrífugas, termocicladores, esterilizadores.
+
+La causa está en `all_fragments`, que alimenta la generación de la ficha. Pedía los primeros 40
+fragmentos del equipo, sin más. En una clase con un manual de 152 páginas conviviendo con unas
+normas de seguridad de dos, el manual se llevaba la cuota entera:
+
+| Documento | Fragmentos que llegaban a la ficha |
+|---|---|
+| Manual del fabricante Ohaus | 35 |
+| Guía de referencia general | 5 |
+| Normas de seguridad | **0** |
+
+El documento que contiene los guantes, las gafas y las prohibiciones nunca entraba al prompt.
+
+**Esto no lo enseña ningún error.** El campo `ppe` quedaba como lista vacía, y la app oculta
+sola las secciones vacías, tal como está pedido en el prompt de la ficha. Una ficha de centrífuga
+sin sección de protección se ve exactamente igual de bien que una completa.
+
+El reparto pasa a ser por turnos entre los documentos del equipo: uno de cada uno, luego otro de
+cada uno. Un documento corto aporta todo lo que tiene y se agota; el resto de la cuota se la
+quedan los largos. Con la centrífuga da 5 fragmentos de la guía, 4 de las normas y 31 del manual,
+que es el reparto que se quiere sin perder detalle de procedimiento.
+
+Dentro de cada documento se respeta el orden de lectura, para que los pasos no lleguen barajados.
+
+Quedan dos pruebas de regresión en `tests/test_retrieval.py`. La primera siembra un manual de 60
+fragmentos junto a unas normas de 3 y exige que las normas lleguen a la ficha.
+
+**Es el segundo fallo silencioso del mismo tipo en este backend.** El primero fue la colisión de
+identificadores de fragmento, que decía 3628 indexados cuando había 739. Los dos se comportaban
+como si todo funcionara. Conviene desconfiar de cualquier parte de este sistema cuyo fallo se
+manifieste como "salió menos de lo que esperaba" en vez de como una excepción.
