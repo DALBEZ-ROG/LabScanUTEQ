@@ -4,7 +4,11 @@
 
 [versions]
 # --- Toolchain ---
-agp = "9.3.2"
+# 9.2.1 y no 9.3.2: Android Studio 2026.1.1 solo sincroniza hasta AGP 9.2.1 y con 9.3.2
+# falla el sync del IDE con "incompatible version", aunque la compilacion por linea de
+# comandos funcione igual. Se baja el AGP en vez de exigir que todo el equipo actualice
+# el IDE. Ver docs/DECISIONES.md D-039.
+agp = "9.2.1"
 # Version de los plugins de compilador de Kotlin (compose, serialization). Debe coincidir
 # con el Kotlin que trae AGP 9 de fabrica. Ver docs/DECISIONES.md D-003.
 kotlin = "2.4.10"
