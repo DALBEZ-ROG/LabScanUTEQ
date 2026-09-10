@@ -137,20 +137,15 @@ class ScannerViewModel(
     private var autoOpenEnabled = true
 
     /**
-     * Clase que el estudiante acaba de cerrar.
+     * Quien decide si la ficha se abre sola y de cual equipo.
      *
-     * Sin esto, cerrar la ficha de un equipo que sigue delante de la camara la vuelve a abrir
-     * en el siguiente fotograma y la app queda inservible. Se olvida en cuanto esa clase deja
-     * de detectarse, para que volver a apuntarla si la abra.
+     * Vive fuera del ViewModel para poder cubrirlo con pruebas de JVM: `Detection` lleva un
+     * `RectF` y las clases de `android.graphics` no corren en pruebas unitarias.
      */
-    private var dismissedClassId: String? = null
-
-    /** Clase candidata y cuantos fotogramas seguidos lleva. Ver [autoOpenIfConfident]. */
-    private var candidateClassId: String? = null
-    private var candidateFrames = 0
-
-    /** Mejor confianza vista mientras esa clase siguio siendo la candidata. */
-    private var candidateBestScore = 0f
+    private val autoOpen = AutoOpenDecider(
+        umbral = SettingsStore.AUTO_OPEN_CONFIDENCE,
+        framesNecesarios = FRAMES_PARA_ABRIR
+    )
 
     /** `true` mientras se lee la ficha en voz alta. El boton pasa a "Detener". */
     val isSpeaking: StateFlow<Boolean> = ttsManager.isSpeaking
@@ -298,58 +293,27 @@ class ScannerViewModel(
     private fun autoOpenIfConfident(detections: List<Detection>) {
         if (!autoOpenEnabled) return
 
-        // 1. CUAL: la caja mas cercana al centro de la pantalla.
-        //
-        // Medido en el laboratorio con el telefono en horizontal y dos aparatos en el
-        // encuadre: la cruz del centro cayo en el hueco ENTRE los dos, asi que exigir que la
-        // caja contuviera el centro no abria nada. "La mas cercana" es indulgente y sigue
-        // dejando que el estudiante elija apuntando, que es lo natural con una camara en la
-        // mano. Elegir por confianza seria decidir por el, y con dos aparatos se equivoca la
-        // mitad de las veces.
-        //
-        // `box` esta normalizada sobre el cuadrado del modelo y el relleno del letterbox es
-        // simetrico (Letterbox.letterboxParams), asi que 0,5 - 0,5 ES el centro del fotograma.
-        val centrada = detections.minByOrNull { d ->
-            val dx = d.box.centerX() - 0.5f
-            val dy = d.box.centerY() - 0.5f
-            dx * dx + dy * dy
+        // El centro de la caja va normalizado sobre el cuadrado del modelo, y el relleno del
+        // letterbox es simetrico (Letterbox.letterboxParams), asi que 0,5 - 0,5 de ese
+        // cuadrado ES el centro del fotograma de la camara. No hace falta BoxMapper.
+        val candidatas = detections.map {
+            AutoOpenDecider.Candidata(
+                classId = it.classId,
+                score = it.score,
+                centerX = it.box.centerX(),
+                centerY = it.box.centerY()
+            )
         }
 
-        if (centrada == null) {
-            candidateClassId = null
-            candidateFrames = 0
-            candidateBestScore = 0f
-            // Lo que se cerro deja de estar vetado cuando desaparece de la vista. Asi, apuntar
-            // otra vez al mismo equipo vuelve a abrir su ficha, que es lo que se espera.
-            dismissedClassId = null
-            return
-        }
-
-        if (centrada.classId == dismissedClassId) return
-
-        // 2. CUANDO: la misma clase varios fotogramas, y que en alguno haya llegado al umbral.
-        //
-        // No se exige superar el umbral en fotogramas CONSECUTIVOS. Medido en el telefono, el
-        // mismo aparato sin moverse dio 87 %, 65 % y 47 % en tres fotogramas seguidos; con esa
-        // exigencia la ficha no se abria nunca. Lo que importa es que sea el mismo equipo y
-        // que el modelo lo haya reconocido bien al menos una vez en esa ventana.
-        if (centrada.classId == candidateClassId) {
-            candidateFrames++
-            candidateBestScore = maxOf(candidateBestScore, centrada.score)
-        } else {
-            candidateClassId = centrada.classId
-            candidateFrames = 1
-            candidateBestScore = centrada.score
-        }
-
-        if (candidateFrames >= FRAMES_PARA_ABRIR &&
-            candidateBestScore >= SettingsStore.AUTO_OPEN_CONFIDENCE
-        ) {
-            Log.d(App.LOG_TAG, "Apertura automatica: ${centrada.classId} $candidateBestScore")
-            candidateFrames = 0
-            candidateBestScore = 0f
-            onDetectionSelected(centrada)
-        }
+        val elegida = autoOpen.decidir(candidatas) ?: return
+        val detection = detections[elegida]
+        Log.d(
+            App.LOG_TAG,
+            "Apertura automatica: ${detection.classId} " +
+                "mejor ${autoOpen.confianzaDeLaApertura} en esta racha, " +
+                "${detection.score} en este fotograma"
+        )
+        onDetectionSelected(detection)
     }
 
     /**
@@ -425,10 +389,7 @@ class ScannerViewModel(
     fun onSheetDismissed() {
         Log.d(App.LOG_TAG, "Ficha cerrada")
         // Para que la apertura automatica no la vuelva a abrir en el siguiente fotograma.
-        dismissedClassId = _selectedDetection.value?.classId
-        candidateClassId = null
-        candidateFrames = 0
-        candidateBestScore = 0f
+        autoOpen.alCerrarFicha(_selectedDetection.value?.classId)
         // La voz no puede sobrevivir a la ficha que la origino.
         ttsManager.stop()
         onDetectionSelected(null)
@@ -437,6 +398,7 @@ class ScannerViewModel(
     /** Alterna entre la camara trasera y la frontal. */
     fun toggleCamera() {
         // Las cajas del sensor anterior dejan de ser validas en cuanto cambia la geometria.
+        autoOpen.reiniciar()
         onDetectionSelected(null)
         _detections.value = emptyList()
         _uiState.update { it.copy(facing = it.facing.opposite(), message = null) }
