@@ -1459,3 +1459,33 @@ Sigue siendo la única palanca grande para el problema de los 2,7 FPS (D-033). C
 retome: comprobar primero si el modelo carga con
 `OpResolverType.BUILTIN_WITHOUT_DEFAULT_DELEGATES`, que dice si el problema es del modelo o
 solo del acelerador en Python.
+
+## D-044 — Las 54 fichas viajan dentro del APK — 2026-09-10
+
+`catalog.json` tenía **dos** fichas de las 54 clases. No rompía nada, porque la app resuelve
+una clase sin ficha con "Ficha no disponible", pero dejaba la app inservible fuera de la red
+del backend.
+
+Y ese caso no es el raro, es el normal. El backend corre en el portátil de Mario con una IP de
+red local. **Un teléfono con datos móviles, o en otra red, no puede alcanzarlo**: no hay ruta
+hacia una 192.168.x.x desde fuera de esa red, y el descubrimiento por mDNS tampoco cruza
+routers (D-040). Sin esto, quien tuviera el APK en su casa veía los cuadros de detección y
+nada más.
+
+Con las 54 fichas dentro del APK, sin conexión funcionan la detección, el nombre del equipo,
+la descripción, la función, los componentes, el procedimiento, el equipo de protección, los
+riesgos y las fuentes citadas. Lo único que sigue exigiendo servidor es el **chat**, y eso no
+se puede evitar: la regla 5 de CLAUDE.md prohíbe que la app hable con el modelo directamente,
+porque la clave de la API acabaría dentro del APK y un APK se descompila en minutos.
+
+Se generan con `tools/generar_catalogo.py` a partir de `storage/equipment_cards.json` del
+backend. La herramienta descarta las fichas que no correspondan a ninguna línea de
+`labels.txt` y las que tengan vacío alguno de los campos que `CatalogJsonTest` exige, porque
+una ficha sin procedimiento o sin riesgos es peor que ninguna: parece completa.
+
+`catalog.json` pasa de 3,7 KB a 154 KB. Es texto en un APK de 38 MB.
+
+**Sigue pendiente la revisión humana de estas fichas.** Están generadas por un modelo a partir
+de los documentos indexados, y ahora se muestran en pantalla aunque no haya backend que las
+corrija. Las de autoclave, centrífuga, esterilizadores y cabinas las tiene que leer una
+persona antes de la entrega.

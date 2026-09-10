@@ -1,90 +1,2924 @@
 [
   {
-    "classId": "microscopio_compuesto_binocular_amscope_b120",
-    "displayName": "Microscopio binocular",
-    "shortDescription": "Instrumento óptico para observar muestras a 40x-1000x.",
-    "function": "Ampliar muestras biológicas mediante un sistema de lentes objetivo y ocular, para observar estructuras celulares y microorganismos que no se distinguen a simple vista.",
+    "classId": "agitador_calentador_thermo_scientific_cimarec",
+    "displayName": "Agitador Calentador Thermo Scientific Cimarec",
+    "shortDescription": "Equipo de laboratorio que mezcla y calienta soluciones simultáneamente mediante un agitador magnético y una placa calefactora.",
+    "function": "Mezclar y/o calentar soluciones de laboratorio mediante una barra magnética impulsada por un campo magnético rotatorio, con control independiente de temperatura de la placa. Un motor interno gira un imán que arrastra una barra agitadora, mientras que una resistencia eléctrica bajo la placa permite calentar la muestra de forma simultánea o independiente.",
     "components": [
-      "Oculares",
-      "Revólver portaobjetivos",
-      "Objetivos 4x, 10x, 40x y 100x",
-      "Platina mecánica",
-      "Condensador",
-      "Diafragma",
-      "Tornillo macrométrico",
-      "Tornillo micrométrico",
-      "Lámpara"
+      "Placa de calentamiento (cerámica o aluminio)",
+      "Perilla o panel de control de velocidad (RPM)",
+      "Perilla o panel de control de temperatura",
+      "Sensor de temperatura (sonda PT100 externa opcional)",
+      "Barra magnética de agitación",
+      "Carcasa e interruptor de encendido",
+      "Pantalla digital pequeña que muestra temperatura y velocidad",
+      "Luz indicadora CAUTION - HOT TOP"
     ],
     "basicProcedure": [
-      "Conectar el equipo y encender la lámpara con el interruptor lateral.",
-      "Colocar la preparación sobre la platina y sujetarla con las pinzas.",
-      "Iniciar con el objetivo de 4x y enfocar con el tornillo macrométrico.",
-      "Afinar el enfoque con el tornillo micrométrico y ajustar el diafragma.",
-      "Cambiar a mayor aumento girando el revólver, sin volver a tocar el macrométrico.",
-      "Al terminar, bajar la intensidad de la lámpara, apagar y volver al objetivo de 4x."
+      "Verificar que la unidad esté sobre una superficie estable, a 30 cm de materiales combustibles, y conectada a un tomacorriente con tierra",
+      "Verificar que la placa esté limpia, seca y sobre una superficie nivelada y estable",
+      "Colocar el recipiente con la muestra y la barra magnética en el centro de la placa",
+      "Presionar el interruptor duro del lado izquierdo para encender la unidad",
+      "Girar la perilla STIR en sentido horario para fijar la velocidad de agitación de forma gradual, de menor a mayor (incrementos de 10 RPM)",
+      "Girar la perilla HEAT para fijar la temperatura deseada (incrementos de 1 grado C); usar la sonda de temperatura sumergida en la muestra si es posible",
+      "Monitorear el proceso; no dejar el equipo funcionando sin supervisión con sustancias inflamables",
+      "Reducir la velocidad gradualmente, apagar el calentamiento y dejar enfriar la placa antes de manipularla",
+      "Presionar nuevamente el interruptor duro para apagar",
+      "Limpiar la placa después de cada uso con un paño húmedo cuando esté apagada y fría"
     ],
     "ppe": [
-      "Bata de laboratorio",
-      "Guantes de nitrilo"
+      "Guantes térmicos",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
     ],
     "risks": [
-      "Descarga eléctrica por manipular el equipo con las manos húmedas.",
-      "Rotura del portaobjetos y del objetivo al enfocar con el tornillo macrométrico en 40x o 100x."
+      "Quemaduras por contacto con la placa caliente (puede alcanzar hasta 540 °C y permanecer caliente varios minutos después de apagar)",
+      "Incendio por sustancias inflamables cerca del calentador",
+      "Proyección de líquido caliente por ebullición súbita",
+      "Choque eléctrico por cables expuestos o daños en la carcasa",
+      "Sobrecalentamiento incontrolado en caso de falla de termocupla",
+      "Explosión si se calientan vapores inflamables fuera de una campana extractora"
     ],
-    "relatedPractices": [
-      "Práctica 3: Observación de células vegetales"
-    ],
+    "relatedPractices": [],
     "sources": [
       {
-        "title": "Guía de prácticas de Biotecnología UTEQ",
-        "page": 12,
-        "documentId": "guia_biotec_2024"
+        "title": "Guia de referencia general - Agitador calentador (hornilla) Thermo Scientific Cimarec",
+        "page": null,
+        "documentId": "guia_de_referencia_general_agitador_calentador_hornilla_thermo_scientific_cimarec",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Agitador calentador (hornilla) Thermo Scientific Cimarec",
+        "page": null,
+        "documentId": "normas_de_seguridad_agitador_calentador_hornilla_thermo_scientific_cimarec",
+        "snippet": null
+      },
+      {
+        "title": "Referencia de familia - Thermo Scientific Cimarec+ (el equipo es el Cimarec basico)",
+        "page": null,
+        "documentId": "referencia_de_familia_thermo_scientific_cimarec_el_equipo_es_el_cimarec_basico",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "agitador_calentador_thermo_scientific_cimarec_plus",
+    "displayName": "Agitador-Calentador Thermo Scientific Cimarec Plus",
+    "shortDescription": "Equipo de laboratorio que mezcla y calienta soluciones simultáneamente mediante una barra magnética impulsada por un campo magnético rotatorio y una placa calefactora controlada electrónicamente.",
+    "function": "Mezclar y/o calentar soluciones de laboratorio mediante acoplamiento magnético de una barra agitadora con control independiente de velocidad (50-1500 RPM) y temperatura (30-540°C según modelo). Permite monitorear el proceso de agitación y calentamiento de muestras en recipientes colocados sobre la placa de cerámica o aluminio.",
+    "components": [
+      "Placa de calentamiento (cerámica o aluminio)",
+      "Perilla o panel de control de velocidad (RPM)",
+      "Perilla o panel de control de temperatura",
+      "Sensor de temperatura (sonda PT100 externa opcional)",
+      "Barra magnética de agitación",
+      "Carcasa e interruptor de encendido (Power Switch)",
+      "Motor interno con imán rotatorio",
+      "Resistencia eléctrica"
+    ],
+    "basicProcedure": [
+      "Verificar que la placa esté limpia, seca y sobre una superficie nivelada y estable",
+      "Conectar el cable a un tomacorriente con tierra de voltaje adecuado",
+      "Colocar el recipiente con la muestra y la barra magnética en el centro de la placa",
+      "Presionar el Power Switch del lado izquierdo para energizar el equipo",
+      "Ajustar la perilla STIR (50-1500 RPM) de forma gradual, de menor a mayor",
+      "Si se requiere calor, fijar la temperatura deseada con la perilla HEAT (incrementos de 1 grado C) y usar la sonda de temperatura sumergida en la muestra si es posible",
+      "Monitorear el proceso; no dejar el equipo funcionando sin supervisión con sustancias inflamables",
+      "Al finalizar, reducir la velocidad gradualmente, apagar el calentamiento y dejar enfriar la placa antes de manipularla"
+    ],
+    "ppe": [
+      "Guantes térmicos",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras por contacto con la placa caliente",
+      "Incendio por sustancias inflamables cerca del calentador",
+      "Proyección de líquido caliente por ebullición súbita",
+      "Descarga eléctrica por mal uso del equipo",
+      "Sobrecalentamiento incontrolado en caso de falla de temperatura",
+      "Quemaduras por carcasa externa caliente durante y después del uso"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Agitador calentador Thermo Scientific Cimarec+",
+        "page": null,
+        "documentId": "guia_de_referencia_general_agitador_calentador_thermo_scientific_cimarec",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Thermo Scientific Cimarec+",
+        "page": null,
+        "documentId": "manual_del_fabricante_thermo_scientific_cimarec",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Agitador calentador Thermo Scientific Cimarec+",
+        "page": null,
+        "documentId": "normas_de_seguridad_agitador_calentador_thermo_scientific_cimarec",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "agitador_de_laboratorio_orbital_ms_nor_30_series",
+    "displayName": "Agitador Orbital MS-NOR-30 Series",
+    "shortDescription": "Equipo de laboratorio que proporciona movimiento orbital constante y uniforme mediante un motor eléctrico controlado por microprocessador. Diseñado para homogenizar, cultivar en suspensión o mezclar muestras en matraces, tubos o placas.",
+    "function": "Proveer un movimiento orbital constante y uniforme para homogenizar, cultivar en suspensión o mezclar muestras contenidas en matraces, tubos o placas. El motor eléctrico mueve una plataforma mediante un mecanismo excéntrico que genera un movimiento circular (orbital) de amplitud y velocidad ajustables.",
+    "components": [
+      "Plataforma o bandeja porta-recipientes (30 x 30 cm)",
+      "Sujetadores/clamps para matraces",
+      "Panel de control de velocidad (RPM) y temporizador",
+      "Motor y sistema de transmisión orbital",
+      "Base y patas antideslizantes/amortiguadoras"
+    ],
+    "basicProcedure": [
+      "Colocar el agitador sobre una superficie firme y nivelada, en un lugar seco",
+      "Verificar que el interruptor AC esté en OFF y conectar el cable de tres clavijas a un tomacorriente con tierra del voltaje correcto",
+      "Encender el interruptor AC ubicado en la parte posterior de la unidad",
+      "Fijar firmemente los recipientes a la plataforma con los sujetadores o clamps adecuados al tamaño del envase",
+      "Distribuir la carga de forma simétrica sobre la plataforma para evitar vibraciones excesivas",
+      "Presionar la tecla Mode para elegir el parámetro a configurar (RPM o Timer)",
+      "Usar las flechas subir/bajar para ajustar RPM y tiempo deseados",
+      "Presionar la tecla Start/Stop para iniciar la agitación",
+      "Supervisar el arranque para confirmar que no existan golpeteos o desplazamientos de los recipientes",
+      "Al concluir, reducir la velocidad a cero antes de apagar y retirar los recipientes"
+    ],
+    "ppe": [
+      "Gafas de seguridad",
+      "Guantes según la naturaleza de la muestra",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Caída de recipientes por sujeción inadecuada",
+      "Atrapamiento de dedos en el mecanismo de sujeción",
+      "Choque eléctrico si no se siguen procedimientos de seguridad",
+      "Vibraciones excesivas por distribución asimétrica de carga",
+      "Posible exposición a sustancias peligrosas durante el proceso de agitación"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Agitador orbital MS-NOR-30 series",
+        "page": null,
+        "documentId": "guia_de_referencia_general_agitador_orbital_ms_nor_30_series",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Biosan MS-NOR-30",
+        "page": null,
+        "documentId": "manual_del_fabricante_biosan_ms_nor_30",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Agitador orbital MS-NOR-30 series",
+        "page": null,
+        "documentId": "normas_de_seguridad_agitador_orbital_ms_nor_30_series",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "agitador_orbital_elmi_sky_line_dos_20l",
+    "displayName": "Agitador Orbital ELMI Sky Line DOS-20L",
+    "shortDescription": "Equipo de agitación orbital que genera movimiento circular constante para homogenizar, cultivar en suspensión o mezclar muestras en matraces, tubos o placas.",
+    "function": "Proveer un movimiento orbital constante y uniforme mediante un motor eléctrico que mueve una plataforma a través de un mecanismo excéntrico. Permite homogenizar, cultivar en suspensión o mezclar muestras contenidas en diversos recipientes de laboratorio.",
+    "components": [
+      "Plataforma o bandeja porta-recipientes",
+      "Sujetadores/clamps para matraces",
+      "Panel de control de velocidad (RPM) y temporizador",
+      "Motor y sistema de transmisión orbital",
+      "Base y patas antideslizantes/amortiguadoras",
+      "Pantalla LCD digital"
+    ],
+    "basicProcedure": [
+      "Fijar firmemente los recipientes a la plataforma con los sujetadores o clamps adecuados al tamaño del envase",
+      "Distribuir la carga de forma simétrica sobre la plataforma para evitar vibraciones excesivas",
+      "Conectar el adaptador DC 24V al equipo y a la toma de corriente",
+      "Encender el equipo",
+      "Configurar la velocidad deseada en RPM (1 a 500 RPM) de forma gradual",
+      "Programar el temporizador si el protocolo de trabajo lo requiere (1 a 599 minutos o modo ilimitado)",
+      "Presionar Start/Stop para iniciar la agitación",
+      "Supervisar el arranque para confirmar que no existan golpeteos o desplazamientos de los recipientes",
+      "Al concluir, reducir la velocidad a cero antes de apagar y retirar los recipientes"
+    ],
+    "ppe": [
+      "Gafas de seguridad",
+      "Guantes según la naturaleza de la muestra",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Caída de recipientes por sujeción inadecuada",
+      "Atrapamiento de dedos en el mecanismo de sujeción",
+      "Vibración excesiva y desplazamiento de recipientes",
+      "Choque eléctrico",
+      "Exposición a sustancias peligrosas o derrames químicos"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Agitador orbital ELMI Sky Line DOS-20L",
+        "page": null,
+        "documentId": "guia_de_referencia_general_agitador_orbital_elmi_sky_line_dos_20l",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Agitador orbital ELMI Sky Line DOS-20L",
+        "page": null,
+        "documentId": "normas_de_seguridad_agitador_orbital_elmi_sky_line_dos_20l",
+        "snippet": null
+      },
+      {
+        "title": "Referencia de familia - ELMI Sky Line DOS-20M (el equipo del laboratorio es el DOS-20L)",
+        "page": null,
+        "documentId": "referencia_de_familia_elmi_sky_line_dos_20m_el_equipo_del_laboratorio_es_el_dos_20l",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "analizador_dbo_velp_scientifica_bod_sensor",
+    "displayName": "Analizador de DBO VELP Scientifica BOD Sensor",
+    "shortDescription": "Equipo sensor que mide la Demanda Bioquímica de Oxígeno (DBO) en muestras de agua mediante un sensor electrónico de presión durante 5 días de incubación a 20°C.",
+    "function": "Determinar la Demanda Bioquímica de Oxígeno de una muestra de agua como indicador de contaminación orgánica. La muestra se incuba en un frasco sellado junto con el sensor; el consumo de oxígeno por la actividad microbiana genera una variación de presión que el sensor convierte en una lectura de DBO tras 5 días de incubación.",
+    "components": [
+      "Sensor/cabezal manométrico electrónico",
+      "Frascos ámbar de incubación",
+      "Barras magnéticas de agitación",
+      "Trampa de CO₂ (hidróxido de sodio o litio)",
+      "Incubadora refrigerada a 20°C",
+      "2 baterías de litio (250 mAh)",
+      "Panel de control con botones SET y START"
+    ],
+    "basicProcedure": [
+      "Preparar la muestra según el protocolo del laboratorio (dilución, ajuste de pH y siembra si aplica)",
+      "Preparar las botellas con el volumen según la escala elegida, barra de agitación magnética y KOH u otro absorbente de CO₂ bajo la tapa",
+      "Colocar las botellas en el agitador magnético e introducirlas en la incubadora a 20°C ± 0,5 y esperar 30-40 min de equilibrio térmico",
+      "Presionar SET para ver/seleccionar la escala según el volumen de muestra usado",
+      "Presionar SET + START simultáneamente para resetear (detiene ciclos anteriores y borra memoria)",
+      "Enroscar el sensor firmemente sobre cada botella",
+      "Con el display encendido, presionar START para iniciar el ciclo de medición",
+      "Registrar las lecturas de DBO reportadas por el equipo al finalizar el período de incubación (típicamente 5 días)"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a muestras de agua residual potencialmente contaminadas",
+      "Contacto con reactivos alcalinos (trampa de CO₂, ej. hidróxido de sodio/litio)",
+      "Batería insuficiente durante la operación"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Analizador de DBO VELP Scientifica BOD Sensor",
+        "page": null,
+        "documentId": "guia_de_referencia_general_analizador_de_dbo_velp_scientifica_bod_sensor",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Analizador de DBO VELP Scientifica BOD Sensor",
+        "page": null,
+        "documentId": "normas_de_seguridad_analizador_de_dbo_velp_scientifica_bod_sensor",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "autoclave_gemmy_sturdy_sa_252f",
+    "displayName": "Autoclave Gemmy Sturdy SA-252F",
+    "shortDescription": "Esterilizador a vapor y presión que utiliza agua calentada en una cámara sellada para destruir microorganismos mediante temperaturas superiores a 100°C.",
+    "function": "Esterilizar materiales, medios de cultivo, instrumental y residuos biológicos mediante vapor de agua saturado a alta presión y temperatura. El equipo genera vapor a presión elevada que alcanza típicamente 121°C, logrando la destrucción de microorganismos incluyendo esporas.",
+    "components": [
+      "Cámara de presión con tapa/puerta hermética",
+      "Válvula de seguridad y manómetro/indicador de presión",
+      "Sistema de calentamiento (resistencia eléctrica)",
+      "Válvula de purga de aire y vapor",
+      "Canastillas o bandejas porta-material",
+      "Panel/controlador de ciclo (tiempo, temperatura, presión)"
+    ],
+    "basicProcedure": [
+      "Verificar el nivel de agua en la cámara según lo indicado por el fabricante",
+      "Cargar el material a esterilizar sin sobrecargar la canastilla, dejando espacio para la circulación del vapor",
+      "Cerrar la tapa/puerta y asegurar los seguros o mariposas de forma simétrica y uniforme",
+      "Seleccionar el ciclo, tiempo y temperatura según el tipo de carga (líquidos, sólidos, material contaminado)",
+      "Purgar el aire de la cámara antes de iniciar el conteo de esterilización, si el equipo lo requiere de forma manual",
+      "Esperar a que la presión descienda a cero de forma natural antes de abrir la tapa",
+      "Retirar el material con protección térmica adecuada y dejar enfriar antes de manipular líquidos"
+    ],
+    "ppe": [
+      "Guantes termorresistentes de manga larga",
+      "Careta o gafas de seguridad",
+      "Bata de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras graves por vapor a alta presión y temperatura",
+      "Explosión por apertura prematura de la tapa",
+      "Quemaduras por contacto con material recién esterilizado"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Autoclave vertical Gemmy Sturdy SA-252F",
+        "page": null,
+        "documentId": "guia_de_referencia_general_autoclave_vertical_gemmy_sturdy_sa_252f",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Autoclave vertical Gemmy Sturdy SA-252F",
+        "page": null,
+        "documentId": "normas_de_seguridad_autoclave_vertical_gemmy_sturdy_sa_252f",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "balanza_analitica_ohaus_pioneer",
+    "displayName": "Balanza Analítica OHAUS Pioneer",
+    "shortDescription": "Balanza de laboratorio de alta precisión que utiliza compensación electromagnética de fuerza para determinar la masa de muestras, reactivos o materiales con exactitud y resolución.",
+    "function": "Determinar la masa de muestras, reactivos o materiales con alta exactitud y resolución. Permite múltiples modos de operación: pesaje estándar, conteo de piezas, pesaje porcentual, pesaje dinámico, determinación de densidad y formulación.",
+    "components": [
+      "Plato de pesada",
+      "Cabina/mampara antiviento",
+      "Nivel de burbuja y patas niveladoras",
+      "Pantalla LCD retroiluminada de 2 líneas",
+      "Teclado de control con botones Zero, Unit, Menu y Cal",
+      "Celda de carga interna con compensación electromagnética de fuerza",
+      "Puertas de vidrio (en modelos de mayor precisión)",
+      "Adaptador de corriente AC"
+    ],
+    "basicProcedure": [
+      "Verificar que el adaptador AC sea compatible con el suministro local de energía",
+      "Ubicar la balanza en una superficie estable, firme y antivibratoria, alejada de calor, corrientes de aire y vibraciones",
+      "Nivelar la balanza ajustando las 4 patas niveladoras hasta centrar la burbuja del indicador de nivel",
+      "Conectar el adaptador de corriente al conector DC trasero y luego a la toma eléctrica",
+      "Dejar aclimatar el equipo (1.5 horas para precisión mayor a 0.1 mg; más de 4 horas para 0.01 mg)",
+      "Presionar y mantener el botón Zero hasta que aparezca la pantalla LCD, luego soltar",
+      "Realizar calibración inicial (InCal automática o ExCal con pesas externas certificadas)",
+      "Presionar Zero para poner a cero antes de pesar",
+      "Colocar el recipiente vacío (tara) y tarar la lectura",
+      "Agregar la muestra lentamente hasta alcanzar el peso deseado con las puertas de la cabina cerradas",
+      "Registrar la lectura una vez estabilizada",
+      "Retirar el recipiente con cuidado",
+      "Limpiar el plato de pesada y la cabina con un pincel suave o paño seco después de cada uso",
+      "Apagar la balanza o dejar en modo de espera"
+    ],
+    "ppe": [
+      "Guantes según el reactivo manipulado",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a reactivos químicos durante el pesaje",
+      "Daño al equipo por sobrecarga si se excede la capacidad máxima",
+      "Lesiones por no seguir procedimientos establecidos",
+      "Pérdida de exactitud por ambiente inestable con vibraciones, corrientes de aire o cambios de temperatura",
+      "Electrocución si no se verifica la compatibilidad del voltaje o se usa con cables o accesorios dañados"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Balanza analitica Ohaus Pioneer",
+        "page": null,
+        "documentId": "guia_de_referencia_general_balanza_analitica_ohaus_pioneer",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Ohaus Pioneer PX (espanol e ingles)",
+        "page": null,
+        "documentId": "manual_del_fabricante_ohaus_pioneer_px_espanol_e_ingles",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Balanza analitica Ohaus Pioneer",
+        "page": null,
+        "documentId": "normas_de_seguridad_balanza_analitica_ohaus_pioneer",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "balanza_de_laboratorio_ohaus_modelo_trooper",
+    "displayName": "Balanza de Laboratorio OHAUS Trooper",
+    "shortDescription": "Balanza electrónica de precisión diseñada para determinar la masa de muestras, reactivos o materiales con alta exactitud y resolución.",
+    "function": "Determinar la masa de muestras, reactivos o materiales con alta exactitud y resolución. Utiliza una celda de carga electromagnética que genera una señal eléctrica proporcional al peso aplicado sobre el plato de pesada.",
+    "components": [
+      "Plato de pesada",
+      "Cabina/mampara antiviento",
+      "Nivel de burbuja y patas niveladoras",
+      "Pantalla LCD de 6 dígitos, 7 segmentos, 25 mm de altura",
+      "Teclado de control (4 botones: ON/ZERO/OFF, Print/Units, Tare, G/N/T/Menu)",
+      "Celda de carga interna",
+      "Interfaz RS232 integrada"
+    ],
+    "basicProcedure": [
+      "Ubicar la balanza en un lugar libre de corrosivos, vibraciones y temperaturas extremas, sobre una superficie estable y antivibratoria.",
+      "Nivelar la balanza ajustando las patas hasta centrar la burbuja del indicador.",
+      "Conectar la fuente de alimentación (AC o 6 baterías alcalinas tipo C) y presionar ON/ZERO/OFF hasta que aparezca la pantalla LCD.",
+      "Dejar un período de calentamiento de 5 minutos antes de usar.",
+      "Verificar la calibración con pesas patrón o usar la función de autocalibracion interna.",
+      "Colocar el recipiente vacío y poner en cero/tarar la lectura presionando el botón Tare.",
+      "Agregar la muestra lentamente hasta alcanzar el peso deseado, con las puertas de la cabina cerradas.",
+      "Registrar la lectura una vez estabilizada y retirar el recipiente con cuidado.",
+      "Apagar el equipo presionando ON/ZERO/OFF hasta que se muestre OFF en pantalla."
+    ],
+    "ppe": [
+      "Guantes según el reactivo manipulado",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a reactivos químicos durante el pesaje",
+      "Daño al equipo por sobrecarga",
+      "Choque eléctrico si el equipo presenta cables expuestos",
+      "Quemaduras, lesiones o exposición a agentes biológicos/químicos"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Balanza de laboratorio Ohaus Trooper",
+        "page": null,
+        "documentId": "guia_de_referencia_general_balanza_de_laboratorio_ohaus_trooper",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Ohaus Trooper (espanol e ingles)",
+        "page": null,
+        "documentId": "manual_del_fabricante_ohaus_trooper_espanol_e_ingles",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Balanza de laboratorio Ohaus Trooper",
+        "page": null,
+        "documentId": "normas_de_seguridad_balanza_de_laboratorio_ohaus_trooper",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "balanza_electronica_acculab_vicon",
+    "displayName": "Balanza Electrónica Acculab Vicon",
+    "shortDescription": "Balanza de laboratorio analítica de precisión que utiliza una celda de carga electromagnética para determinar la masa de muestras, reactivos o materiales con alta exactitud y resolución.",
+    "function": "Determinar la masa de muestras, reactivos o materiales con alta exactitud y resolución. Utiliza compensación electromagnética de fuerza para generar una señal eléctrica proporcional al peso aplicado sobre el plato de pesada.",
+    "components": [
+      "Plato de pesada",
+      "Cabina/mampara antiviento",
+      "Nivel de burbuja y patas niveladoras",
+      "Pantalla y teclado de control",
+      "Celda de carga interna",
+      "Tapa transparente de protección"
+    ],
+    "basicProcedure": [
+      "Elegir ubicación libre de calor directo, corrientes de aire, vibraciones y humedad excesiva",
+      "Colocar el plato de pesaje reversible y el anillo contra corrientes de aire",
+      "Conectar el adaptador AC a la toma trasera y luego al tomacorriente, o instalar batería de 9V",
+      "Nivelar ajustando las patas hasta centrar la burbuja del nivel",
+      "Presionar la tecla ON/OFF para ejecutar el autotest",
+      "Abrir la tapa transparente de protección",
+      "Colocar el recipiente vacío y presionar ZERO para tarar",
+      "Agregar la muestra lentamente hasta alcanzar el peso deseado con las puertas cerradas",
+      "Registrar la lectura una vez estabilizada",
+      "Retirar el recipiente con cuidado",
+      "Limpiar el plato de pesada y la cabina con un pincel suave o paño seco después de cada uso"
+    ],
+    "ppe": [
+      "Gafas de seguridad",
+      "Guantes según el reactivo manipulado",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a reactivos químicos durante el pesaje",
+      "Daño al equipo por sobrecarga",
+      "Choque eléctrico",
+      "Incendio"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Balanza electronica Acculab Vicon",
+        "page": null,
+        "documentId": "guia_de_referencia_general_balanza_electronica_acculab_vicon",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Balanza electronica Acculab Vicon",
+        "page": null,
+        "documentId": "normas_de_seguridad_balanza_electronica_acculab_vicon",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "bano_maria_memmert_wb7",
+    "displayName": "Baño María Memmert WB7",
+    "shortDescription": "Baño de agua de laboratorio que mantiene muestras, reactivos o cultivos a una temperatura constante mediante calentamiento controlado.",
+    "function": "Proporciona incubación, descongelación y reacciones a temperatura controlada. Una resistencia eléctrica calienta el agua contenida en la cuba, y un termostato regula la temperatura programada distribuyéndola uniformemente por convección.",
+    "components": [
+      "Cuba o tanque de agua con tapa",
+      "Resistencia de calentamiento",
+      "Panel de control de temperatura con sensor",
+      "Rejilla o gradilla porta-tubos/recipientes",
+      "Sistema de circulación"
+    ],
+    "basicProcedure": [
+      "Colocar el baño sobre superficie horizontal no inflamable, con 80 mm libres a los lados/atrás y 750 mm sobre la tapa",
+      "Llenar el tanque con agua destilada o desionizada entre las marcas mín y máx del lateral derecho",
+      "Conectar el cable de alimentación a la red, lejos de superficies calientes",
+      "Encender presionando la perilla push/turn; la pantalla LCD se activa",
+      "Girar la perilla hasta que parpadee el símbolo de grados C; mantener presionada la tecla SET mientras se gira para fijar la temperatura (10-95 grados C); soltar SET para guardar",
+      "Esperar a que la temperatura se estabilice",
+      "Colocar los recipientes en la gradilla, evitando que floten o se vuelquen",
+      "Monitorear el nivel de agua durante procesos prolongados y reponer si es necesario",
+      "Retirar las muestras con pinzas o guantes térmicos",
+      "Presionar nuevamente la perilla push/turn para apagar"
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Quemaduras por contacto con agua caliente",
+      "Choque eléctrico si el equipo opera sin agua o con fugas"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Bano maria Memmert WB7",
+        "page": null,
+        "documentId": "guia_de_referencia_general_bano_maria_memmert_wb7",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Bano maria Memmert WB7",
+        "page": null,
+        "documentId": "normas_de_seguridad_bano_maria_memmert_wb7",
+        "snippet": null
+      },
+      {
+        "title": "Referencia de familia - Memmert WB y OB 7-45 (manual de servicio tecnico)",
+        "page": null,
+        "documentId": "referencia_de_familia_memmert_wb_y_ob_7_45_manual_de_servicio_tecnico",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "cabina_de_bioseguridad_labconco_purifier_clase_ii",
+    "displayName": "Cabina de Bioseguridad Labconco Purifier Clase II",
+    "shortDescription": "Cabina de bioseguridad con flujo laminar vertical que protege al operador, la muestra y el ambiente durante la manipulación de agentes biológicos de riesgo mediante aire filtrado con filtros HEPA.",
+    "function": "Proteger al operador, la muestra y el ambiente durante la manipulación de agentes biológicos de riesgo, mediante un sistema de flujo de aire unidireccional filtrado. Genera una cortina de aire de entrada frontal y un flujo laminar vertical descendente que evita la salida de contaminantes y la contaminación cruzada.",
+    "components": [
+      "Filtros HEPA (de suministro y/o de escape)",
+      "Ventiladores/motor soplador",
+      "Mampara frontal (sash) de vidrio",
+      "Superficie de trabajo perforada",
+      "Luz UV germicida (en algunos modelos)",
+      "Panel de control de flujo de aire y alarmas"
+    ],
+    "basicProcedure": [
+      "Encender el soplador (blower)",
+      "Cerrar el sash y dejar correr el ventilador aproximadamente 5 minutos para purgar el aire antes de trabajar",
+      "Abrir el sash a la altura de trabajo marcada en el vidrio para operar con protección de flujo laminar",
+      "Desinfectar la superficie de trabajo con alcohol al 70% u otro desinfectante autorizado",
+      "Colocar únicamente el material necesario dentro de la cabina, sin obstruir las rejillas de entrada/salida de aire",
+      "Trabajar en la zona media de la superficie, evitando movimientos bruscos que alteren el flujo de aire",
+      "Al finalizar, retirar el material y desinfectar la superficie",
+      "Dejar la cabina encendida unos minutos antes de apagarla"
+    ],
+    "ppe": [
+      "Guantes de nitrilo/latex",
+      "Bata de laboratorio con puño ajustado",
+      "Gafas de seguridad",
+      "Protección respiratoria según evaluación de riesgo",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a agentes biológicos de riesgo (aerosoles, salpicaduras)",
+      "Exposición a radiación UV germicida",
+      "Riesgo de incendio por uso de mecheros de llama abierta",
+      "Choque eléctrico"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Cabina de bioseguridad clase II Labconco Purifier",
+        "page": null,
+        "documentId": "guia_de_referencia_general_cabina_de_bioseguridad_clase_ii_labconco_purifier",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Cabina de bioseguridad clase II Labconco Purifier",
+        "page": null,
+        "documentId": "normas_de_seguridad_cabina_de_bioseguridad_clase_ii_labconco_purifier",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "cabina_de_flujo_laminar_vertical_c4_min",
+    "displayName": "Cabina de Flujo Laminar Vertical C4 MIN",
+    "shortDescription": "Cabina de flujo laminar vertical que genera un flujo de aire descendente a través de un filtro HEPA para mantener una zona de trabajo libre de partículas.",
+    "function": "Proporciona un ambiente de trabajo limpio y libre de partículas para manipulación de material estéril y procedimientos que requieren asepsia. Protege el producto de la contaminación, no al usuario. No es adecuada para manipular agentes biológicos de riesgo.",
+    "components": [
+      "Filtro HEPA de suministro",
+      "Ventilador/motor soplador",
+      "Superficie de trabajo",
+      "Mampara o pantalla frontal",
+      "Luz UV germicida (opcional)",
+      "Panel de control e indicadores"
+    ],
+    "basicProcedure": [
+      "Verificar que el equipo, sus cables y accesorios estén en buen estado visible",
+      "Encender el ventilador unos minutos antes de usarlo para estabilizar el flujo de aire",
+      "Desinfectar la superficie de trabajo con alcohol al 70% antes de introducir el material",
+      "Introducir en la cabina solo el material necesario, evitando bloquear el flujo de aire",
+      "Trabajar evitando movimientos que generen turbulencia frente a la zona estéril",
+      "Al terminar, retirar el material y limpiar la superficie con desinfectante",
+      "Apagar el equipo"
+    ],
+    "ppe": [
+      "Guantes de nitrilo o látex",
+      "Bata de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a radiación UV germicida",
+      "Contaminación de la muestra por mal manejo del flujo de aire",
+      "Daño eléctrico si el equipo presenta cables expuestos"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Cabina de flujo laminar vertical C4 Control de Contaminacion MIN",
+        "page": null,
+        "documentId": "guia_de_referencia_general_cabina_de_flujo_laminar_vertical_c4_control_de_contaminacion_min",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Cabina de flujo laminar vertical C4 Control de Contaminacion MIN",
+        "page": null,
+        "documentId": "normas_de_seguridad_cabina_de_flujo_laminar_vertical_c4_control_de_contaminacion_min",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "cabina_extractora_c4_cex_120",
+    "displayName": "Cabina Extractora de Gases C4 CEX-120",
+    "shortDescription": "Campana de extracción de gases que protege al operador de la exposición a vapores, gases y partículas tóxicas o corrosivas generadas durante manipulaciones químicas.",
+    "function": "Extrae vapores, gases y partículas contaminantes generados en procedimientos químicos mediante una corriente de aire que ingresa por la abertura frontal y los arrastra hacia un ducto de extracción o sistema de filtración, evitando su acumulación en el ambiente de trabajo.",
+    "components": [
+      "Cámara de trabajo con mampara corrediza (sash) tipo guillotina",
+      "Sistema de extracción/ventilador",
+      "Ducto de salida o filtro de carbón activado",
+      "Superficie de trabajo resistente a químicos",
+      "Indicador/alarma de flujo de aire",
+      "Monitor digital con sensor hot-wire",
+      "Panel de control frontal",
+      "Interior en fibra de vidrio reforzada"
+    ],
+    "basicProcedure": [
+      "Verificar que el sistema de extracción esté encendido y el monitor digital indique un flujo de aire adecuado antes de trabajar",
+      "Mantener la mampara (sash) en la altura de trabajo mínima recomendada",
+      "Colocar el material y reactivos dentro de la cabina, al menos 15 cm hacia el interior de la abertura",
+      "Trabajar con movimientos lentos para no alterar el patrón de flujo de aire",
+      "Evitar el uso de llamas abiertas u otros equipos que interfieran con el flujo de aire",
+      "Cerrar la mampara al finalizar",
+      "Limpiar la superficie de trabajo",
+      "Dejar el extractor funcionando unos minutos más después de terminar"
+    ],
+    "ppe": [
+      "Guantes resistentes a químicos",
+      "Gafas de seguridad o careta",
+      "Bata de laboratorio resistente a químicos",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Inhalación de vapores tóxicos por falla del sistema de extracción",
+      "Incendio o explosión por manejo de solventes o reactivos volátiles",
+      "Exposición a contaminantes si la mampara está completamente abierta o el extractor está apagado"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Cabina extractora de gases C4 Control de Contaminacion CEX 120",
+        "page": null,
+        "documentId": "guia_de_referencia_general_cabina_extractora_de_gases_c4_control_de_contaminacion_cex_120",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Cabina extractora de gases C4 Control de Contaminacion CEX 120",
+        "page": null,
+        "documentId": "normas_de_seguridad_cabina_extractora_de_gases_c4_control_de_contaminacion_cex_120",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "camara_de_aislamiento",
+    "displayName": "Cámara de Aislamiento",
+    "shortDescription": "Gabinete cerrado que mantiene muestras, cultivos o especímenes aislados del ambiente externo mediante acceso restringido y control ambiental.",
+    "function": "Aislar muestras, cultivos o especímenes del ambiente externo para su observación, conservación o procesamiento en condiciones controladas, evitando contaminación cruzada y manteniendo variables ambientales según el diseño del equipo.",
+    "components": [
+      "Gabinete o cámara sellada",
+      "Puertas, esclusas o guantes de acceso",
+      "Sistema de control ambiental (según modelo)",
+      "Panel de indicadores"
+    ],
+    "basicProcedure": [
+      "Verificar el cierre hermético de puertas y accesos antes de introducir material",
+      "Desinfectar la superficie interna antes de cada uso según el protocolo del laboratorio",
+      "Introducir el material a través de la esclusa o acceso designado, evitando contaminación",
+      "Realizar el trabajo requerido manteniendo el aislamiento del contenido respecto al ambiente externo",
+      "Retirar el material siguiendo el mismo protocolo de acceso controlado",
+      "Cerrar y desinfectar la cámara al finalizar el uso"
+    ],
+    "ppe": [
+      "Guantes según protocolo",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a agentes biológicos si se rompe el aislamiento",
+      "Contaminación cruzada por manejo inadecuado"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Camara de aislamiento",
+        "page": null,
+        "documentId": "guia_de_referencia_general_camara_de_aislamiento",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Camara de aislamiento",
+        "page": null,
+        "documentId": "normas_de_seguridad_camara_de_aislamiento",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "camara_de_electroforesis_cleaver_maxfill_csu33",
+    "displayName": "Cámara de Electroforesis Cleaver MaxFill CSU33",
+    "shortDescription": "Equipo de electroforesis horizontal que separa fragmentos de ácidos nucleicos (ADN/ARN) o proteínas aplicando un campo eléctrico a través de un gel sumergido en buffer.",
+    "function": "Separar fragmentos de ácidos nucleicos (ADN/ARN) o proteínas según su tamaño y carga, aplicando un campo eléctrico a través de un gel sumergido en buffer. Las moléculas cargadas migran a través de la matriz del gel hacia el electrodo de carga opuesta, separándose según su tamaño molecular.",
+    "components": [
+      "Cubeta o tanque para el gel y el buffer",
+      "Bandeja/molde para preparar el gel",
+      "Peine formador de pocillos",
+      "Electrodos (anodo y catodo)",
+      "Tapa con conexión a la fuente de poder"
+    ],
+    "basicProcedure": [
+      "Preparar el gel de agarosa (o poliacrilamida según aplique) y colocarlo en el molde con el peine",
+      "Una vez solidificado, retirar el peine y colocar el gel en la cubeta, cubriéndolo con buffer de corrida",
+      "Cargar las muestras (mezcladas con buffer de carga) en los pocillos con una micropipeta",
+      "Cerrar la tapa y conectar los cables a la fuente de poder respetando la polaridad (el ADN migra hacia el anodo/rojo)",
+      "Encender la fuente de poder y ajustar el voltaje/corriente según el protocolo, verificando la formación de burbujas en los electrodos",
+      "Al finalizar la corrida, apagar la fuente antes de abrir la tapa, y retirar el gel para su visualización (transiluminador UV)"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Protección adicional si se usa bromuro de etidio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Electrocución por contacto con electrodos energizados o buffer conductor",
+      "Exposición a bromuro de etidio u otros marcadores intercalantes (mutagénicos)"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Camara de electroforesis vertical Cleaver Scientific maxFILL CSU33",
+        "page": null,
+        "documentId": "guia_de_referencia_general_camara_de_electroforesis_vertical_cleaver_scientific_maxfill_csu33",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Camara de electroforesis vertical Cleaver Scientific maxFILL CSU33",
+        "page": null,
+        "documentId": "normas_de_seguridad_camara_de_electroforesis_vertical_cleaver_scientific_maxfill_csu33",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "camara_de_electroforesis_owl_easycast_b1_bp",
+    "displayName": "Cámara de Electroforesis Owl EasyCast B1-BP",
+    "shortDescription": "Equipo de electroforesis horizontal que separa fragmentos de ácidos nucleicos (ADN/ARN) o proteínas según su tamaño y carga mediante la aplicación de un campo eléctrico a través de un gel.",
+    "function": "Separar fragmentos de ácidos nucleicos (ADN/ARN) o proteínas según su tamaño y carga, aplicando un campo eléctrico a través de un gel sumergido en buffer. Al aplicar una diferencia de potencial mediante electrodos, las moléculas cargadas migran a través de la matriz del gel hacia el electrodo de carga opuesta, separándose según su tamaño molecular.",
+    "components": [
+      "Cubeta o tanque para el gel y el buffer",
+      "Bandeja UVT (transmisible a UV) para preparar el gel",
+      "Peine formador de pocillos (2 peines de 1.0/1.5 mm, doble cara)",
+      "Electrodos (ánodo y cátodo)",
+      "Tapa Super Safe Lid con conexión a la fuente de poder",
+      "Cables de alimentación integrados terminados en clavijas banana"
+    ],
+    "basicProcedure": [
+      "Retirar la tapa Super Safe de la cámara de buffer",
+      "Retirar la bandeja UVT y verter agarosa tibio (menos de 60 °C) en posición de casting",
+      "Insertar los peines y dejar solidificar",
+      "Girar la bandeja 90 grados a posición running (peine más cercano al cátodo) y colocarla en la cámara",
+      "Verter buffer de corrida hasta cubrir el gel (nivel FILL LINE) y retirar los peines con cuidado",
+      "Cargar las muestras en los pocillos",
+      "Deslizar cuidadosamente la tapa Super Safe sobre la unidad",
+      "Conectar los cables de la tapa a una fuente de poder compatible",
+      "Encender la fuente de poder y monitorear la corrida (20-150V, 45-90 minutos)",
+      "Apagar la fuente de poder antes de retirar la tapa Super Safe",
+      "Retirar el gel para visualización"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Protección adicional si se usa bromuro de etidio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Electrocución por contacto con electrodos energizados o buffer conductor",
+      "Exposición a bromuro de etidio u otros marcadores intercalantes (mutagénicos)",
+      "Quemaduras por contacto con gel caliente",
+      "Daño por cables expuestos o fugas de buffer"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Camara de electroforesis horizontal Owl (Thermo) EasyCast B1-BP",
+        "page": null,
+        "documentId": "guia_de_referencia_general_camara_de_electroforesis_horizontal_owl_thermo_easycast_b1_bp",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Camara de electroforesis horizontal Owl (Thermo) EasyCast B1-BP",
+        "page": null,
+        "documentId": "normas_de_seguridad_camara_de_electroforesis_horizontal_owl_thermo_easycast_b1_bp",
+        "snippet": null
       }
     ]
   },
   {
     "classId": "camara_de_electroforesis_owl_easycast_b2",
-    "displayName": "Cámara de electroforesis horizontal",
-    "shortDescription": "Cuba para separar fragmentos de ADN en gel de agarosa por carga y tamaño.",
-    "function": "Someter un gel de agarosa a un campo eléctrico constante para que los fragmentos de ácido nucleico migren desde el polo negativo hacia el positivo y se separen según su tamaño.",
+    "displayName": "Cámara de Electroforesis Owl EasyCast B2",
+    "shortDescription": "Equipo de electroforesis horizontal que separa fragmentos de ácidos nucleicos (ADN/ARN) o proteínas según su tamaño y carga aplicando un campo eléctrico a través de un gel.",
+    "function": "Separar fragmentos de ácidos nucleicos (ADN/ARN) o proteínas según su tamaño y carga, aplicando un campo eléctrico a través de un gel sumergido en buffer. Las moléculas cargadas migran a través de la matriz del gel hacia el electrodo de carga opuesta, permitiendo su visualización posterior.",
     "components": [
-      "Cuba de acrílico",
-      "Bandeja de fundido del gel",
-      "Peines formadores de pocillos",
-      "Electrodos de platino",
-      "Tapa con conectores polarizados",
-      "Fuente de poder"
+      "Cubeta o tanque para el gel y el buffer",
+      "Bandeja/molde para preparar el gel (UVT Gel Tray)",
+      "Peine formador de pocillos (2 peines de 1.0/1.5 mm)",
+      "Electrodos (anodo y catodo, tipo banana)",
+      "Tapa Super Safe Lid con conexión a la fuente de poder",
+      "Buffer Chamber"
     ],
     "basicProcedure": [
-      "Preparar el gel de agarosa y dejarlo solidificar en la bandeja con el peine puesto.",
-      "Retirar el peine y colocar la bandeja en la cuba con los pocillos junto al polo negativo.",
-      "Cubrir el gel con buffer de corrida hasta la marca indicada.",
-      "Cargar las muestras en los pocillos con micropipeta, sin perforar el gel.",
-      "Tapar la cuba, conectar la fuente respetando la polaridad y fijar el voltaje.",
-      "Al terminar la corrida, apagar la fuente y desconectar antes de abrir la tapa."
+      "Preparar el gel de agarosa o poliacrilamida y colocarlo en el molde con el peine",
+      "Una vez solidificado, retirar el peine y colocar el gel en la cubeta, cubriéndolo con buffer de corrida hasta la línea de llenado",
+      "Cargar las muestras (mezcladas con buffer de carga) en los pocillos con una micropipeta",
+      "Cerrar la tapa Super Safe y conectar los cables a la fuente de poder respetando la polaridad",
+      "Encender la fuente de poder y ajustar el voltaje/corriente según el protocolo (20-150V), verificando la formación de burbujas en los electrodos",
+      "Permitir que la corrida se ejecute durante el tiempo recomendado (60-120 minutos)",
+      "Apagar la fuente de poder antes de abrir la tapa",
+      "Retirar el gel para su visualización con transiluminador UV",
+      "Enjuagar la cubeta y los electrodos con agua destilada"
     ],
     "ppe": [
-      "Bata de laboratorio",
       "Guantes de nitrilo",
-      "Gafas de seguridad"
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos",
+      "Protección adicional si se usa bromuro de etidio"
     ],
     "risks": [
-      "Descarga eléctrica al abrir la tapa o tocar el buffer con la fuente encendida.",
-      "Exposición a colorantes intercalantes de ADN, que son mutagénicos."
+      "Electrocución por contacto con electrodos energizados o buffer conductor",
+      "Exposición a bromuro de etidio u otros marcadores intercalantes (mutagénicos)",
+      "Quemaduras por contacto con buffer caliente"
     ],
-    "relatedPractices": [
-      "Práctica 7: Electroforesis de ADN en gel de agarosa"
-    ],
+    "relatedPractices": [],
     "sources": [
       {
-        "title": "Manual de bioseguridad del laboratorio UTEQ",
-        "page": 33,
-        "documentId": "bioseguridad_uteq"
+        "title": "Guia de referencia general - Camara de electroforesis horizontal Owl (Thermo) EasyCast B2",
+        "page": null,
+        "documentId": "guia_de_referencia_general_camara_de_electroforesis_horizontal_owl_thermo_easycast_b2",
+        "snippet": null
       },
       {
-        "title": "Guía de prácticas de Biología Molecular UTEQ",
-        "page": 17,
-        "documentId": "guia_biomol_2024"
+        "title": "Normas de seguridad - Camara de electroforesis horizontal Owl (Thermo) EasyCast B2",
+        "page": null,
+        "documentId": "normas_de_seguridad_camara_de_electroforesis_horizontal_owl_thermo_easycast_b2",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "centrifuga_ohaus_frontier_5718r",
+    "displayName": "Centrífuga Refrigerada OHAUS Frontier FC5718R",
+    "shortDescription": "Centrífuga universal refrigerada de laboratorio que separa componentes de muestras según su densidad mediante la aplicación de fuerza centrífuga. Modelo de alta capacidad con control de temperatura.",
+    "function": "Separar componentes de una muestra (por ejemplo suero, precipitados o partículas) según su densidad, mediante la aplicación de fuerza centrífuga. El rotor gira a alta velocidad empujando las partículas de mayor densidad hacia el fondo del tubo, mientras el sobrenadante de menor densidad permanece en la parte superior. Incluye sistema de refrigeración para muestras termosensibles.",
+    "components": [
+      "Rotor de ángulo fijo o basculante",
+      "Cámara de centrifugado con tapa de seguridad",
+      "Panel de control (velocidad/RCF, tiempo, temperatura)",
+      "Sistema de frenado y detección de desbalance",
+      "Sistema de refrigeración",
+      "Pantalla LCD con 4 campos",
+      "Botones de control (RPM|RCF, Time, Accel/Decel, Temp/Setup, Prog/Setup, Store, Quick Spin, Stop, Door Open)",
+      "Perilla de ajuste",
+      "Cierre electromagnético de tapa"
+    ],
+    "basicProcedure": [
+      "Verificar que el voltaje/frecuencia de red coincidan con la placa de datos trasera",
+      "Conectar a un tomacorriente con tierra, protegido por disyuntor de 16A tipo K",
+      "Encender con el Main Power Switch",
+      "Abrir la tapa con el botón Door Open",
+      "Colocar el rotor verticalmente en el eje del motor y apretar la tuerca de fijación en sentido horario con la llave de rotor incluida",
+      "Verificar que el rotor esté correctamente instalado y en buen estado",
+      "Balancear los tubos colocando pares de igual peso en posiciones opuestas del rotor",
+      "Cerrar la tapa (el cierre electromagnético se activa automáticamente)",
+      "Preseleccionar velocidad/RCF con la tecla RPM|RCF y la perilla de ajuste",
+      "Preseleccionar tiempo con la tecla Time",
+      "Opcionalmente preseleccionar Accel/Decel y Temp/Setup",
+      "Iniciar con Start o Quick Spin para corrida corta",
+      "Esperar a que el rotor se detenga por completo antes de abrir la tapa",
+      "Retirar los tubos con cuidado y limpiar cualquier derrame dentro de la cámara"
+    ],
+    "ppe": [
+      "Guantes según la naturaleza de la muestra",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Golpes o lesiones por apertura de la tapa con el rotor en movimiento",
+      "Rotura de tubos por desbalance o exceso de velocidad",
+      "Contacto con partes móviles del rotor",
+      "Exposición a sustancias peligrosas o infecciosas",
+      "Riesgo de aplastamiento al cerrar la tapa",
+      "Choque eléctrico si se abre el equipo",
+      "Lesiones por levantamiento manual del equipo (60 kg de peso)",
+      "Quemaduras por contacto con rotor o muestras a temperaturas extremas"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Centrifuga refrigerada Ohaus Frontier 5718R",
+        "page": null,
+        "documentId": "guia_de_referencia_general_centrifuga_refrigerada_ohaus_frontier_5718r",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Ohaus Frontier FC5718R",
+        "page": null,
+        "documentId": "manual_del_fabricante_ohaus_frontier_fc5718r",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Centrifuga refrigerada Ohaus Frontier 5718R",
+        "page": null,
+        "documentId": "normas_de_seguridad_centrifuga_refrigerada_ohaus_frontier_5718r",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "destilador_de_agua_metalico_ac_l4",
+    "displayName": "Destilador de Agua Metálico AC-L4",
+    "shortDescription": "Equipo de laboratorio que produce agua destilada de alta pureza mediante calentamiento, evaporación y condensación del agua de alimentación.",
+    "function": "Producir agua destilada de alta pureza para uso en reactivos, preparación de soluciones y limpieza de material de laboratorio. El equipo calienta agua hasta ebullición, condensa el vapor generado (libre de sales y minerales) y lo recolecta en estado líquido.",
+    "components": [
+      "Cámara de ebullición/caldera",
+      "Resistencia de calentamiento",
+      "Condensador",
+      "Depósito de agua de alimentación",
+      "Recipiente colector de agua destilada",
+      "Válvula de drenaje",
+      "Entrada de agua",
+      "Control/sensor de nivel",
+      "Salida de agua destilada",
+      "Salida de exceso de vapor"
+    ],
+    "basicProcedure": [
+      "Verificar que el voltaje de red corresponda al indicado en la placa del equipo y que la instalación soporte al menos 14A (a 230V)",
+      "Colocar el destilador sobre una superficie plana, cerca del suministro de agua",
+      "Conectar la entrada de agua al grifo con la manguera suministrada, asegurada con abrazadera",
+      "Conectar una manguera a la salida de agua de drenaje hacia un desagüe en nivel inferior",
+      "Conectar una manguera a la salida de agua destilada hacia un recipiente de recolección en nivel inferior",
+      "Abrir el grifo y verificar que no haya fugas; abrir ligeramente la válvula de entrada de agua",
+      "Encender el aparato con el interruptor",
+      "Verificar que el agua fluya de forma continua hacia el condensador y el recipiente colector",
+      "Recolectar el agua destilada en un envase limpio, descartando los primeros mililitros si el protocolo lo indica",
+      "Apagar el equipo antes de que el depósito de alimentación se vacíe por completo",
+      "Dejar enfriar antes de manipular la caldera o realizar limpieza"
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras por contacto con la caldera o el agua caliente",
+      "Quemadura por vapor al tocar la superficie superior durante el funcionamiento",
+      "Sobrecalentamiento por operar sin agua de alimentación"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Destilador de agua AC-L4",
+        "page": null,
+        "documentId": "guia_de_referencia_general_destilador_de_agua_ac_l4",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Destilador de agua AC-L4",
+        "page": null,
+        "documentId": "normas_de_seguridad_destilador_de_agua_ac_l4",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "escaner_de_cama_plana_flatbed_hp_scanjet_2400",
+    "displayName": "Escáner de cama plana HP ScanJet 2400",
+    "shortDescription": "Equipo de escaneo de cama plana que digitaliza imágenes, documentos y muestras mediante captura óptica para análisis o archivo digital.",
+    "function": "Digitalizar imágenes, documentos o muestras (por ejemplo geles o placas) mediante captura óptica para su análisis o archivo digital. Un sensor óptico se desplaza bajo el cristal de la cama, capturando línea por línea la luz reflejada o transmitida por el objeto, para reconstruir una imagen digital.",
+    "components": [
+      "Cristal/cama plana de escaneo",
+      "Tapa o cubierta",
+      "Sensor óptico y sistema de iluminación",
+      "Cable de datos (USB) y de alimentación",
+      "Software de control asociado"
+    ],
+    "basicProcedure": [
+      "Instalar primero el software/driver del escáner desde el CD antes de conectar el hardware",
+      "Conectar el adaptador de corriente externo (12V) al escáner y a un tomacorriente",
+      "Conectar el cable USB entre el escáner y el computador",
+      "Limpiar el cristal de escaneo antes de colocar el documento o muestra",
+      "Colocar el objeto a escanear boca abajo sobre el cristal, alineado con las guías",
+      "Cerrar la tapa y configurar la resolución y el formato de salida en el software",
+      "Presionar el botón SCAN o COPY en el panel frontal, o iniciar desde el software HP Director",
+      "Guardar el archivo digital resultante y retirar el objeto escaneado"
+    ],
+    "ppe": [
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición ocular a la luz de escaneo (evitar mirar directamente durante el proceso)",
+      "Riesgo eléctrico por cables dañados",
+      "Presencia de mercurio en la lámpara fluorescente (menos de 5 mg)"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Escaner de cama plana HP ScanJet 2400",
+        "page": null,
+        "documentId": "guia_de_referencia_general_escaner_de_cama_plana_hp_scanjet_2400",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - HP ScanJet 2400",
+        "page": null,
+        "documentId": "manual_del_fabricante_hp_scanjet_2400",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Escaner de cama plana HP ScanJet 2400",
+        "page": null,
+        "documentId": "normas_de_seguridad_escaner_de_cama_plana_hp_scanjet_2400",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "espectrofotometro_thermo_nanodrop_lite_plus",
+    "displayName": "Espectrofotómetro Thermo Scientific NanoDrop Lite Plus",
+    "shortDescription": "Espectrofotómetro UV de microvolumen diseñado para medir la absorbancia de ácidos nucleicos y proteínas purificadas. Retiene la muestra por tensión superficial entre dos pedestales de acero inoxidable.",
+    "function": "Medir la absorbancia o transmitancia de muestras a longitudes de onda específicas (230, 260, 280 y 340 nm) para cuantificar concentraciones de analitos como ácidos nucleicos, proteínas y compuestos coloreados. Utiliza la Ley de Beer-Lambert comparando la intensidad de luz transmitida con un blanco de referencia.",
+    "components": [
+      "Fuente de luz (lámpara UV/visible o LED xenón)",
+      "Monocromador (red de difracción o filtro)",
+      "Dos pedestales de acero inoxidable con fibras ópticas embebidas",
+      "Detector fotoeléctrico",
+      "Pantalla táctil con interfaz de control",
+      "Puerto USB para transferencia de datos",
+      "Entrada de alimentación DC (12V)",
+      "Interruptor On/Off en la parte posterior",
+      "Conector para impresora opcional"
+    ],
+    "basicProcedure": [
+      "Conectar el cable de la fuente de 12V al equipo y a un tomacorriente con tierra",
+      "Accionar el interruptor On/Off ubicado en la parte posterior del equipo",
+      "Esperar el tiempo de calentamiento/estabilización indicado por el fabricante",
+      "Limpiar la superficie de los pedestales antes de cada medición",
+      "Levantar el brazo del pedestal",
+      "Pipetear 1-2 microlitros de blanco (solvente o buffer) sobre el pedestal inferior",
+      "Bajar el brazo e iniciar la medición de blanco desde la pantalla",
+      "Levantar el brazo y limpiar ambos pedestales con una toalla sin pelusa",
+      "Pipetear 1-2 microlitros de muestra sobre el pedestal inferior",
+      "Bajar el brazo e iniciar la medición de la muestra",
+      "Registrar la lectura de absorbancia/concentración reportada",
+      "Levantar el brazo y limpiar ambos pedestales para evitar contaminación cruzada"
+    ],
+    "ppe": [
+      "Gafas de seguridad",
+      "Guantes según la muestra a utilizar",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a radiación UV de la lámpara",
+      "Exposición a reactivos y muestras químicas en los pedestales",
+      "Bordes metálicos filosos si se retira la cubierta del equipo",
+      "Fibra óptica delicada expuesta al operar sin cubierta",
+      "Formación de burbujas en muestras que pueden interferir con la medición"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Espectrofotometro de microvolumen Thermo Scientific NanoDrop Lite Plus",
+        "page": null,
+        "documentId": "guia_de_referencia_general_espectrofotometro_de_microvolumen_thermo_scientific_nanodrop_lite_plus",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Thermo NanoDrop Lite Plus",
+        "page": null,
+        "documentId": "manual_del_fabricante_thermo_nanodrop_lite_plus",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Espectrofotometro de microvolumen Thermo Scientific NanoDrop Lite Plus",
+        "page": null,
+        "documentId": "normas_de_seguridad_espectrofotometro_de_microvolumen_thermo_scientific_nanodrop_lite_plus",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "espectrofotometro_visible_digital_unico_1205",
+    "displayName": "Espectrofotómetro Visible Digital UNICO S-1205",
+    "shortDescription": "Equipo de laboratorio que mide la absorbancia o transmitancia de muestras a determinadas longitudes de onda. Utiliza una fuente de luz, monocromador y detector para cuantificar concentraciones de analitos como ácidos nucleicos, proteínas o compuestos coloreados.",
+    "function": "Medir la absorbancia o transmitancia de una muestra a determinadas longitudes de onda para cuantificar concentraciones de analitos. Una fuente emite luz que atraviesa un monocromador para seleccionar la longitud de onda; el haz resultante pasa a través de la muestra y un detector mide la intensidad de luz transmitida, comparándola con un blanco de referencia para calcular la absorbancia según la Ley de Beer-Lambert.",
+    "components": [
+      "Fuente de luz (lámpara UV/visible o LED)",
+      "Monocromador (red de difracción de 1200 líneas/mm)",
+      "Compartimento porta-cubetas o pedestal de muestra (portador estándar de 4 posiciones para cubetas de 10 mm)",
+      "Detector fotoeléctrico",
+      "Pantalla LCD con teclado numérico tipo membrana y botones de navegación",
+      "Puerto USB para software opcional"
+    ],
+    "basicProcedure": [
+      "Encender el equipo y esperar el tiempo de calentamiento/estabilización indicado por el fabricante",
+      "Limpiar la cubeta o el pedestal de muestra antes de cada medición",
+      "Realizar la medición de blanco (referencia) con el solvente o buffer correspondiente",
+      "Colocar la muestra y seleccionar la longitud de onda o el método de medición requerido",
+      "Registrar la lectura de absorbancia/concentración reportada por el equipo",
+      "Limpiar la cubeta o el pedestal después de cada muestra para evitar contaminación cruzada"
+    ],
+    "ppe": [
+      "Gafas de seguridad",
+      "Guantes según la muestra",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a radiación UV de la lámpara",
+      "Exposición a reactivos/muestras químicas en las cubetas"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Espectrofotometro visible Unico 1205",
+        "page": null,
+        "documentId": "guia_de_referencia_general_espectrofotometro_visible_unico_1205",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Espectrofotometro visible Unico 1205",
+        "page": null,
+        "documentId": "normas_de_seguridad_espectrofotometro_visible_unico_1205",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "esterilizador_a_presion_all_american_25x",
+    "displayName": "Esterilizador a Presión All American 25X",
+    "shortDescription": "Autoclave de vapor y presión que esteriliza materiales, medios de cultivo, instrumental y residuos biológicos mediante vapor de agua saturado a alta presión y temperatura.",
+    "function": "Esterilizar materiales, medios de cultivo, instrumental y residuos biológicos mediante vapor de agua saturado a alta presión y temperatura. El agua se calienta en una cámara sellada generando vapor; la presión elevada permite alcanzar temperaturas superiores a 100°C (típicamente 121°C), logrando la destrucción de microorganismos, incluidas esporas.",
+    "components": [
+      "Cámara de presión con tapa/puerta hermética",
+      "Válvula de seguridad y manómetro/indicador de presión",
+      "Sistema de calentamiento (resistencia eléctrica)",
+      "Válvula de purga de aire y vapor",
+      "Canastillas o bandejas porta-material",
+      "Panel/controlador de ciclo (tiempo, temperatura, presión)"
+    ],
+    "basicProcedure": [
+      "Verificar el nivel de agua en la cámara según lo indicado por el fabricante",
+      "Cargar el material a esterilizar sin sobrecargar la canastilla, dejando espacio para la circulación del vapor",
+      "Cerrar la tapa/puerta y asegurar los seguros o mariposas de forma simétrica y uniforme",
+      "Seleccionar el ciclo, tiempo y temperatura según el tipo de carga (líquidos, sólidos, material contaminado)",
+      "Purgar el aire de la cámara antes de iniciar el conteo de esterilización",
+      "Esperar a que la presión descienda a cero de forma natural antes de abrir la tapa; nunca forzar la apertura",
+      "Retirar el material con protección térmica adecuada y dejar enfriar antes de manipular líquidos"
+    ],
+    "ppe": [
+      "Guantes termorresistentes de manga larga",
+      "Careta o gafas de seguridad",
+      "Bata de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras graves por vapor a alta presión y temperatura",
+      "Explosión por apertura prematura de la tapa",
+      "Quemaduras por contacto con material recién esterilizado"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Esterilizador a presion All American 25X",
+        "page": null,
+        "documentId": "guia_de_referencia_general_esterilizador_a_presion_all_american_25x",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - All American 25X",
+        "page": null,
+        "documentId": "manual_del_fabricante_all_american_25x",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Esterilizador a presion All American 25X",
+        "page": null,
+        "documentId": "normas_de_seguridad_esterilizador_a_presion_all_american_25x",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "esterilizador_a_vapor_sanyo_mls_3751l",
+    "displayName": "Esterilizador a Vapor Sanyo MLS-3751L",
+    "shortDescription": "Autoclave de sobremesa que esteriliza materiales, medios de cultivo, instrumental y residuos biológicos mediante vapor de agua saturado a alta presión y temperatura.",
+    "function": "Esterilizar materiales, medios de cultivo, instrumental y residuos biológicos utilizando vapor de agua saturado a alta presión y temperatura (típicamente 121°C a 1 atm de sobrepresión) para destruir microorganismos, incluidas esporas.",
+    "components": [
+      "Cámara de presión con tapa/puerta hermética",
+      "Válvula de seguridad y manómetro/indicador de presión",
+      "Sistema de calentamiento (resistencia eléctrica)",
+      "Válvula de purga de aire y vapor",
+      "Canastillas o bandejas porta-material",
+      "Panel/controlador de ciclo (tiempo, temperatura, presión)",
+      "Exhaust tank (tanque de escape)",
+      "Mango de apertura/cierre de la tapa",
+      "Manija móvil para desbloqueo de la tapa",
+      "Válvula de escape manual",
+      "Salida de drenaje"
+    ],
+    "basicProcedure": [
+      "Instalar el tanque de escape en la parte trasera del equipo",
+      "Establecer el interruptor de encendido en posición ON",
+      "Verificar el nivel de agua en la cámara según lo indicado por el fabricante",
+      "Cargar el material a esterilizar sin sobrecargar la canastilla, dejando espacio para la circulación del vapor",
+      "Cerrar la tapa/puerta y asegurar los seguros de forma simétrica y uniforme",
+      "Seleccionar el ciclo, tiempo y temperatura según el tipo de carga (líquidos, sólidos, material contaminado)",
+      "Purgar el aire de la cámara antes de iniciar el conteo de esterilización si el equipo lo requiere de forma manual",
+      "Esperar a que la presión descienda a cero de forma natural antes de abrir la tapa",
+      "Retirar el material con protección térmica adecuada y dejar enfriar antes de manipular líquidos"
+    ],
+    "ppe": [
+      "Guantes termorresistentes de manga larga",
+      "Careta o gafas de seguridad",
+      "Bata de laboratorio",
+      "Gafas de seguridad",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras graves por vapor a alta presión y temperatura",
+      "Explosión por apertura prematura de la tapa",
+      "Quemaduras por contacto con material recién esterilizado",
+      "Quemaduras por contacto con agua caliente en el drenaje",
+      "Choque eléctrico",
+      "Escaldaduras por escape de vapor desde la válvula de seguridad"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Esterilizador a vapor Sanyo MLS-3751L",
+        "page": null,
+        "documentId": "guia_de_referencia_general_esterilizador_a_vapor_sanyo_mls_3751l",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Sanyo MLS-3751L y MLS-3781L",
+        "page": null,
+        "documentId": "manual_del_fabricante_sanyo_mls_3751l_y_mls_3781l",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Esterilizador a vapor Sanyo MLS-3751L",
+        "page": null,
+        "documentId": "normas_de_seguridad_esterilizador_a_vapor_sanyo_mls_3751l",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "esterilizador_binder_redline_ri_53",
+    "displayName": "Incubadora Binder redLINE RI 53",
+    "shortDescription": "Incubadora de laboratorio con convección natural que mantiene temperaturas controladas entre 7 y 70 °C. Diseñada para cultivar microorganismos a temperaturas precisas.",
+    "function": "Cultivar microorganismos a temperaturas definidas, realizar recuentos de placa para determinar el número de microorganismos, y detectar gérmenes patógenos en muestras. Proporciona control preciso de temperatura con ajuste de 0,1 °C.",
+    "components": [
+      "Cámara aislada térmicamente",
+      "Resistencias de calentamiento",
+      "Ventilador de circulación (convección natural)",
+      "Bandejas de acero inoxidable (2 incluidas)",
+      "Panel de control de temperatura y tiempo",
+      "Válvula o rejilla de ventilación"
+    ],
+    "basicProcedure": [
+      "Verificar que la cámara esté limpia y libre de materiales inflamables antes de encender",
+      "Colocar el material en las bandejas, dejando espacio entre piezas para la circulación de aire",
+      "Cerrar la puerta y programar la temperatura y el tiempo requeridos según el protocolo",
+      "Encender el equipo y esperar a que alcance la temperatura programada antes de contar el tiempo de proceso",
+      "Al finalizar, apagar el equipo y dejar enfriar antes de abrir la puerta",
+      "Usar guantes térmicos para manipular bandejas y material caliente"
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras por contacto con la cámara o el material caliente",
+      "Riesgo de incendio si se introducen materiales inflamables o volátiles",
+      "Peligro eléctrico si el equipo se moja durante la operación"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Esterilizador estufa Binder redLINE RI 53",
+        "page": null,
+        "documentId": "guia_de_referencia_general_esterilizador_estufa_binder_redline_ri_53",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Esterilizador estufa Binder redLINE RI 53",
+        "page": null,
+        "documentId": "normas_de_seguridad_esterilizador_estufa_binder_redline_ri_53",
+        "snippet": null
+      },
+      {
+        "title": "Referencia de familia - Binder redLINE RE 53 (el equipo del laboratorio es el RI 53)",
+        "page": null,
+        "documentId": "referencia_de_familia_binder_redline_re_53_el_equipo_del_laboratorio_es_el_ri_53",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "estufa_de_secado_memmert",
+    "displayName": "Estufa de Secado Memmert",
+    "shortDescription": "Horno de secado y esterilización que utiliza calor seco a temperaturas controladas para secar materiales, deshidratar muestras o esterilizar instrumental.",
+    "function": "Secar materiales, deshidratar muestras o esterilizar instrumental mediante calor seco a temperaturas controladas y constantes. Las resistencias eléctricas calientan el aire dentro de una cámara aislada, mientras que un termostato regula la temperatura programada. En algunos modelos, un ventilador interno distribuye el calor de forma uniforme.",
+    "components": [
+      "Cámara aislada térmicamente",
+      "Resistencias de calentamiento",
+      "Ventilador de circulación (según modelo)",
+      "Bandejas o rejillas internas",
+      "Panel de control de temperatura y tiempo",
+      "Válvula o rejilla de ventilación",
+      "Sensor PT100 de temperatura",
+      "Limitador mecánico de sobretemperatura (TB)",
+      "Controlador electrónico PID",
+      "Puerta con sistema de cierre"
+    ],
+    "basicProcedure": [
+      "Verificar que la cámara esté limpia y libre de materiales inflamables antes de encender",
+      "Colocar el material en las bandejas, dejando espacio entre piezas para la circulación de aire",
+      "Cerrar la puerta y programar la temperatura y el tiempo requeridos según el protocolo",
+      "Encender el equipo y esperar a que alcance la temperatura programada antes de contar el tiempo de proceso",
+      "Al finalizar, apagar el equipo y dejar enfriar antes de abrir la puerta",
+      "Usar guantes térmicos para manipular bandejas y material caliente"
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Quemaduras por contacto con la cámara o el material caliente",
+      "Incendio por materiales inflamables dentro de la cámara",
+      "Choque eléctrico"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Estufa de secado Memmert",
+        "page": null,
+        "documentId": "guia_de_referencia_general_estufa_de_secado_memmert",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Estufa de secado Memmert",
+        "page": null,
+        "documentId": "normas_de_seguridad_estufa_de_secado_memmert",
+        "snippet": null
+      },
+      {
+        "title": "Referencia de familia - Memmert series UNB y UFB de mandos analogicos",
+        "page": null,
+        "documentId": "referencia_de_familia_memmert_series_unb_y_ufb_de_mandos_analogicos",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "fluorometro_invitrogen_qubit_q32857",
+    "displayName": "Fluorómetro Invitrogen Qubit Q32857",
+    "shortDescription": "Equipo de fluorometría que cuantifica ácidos nucleicos o proteínas mediante la detección de fluorescencia emitida por fluoróforos específicos unidos a la muestra.",
+    "function": "Cuantificar ácidos nucleicos (DNA y RNA) o proteínas con alta especificidad y sensibilidad. Una fuente de excitación (LED azul o rojo) ilumina la muestra marcada con un fluoróforo, que emite luz a mayor longitud de onda, la cual es captada por un detector y convertida en una lectura de concentración mediante una curva de calibración.",
+    "components": [
+      "Fuente de excitación (LED azul ~460 nm y LED rojo ~635 nm)",
+      "Compartimento porta-tubos",
+      "Filtros de excitación/emisión",
+      "Detector fotoelectrico",
+      "Pantalla LCD pequeña",
+      "4 botones rojos de control"
+    ],
+    "basicProcedure": [
+      "Colocar el instrumento sobre superficie plana y seca",
+      "Conectar el cable de poder al fluorómetro y al tomacorriente (se enciende automáticamente)",
+      "Seleccionar el ensayo correspondiente en el equipo",
+      "Calibrar el equipo con los estándares provistos por el fabricante (insertar Estándar #1, luego Estándar #2, y si es necesario Estándar #3)",
+      "Preparar la muestra con el reactivo/fluoróforo específico según el protocolo del ensayo",
+      "Incubar la mezcla el tiempo indicado por el fabricante del kit antes de la lectura",
+      "Insertar el tubo en el compartimento de lectura y cerrar la tapa",
+      "Registrar la lectura de concentración que aparece en la pantalla",
+      "Retirar el tubo y limpiar el compartimento antes de la siguiente lectura",
+      "Apagar el equipo seleccionando 'Power OFF' en la pantalla HOME y presionando GO"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a reactivos fluorescentes (algunos son mutagénicos)",
+      "Exposición a la fuente de excitación (LED)",
+      "Riesgo eléctrico por corriente de alimentación",
+      "Errores de lectura por cambios de temperatura si se sostiene el tubo en la mano",
+      "Quemaduras o lesiones por contacto con equipamiento en funcionamiento"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Fluorometro Invitrogen Qubit Q32857",
+        "page": null,
+        "documentId": "guia_de_referencia_general_fluorometro_invitrogen_qubit_q32857",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Invitrogen Qubit Fluorometer",
+        "page": null,
+        "documentId": "manual_del_fabricante_invitrogen_qubit_fluorometer",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Fluorometro Invitrogen Qubit Q32857",
+        "page": null,
+        "documentId": "normas_de_seguridad_fluorometro_invitrogen_qubit_q32857",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "fuente_de_poder_bio_rad_powerpac_3000",
+    "displayName": "Fuente de Poder Bio-Rad PowerPac 3000",
+    "shortDescription": "Fuente de poder para electroforesis que suministra y regula voltaje y corriente eléctrica constante. Convierte corriente alterna en corriente continua regulada para la migración de moléculas en cámaras de electroforesis.",
+    "function": "Suministrar y regular el voltaje/corriente eléctrica constante requerida para la migración de moléculas (ADN, ARN o proteínas) en cámaras de electroforesis. Permite fijar el voltaje, la corriente o la potencia de salida según el modo de trabajo seleccionado, con límites de seguridad ajustables.",
+    "components": [
+      "Panel de control (voltaje, corriente, potencia, tiempo)",
+      "Pantalla LCD retroiluminada con menú",
+      "Teclado numérico y teclas programables",
+      "Salidas de conexión tipo banana para electrodos",
+      "Circuito de regulación y protección",
+      "4 pares de conectores de salida en el frente",
+      "Interruptor de encendido (parte trasera)"
+    ],
+    "basicProcedure": [
+      "Conectar la(s) celda(s) de electroforesis a la fuente de poder respetando la polaridad (rojo/positivo, negro/negativo)",
+      "Verificar que la cámara de electroforesis esté correctamente conectada y cerrada antes de energizar",
+      "Encender la fuente presionando el lado 'I' del interruptor de encendido ubicado en la parte trasera",
+      "Seleccionar modo MANUAL o PROGRAM en el menú principal",
+      "Elegir el parámetro constante (voltaje, corriente o potencia) con la tecla programable",
+      "Ingresar el valor requerido con el teclado numérico",
+      "Elegir control por TIME o V-HOUR",
+      "Presionar la tecla Start para iniciar la corrida",
+      "Al finalizar, apagar la fuente y desconectar los cables antes de manipular la cámara de electroforesis"
+    ],
+    "ppe": [
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos",
+      "Evitar manipular conexiones con manos húmedas"
+    ],
+    "risks": [
+      "Electrocución por alto voltaje (hasta cientos de voltios)",
+      "Cortocircuito por buffer derramado sobre conexiones",
+      "Quemaduras por contacto con electrodos energizados",
+      "Arcos eléctricos en cables de alta tensión"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Fuente de poder para electroforesis Bio-Rad PowerPac 3000",
+        "page": null,
+        "documentId": "guia_de_referencia_general_fuente_de_poder_para_electroforesis_bio_rad_powerpac_3000",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Fuente de poder para electroforesis Bio-Rad PowerPac 3000",
+        "page": null,
+        "documentId": "normas_de_seguridad_fuente_de_poder_para_electroforesis_bio_rad_powerpac_3000",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "fuente_de_poder_labnet_enduro_300v",
+    "displayName": "Fuente de Poder Labnet Enduro 300V",
+    "shortDescription": "Equipo que suministra y regula voltaje y corriente eléctrica constante para realizar electroforesis de moléculas biológicas como ADN, ARN y proteínas.",
+    "function": "Convierte la corriente alterna de la red eléctrica en corriente continua regulada, permitiendo fijar el voltaje, la corriente o la potencia de salida según el modo de trabajo seleccionado. Se utiliza para controlar la migración de moléculas en cámaras de electroforesis.",
+    "components": [
+      "Panel de control con botones (flechas, MODE, CONSTANT, START/PAUSE, STOP)",
+      "Pantalla LCD retroiluminada",
+      "Salidas de conexión (bananas) para electrodos",
+      "Circuito de regulación y protección",
+      "Entrada de poder AC con selector de voltaje 115/230V",
+      "Interruptor de encendido en parte trasera",
+      "Cajón de fusible"
+    ],
+    "basicProcedure": [
+      "Verificar que la etiqueta de entrada de AC sea compatible con el suministro local",
+      "Colocar la fuente sobre mesa nivelada con espacio libre para ventilación",
+      "Asegurarse de que el interruptor trasero esté apagado antes de conectar el cable de poder",
+      "Conectar el cable de poder a la entrada de AC con tierra",
+      "Conectar los cables del equipo de electroforesis respetando polaridad: rojo (+) al conector rojo, negro (-) al conector negro",
+      "Presionar el interruptor de encendido en la parte trasera",
+      "Presionar CONSTANT para elegir modo de voltaje o corriente constante",
+      "Presionar MODE para seleccionar y ajustar con las flechas el valor principal (V o mA), luego TIME, y el valor restante",
+      "Presionar START/PAUSE para iniciar la corrida",
+      "Para pausar, presionar START/PAUSE de nuevo; para detener, presionar STOP",
+      "Apagar la fuente y esperar al menos 5 segundos antes de desconectar los cables"
+    ],
+    "ppe": [
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Electrocución por alto voltaje (hasta 300V)",
+      "Cortocircuito por buffer derramado sobre conexiones",
+      "Daño del equipo por voltaje/corriente inadecuados"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Fuente de poder para electroforesis Labnet Enduro 300V",
+        "page": null,
+        "documentId": "guia_de_referencia_general_fuente_de_poder_para_electroforesis_labnet_enduro_300v",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Fuente de poder para electroforesis Labnet Enduro 300V",
+        "page": null,
+        "documentId": "normas_de_seguridad_fuente_de_poder_para_electroforesis_labnet_enduro_300v",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "gps_portatil_de_mano_garmin_gpsmap_78",
+    "displayName": "GPS Portátil de Mano Garmin GPSMAP 78",
+    "shortDescription": "Dispositivo GPS portátil de mano que determina coordenadas geográficas mediante señales satelitales. Utiliza trilateración para calcular posición exacta en la superficie terrestre.",
+    "function": "Determinar coordenadas geográficas (latitud, longitud, altitud) para el registro de puntos de muestreo, navegación en campo y georreferenciación de datos. Permite marcar waypoints, grabar tracks, crear y navegar rutas, y exportar datos recolectados.",
+    "components": [
+      "Antena receptora de señal satelital",
+      "Pantalla TFT color (2.6 pulgadas, 160x240 px)",
+      "Botones físicos (FIND/MOB, power, QUIT, PAGE, MENU, ENTER/MARK, joystick de 5 direcciones, +, -)",
+      "Batería (2 pilas AA: alcalinas, NiMH o litio)",
+      "Puerto de datos/carga (mini-USB)",
+      "Puerto serie",
+      "Ranura para tarjeta microSD",
+      "Conector MCX para antena GPS externa",
+      "Compartimento de pilas"
+    ],
+    "basicProcedure": [
+      "Instalar las baterías: deslizar el seguro trasero, retirar la tapa, insertar 2 pilas AA respetando polaridad y volver a colocar la tapa",
+      "Presionar y mantener presionado el botón de encendido (símbolo power) unos segundos hasta que el equipo encienda",
+      "Salir al aire libre a un área abierta y esperar mientras el dispositivo busca satélites (signo de interrogación parpadeante)",
+      "Presionar rápidamente el botón de encendido para ver la página de estado; las barras de señal GPS en verde indican que adquirió posición",
+      "Configurar el sistema de coordenadas y el datum requerido para el trabajo (por ejemplo WGS84)",
+      "Verificar el nivel de batería antes de salir a campo",
+      "Marcar los puntos (waypoints) o registrar la ruta según el protocolo de trabajo",
+      "Guardar y exportar los datos recolectados al finalizar la jornada de campo",
+      "Presionar y mantener el botón de encendido para apagar el equipo",
+      "Guardar el equipo en un lugar seco y protegido tras su uso"
+    ],
+    "ppe": [
+      "Equipo de protección para trabajo de campo según el entorno (calzado, protección solar, etc.)",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Riesgos propios del trabajo de campo (terreno, clima, fauna)",
+      "Bajo riesgo eléctrico/mecánico del propio equipo"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - GPS portatil Garmin GPSMAP 78",
+        "page": null,
+        "documentId": "guia_de_referencia_general_gps_portatil_garmin_gpsmap_78",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Garmin GPSMAP 78 (espanol)",
+        "page": null,
+        "documentId": "manual_del_fabricante_garmin_gpsmap_78_espanol",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - GPS portatil Garmin GPSMAP 78",
+        "page": null,
+        "documentId": "normas_de_seguridad_gps_portatil_garmin_gpsmap_78",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "horno_de_secado_biobase_bov_d149",
+    "displayName": "Horno de Secado Biobase BOV-D149",
+    "shortDescription": "Estufa de secado y esterilización en seco con capacidad de 149 L, controlada por microcomputadora. Diseñada para secar materiales, deshidratar muestras o esterilizar instrumental mediante calor seco a temperaturas controladas.",
+    "function": "Secar materiales, deshidratar muestras o esterilizar instrumental mediante calor seco a temperaturas controladas y constantes. Cuenta con resistencias eléctricas que calientan el aire dentro de una cámara aislada, un ventilador interno que distribuye el calor de forma uniforme, y un termostato que regula la temperatura programada.",
+    "components": [
+      "Cámara aislada térmicamente",
+      "Resistencias de calentamiento",
+      "Ventilador de circulación",
+      "Bandejas o rejillas internas",
+      "Panel de control de temperatura y tiempo con display LED",
+      "Válvula o rejilla de ventilación",
+      "Controlador por microcomputadora",
+      "Alarmas de sobretemperatura y falla de sonda"
+    ],
+    "basicProcedure": [
+      "Verificar que la cámara esté limpia y libre de materiales inflamables antes de encender",
+      "Colocar el material en las bandejas, dejando espacio entre piezas para la circulación de aire",
+      "Cerrar la puerta y programar la temperatura y el tiempo requeridos según el protocolo",
+      "Encender el equipo y esperar a que alcance la temperatura programada antes de contar el tiempo de proceso",
+      "Al finalizar, apagar el equipo y dejar enfriar antes de abrir la puerta",
+      "Usar guantes térmicos para manipular bandejas y material caliente",
+      "Retirar el material una vez enfriado"
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Quemaduras por contacto con la cámara o el material caliente",
+      "Incendio por materiales inflamables dentro de la cámara",
+      "Choque eléctrico"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Horno de secado Biobase BOV-D149",
+        "page": null,
+        "documentId": "guia_de_referencia_general_horno_de_secado_biobase_bov_d149",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Horno de secado Biobase BOV-D149",
+        "page": null,
+        "documentId": "normas_de_seguridad_horno_de_secado_biobase_bov_d149",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "incubadora_agitadora_benchmark_incu_shaker_mini",
+    "displayName": "Incubadora Agitadora Benchmark Incu-Shaker Mini",
+    "shortDescription": "Equipo que combina agitación orbital y control de temperatura para el cultivo de microorganismos en medio líquido. Proporciona aireación y homogeneidad del cultivo durante la incubación.",
+    "function": "Cultivar bacterias y levaduras en medio líquido mediante agitación orbital controlada y mantenimiento de temperatura constante. Replica condiciones óptimas de crecimiento favoreciendo la aireación y distribución uniforme de nutrientes en el cultivo.",
+    "components": [
+      "Cámara con control de temperatura",
+      "Plataforma orbital con clamps",
+      "Panel de control (temperatura, velocidad, tiempo)",
+      "Sistema de calefacción y, en algunos modelos, refrigeración",
+      "Puerta con visor",
+      "Interruptor de poder",
+      "Pantalla táctil"
+    ],
+    "basicProcedure": [
+      "Colocar el interruptor de poder en posición ON",
+      "Esperar a que la pantalla se estabilice en la vista básica de operación",
+      "Programar la temperatura de incubación requerida usando la pantalla táctil",
+      "Esperar la estabilización de la temperatura",
+      "Fijar los recipientes de cultivo a la plataforma con los clamps correspondientes",
+      "Programar la velocidad de agitación (RPM) según el protocolo",
+      "Programar el tiempo de incubación",
+      "Cerrar la puerta y verificar que no existan vibraciones anormales",
+      "Monitorear periódicamente sin abrir la puerta innecesariamente",
+      "Detener la agitación al finalizar",
+      "Retirar los recipientes",
+      "Apagar el equipo"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Bata de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a microorganismos en caso de derrame o rotura de recipientes",
+      "Atrapamiento en el mecanismo de agitación",
+      "Quemaduras por contacto con superficies calientes",
+      "Lesiones por vibración anormal del equipo"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Incubadora agitadora Benchmark Scientific Incu-Shaker Mini",
+        "page": null,
+        "documentId": "guia_de_referencia_general_incubadora_agitadora_benchmark_scientific_incu_shaker_mini",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Incubadora agitadora Benchmark Scientific Incu-Shaker Mini",
+        "page": null,
+        "documentId": "normas_de_seguridad_incubadora_agitadora_benchmark_scientific_incu_shaker_mini",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "luxometro_sper_scientific_840022",
+    "displayName": "Luxómetro Sper Scientific 840022",
+    "shortDescription": "Medidor de luz que mide la iluminancia en lux o foot-candles mediante un sensor fotoelectrónico. Utilizado para verificar condiciones de iluminación en puestos de trabajo, invernaderos y ensayos de fotoperiodo.",
+    "function": "Medir el nivel de iluminancia (lux) en un ambiente. Un sensor fotodiodo convierte la luz incidente en una señal eléctrica proporcional a la intensidad luminosa, que es procesada y mostrada en la pantalla. Permite evaluar condiciones de iluminación en diferentes espacios y aplicaciones.",
+    "components": [
+      "Sensor/fotodetector (fijo o remoto por cable)",
+      "Pantalla LCD de 5 dígitos con barra gráfica",
+      "Botones de control (POWER, HOLD, REC MAX/MIN, LUX/FC, RANGE, ZERO, SOURCE)",
+      "Batería de 9V",
+      "Soporte",
+      "Conector del sensor"
+    ],
+    "basicProcedure": [
+      "Insertar el conector del sensor en el socket de entrada del sensor",
+      "Encender el equipo presionando el botón POWER",
+      "Retirar la tapa protectora del lente del fotosensor",
+      "Seleccionar la unidad de medida (Lux o Foot-candles) con el botón LUX/FC",
+      "Seleccionar el tipo de fuente de luz con el botón SOURCE (mercurio, sodio, fluorescente o tungsteno)",
+      "Seleccionar el rango máximo con el botón RANGE",
+      "Apuntar el fotosensor hacia la fuente de luz",
+      "Esperar a que la lectura se estabilice antes de registrar el valor",
+      "Repetir la medición en los puntos necesarios según el plan de muestreo",
+      "Colocar la tapa protectora en el lente",
+      "Apagar el equipo presionando el botón POWER"
+    ],
+    "ppe": [
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes apropiados al procedimiento",
+      "Equipo de protección según el entorno de medición (casco, calzado de seguridad si aplica)",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Riesgo mínimo; principalmente relacionado con el entorno de medición (campo, alturas, etc.)",
+      "Daño al sensor por exposición a fuentes de luz intensa directa (ej. láser)"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Luxometro Sper Scientific 840022",
+        "page": null,
+        "documentId": "guia_de_referencia_general_luxometro_sper_scientific_840022",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Sper Scientific 840022",
+        "page": null,
+        "documentId": "manual_del_fabricante_sper_scientific_840022",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Luxometro Sper Scientific 840022",
+        "page": null,
+        "documentId": "normas_de_seguridad_luxometro_sper_scientific_840022",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "medidor_multiparametro_ohaus_aquasearcher",
+    "displayName": "Medidor Multiparámetro OHAUS AquaSearcher",
+    "shortDescription": "Equipo de mesa que mide simultáneamente varios parámetros fisicoquímicos del agua, como pH, conductividad, oxígeno disuelto, salinidad y sólidos disueltos totales, mediante electrodos intercambiables.",
+    "function": "Medir de forma simultanea o intercambiable varios parametros fisicoquimicos del agua mediante electrodos intercambiables. Cada electrodo genera una señal proporcional a la concentración del analito en la muestra, que el equipo procesa y muestra en las unidades correspondientes.",
+    "components": [
+      "Electrodos/sondas intercambiables (pH, conductividad, OD, etc.)",
+      "Cuerpo del medidor con pantalla LCD de 6.5 pulgadas",
+      "Teclado táctil capacitivo",
+      "Cable de conexión de la sonda",
+      "Soluciones de calibración específicas por parámetro"
+    ],
+    "basicProcedure": [
+      "Verificar el estado del electrodo/sonda correspondiente al parámetro a medir",
+      "Calibrar el equipo con las soluciones patrón específicas antes de cada sesión de medición",
+      "Enjuagar el electrodo con agua destilada antes de sumergirlo en la muestra",
+      "Sumergir el electrodo en la muestra y esperar a que la lectura se estabilice",
+      "Registrar el valor mostrado y el parámetro correspondiente",
+      "Enjuagar el electrodo y guardarlo en su solución de almacenamiento adecuada al finalizar"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a la muestra de agua (posible contaminación química o biológica)",
+      "Rotura del electrodo de vidrio"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Medidor multiparametro de mesa Ohaus AquaSearcher",
+        "page": null,
+        "documentId": "guia_de_referencia_general_medidor_multiparametro_de_mesa_ohaus_aquasearcher",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Medidor multiparametro de mesa Ohaus AquaSearcher",
+        "page": null,
+        "documentId": "normas_de_seguridad_medidor_multiparametro_de_mesa_ohaus_aquasearcher",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "microcentrifuga_heal_force_neofuge_13r",
+    "displayName": "Microcentrífuga Refrigerada Heal Force Neofuge 13R",
+    "shortDescription": "Microcentrífuga refrigerada que centrifuga volúmenes pequeños en microtubos tipo Eppendorf de 0.2-2 mL para separar componentes de muestras.",
+    "function": "Separa componentes de muestras de pequeño volumen o realiza spin-down rápido de reactivos mediante la generación de fuerza centrífuga. Un motor hace girar un rotor de ángulo fijo a alta velocidad, dirigiendo partículas de mayor densidad hacia el fondo del tubo.",
+    "components": [
+      "Rotor para microtubos",
+      "Tapa de seguridad con enclavamiento",
+      "Panel de control (velocidad/RCF, tiempo)",
+      "Sistema de refrigeración",
+      "Pantalla LCD",
+      "Botones Value Set, Start, Stop, Quick Spin, Open"
+    ],
+    "basicProcedure": [
+      "Verificar que los microtubos estén bien cerrados antes de colocarlos en el rotor",
+      "Balancear el rotor colocando tubos de peso equivalente en posiciones opuestas",
+      "Cerrar la tapa de seguridad antes de iniciar el equipo",
+      "Programar la velocidad (RPM/RCF) y el tiempo según el protocolo",
+      "Presionar Start para iniciar la centrifugación",
+      "Esperar a que el rotor se detenga por completo antes de abrir la tapa",
+      "Retirar los tubos con cuidado, verificando que no existan fugas ni roturas"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Rotura de microtubos por exceso de velocidad o desbalance",
+      "Exposición a aerosoles biológicos si un tubo se rompe",
+      "Lesiones por abrir la tapa con el rotor en movimiento"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Microcentrifuga refrigerada Heal Force Neofuge 13R",
+        "page": null,
+        "documentId": "guia_de_referencia_general_microcentrifuga_refrigerada_heal_force_neofuge_13r",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Microcentrifuga refrigerada Heal Force Neofuge 13R",
+        "page": null,
+        "documentId": "normas_de_seguridad_microcentrifuga_refrigerada_heal_force_neofuge_13r",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "microcentrifuga_labnet_prism_r",
+    "displayName": "Microcentrífuga Labnet Prism R",
+    "shortDescription": "Microcentrífuga refrigerada para centrifugar volúmenes pequeños en tubos tipo Eppendorf de 0.2-2 mL. Genera fuerza centrífuga mediante rotación de alta velocidad para separar componentes de muestras.",
+    "function": "Centrifugar volúmenes pequeños (tubos tipo Eppendorf de 0.2-2 mL) para separar componentes de la muestra o realizar spin-down rápido de reactivos. Un motor hace girar un rotor de ángulo fijo a alta velocidad, generando fuerza centrífuga que separa las partículas o componentes de mayor densidad hacia el fondo del tubo.",
+    "components": [
+      "Rotor para microtubos",
+      "Tapa de seguridad con enclavamiento",
+      "Panel de control (velocidad/RCF, tiempo)",
+      "Sistema de refrigeración"
+    ],
+    "basicProcedure": [
+      "Instalar el equipo sobre superficie rígida y nivelada, con 30 cm de espacio libre alrededor",
+      "Verificar que el voltaje de la toma coincida con la etiqueta y conectar el cable de poder",
+      "Encender el equipo usando el interruptor en la parte trasera/lateral derecha (sonará 2 beeps)",
+      "Presionar Lid para abrir la tapa",
+      "Verificar que los microtubos estén bien cerrados",
+      "Cargar el rotor de forma simétrica, colocando tubos de peso equivalente en posiciones opuestas (diferencia de peso ≤0.1 g)",
+      "Cerrar la tapa de seguridad",
+      "Configurar tiempo, RPM, RCF y temperatura (-10 a 40°C) usando los botones y la perilla Start/Stop",
+      "Presionar la perilla Start/Stop para iniciar la corrida",
+      "Esperar a que el rotor se detenga por completo (sonarán 3 beeps y la tapa se desbloqueará automáticamente)",
+      "Retirar los tubos con cuidado, verificando que no existan fugas ni roturas"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Rotura de microtubos por exceso de velocidad o desbalance",
+      "Exposición a aerosoles biológicos si un tubo se rompe",
+      "Lesiones por contacto con rotor en movimiento",
+      "Quemaduras por contacto con equipo refrigerado"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Microcentrifuga refrigerada Labnet Prism R",
+        "page": null,
+        "documentId": "guia_de_referencia_general_microcentrifuga_refrigerada_labnet_prism_r",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Microcentrifuga refrigerada Labnet Prism R",
+        "page": null,
+        "documentId": "normas_de_seguridad_microcentrifuga_refrigerada_labnet_prism_r",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "microcentrifuga_labnet_spectrafuge_24d",
+    "displayName": "Microcentrífuga Labnet Spectrafuge 24D",
+    "shortDescription": "Equipo de laboratorio que centrifuga volúmenes pequeños en microtubos tipo Eppendorf (0.2-2 mL) mediante rotación a alta velocidad.",
+    "function": "Separa componentes de muestras según su densidad o realiza spin-down rápido de reactivos. Utiliza un rotor de ángulo fijo que gira hasta 13,300 rpm, generando fuerza centrífuga que desplaza las partículas más densas hacia el fondo del tubo.",
+    "components": [
+      "Rotor para microtubos",
+      "Tapa de seguridad con enclavamiento",
+      "Panel de control (velocidad/RCF, tiempo)",
+      "Sistema de refrigeración (en modelos refrigerados)",
+      "Display digital de tiempo y velocidad/RCF"
+    ],
+    "basicProcedure": [
+      "Instalar el equipo sobre una superficie rígida y nivelada con al menos 15 cm de espacio libre alrededor",
+      "Verificar que los microtubos estén bien cerrados antes de colocarlos en el rotor",
+      "Balancear el rotor colocando tubos de peso equivalente en posiciones opuestas (diferencia de peso ≤0.1 g)",
+      "Colocar la tapa del rotor y cerrar la tapa de la centrifuga",
+      "Girar la perilla derecha para ajustar la velocidad (500-13,300 rpm) o RCF (100-16,300 xg)",
+      "Girar la perilla izquierda para ajustar el tiempo (0.5-30 min)",
+      "Presionar la perilla de tiempo para iniciar la corrida",
+      "Esperar a que el rotor se detenga por completo antes de abrir la tapa",
+      "Retirar los tubos con cuidado, verificando que no existan fugas ni roturas"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Rotura de microtubos por exceso de velocidad o desbalance",
+      "Exposición a aerosoles biológicos si un tubo se rompe",
+      "Lesiones por contacto con partes móviles si se abre la tapa durante el funcionamiento"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Microcentrifuga Labnet Spectrafuge 24D",
+        "page": null,
+        "documentId": "guia_de_referencia_general_microcentrifuga_labnet_spectrafuge_24d",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Microcentrifuga Labnet Spectrafuge 24D",
+        "page": null,
+        "documentId": "normas_de_seguridad_microcentrifuga_labnet_spectrafuge_24d",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "microondas_innova_in_mic_07bl",
+    "displayName": "Microondas Innova IN-MIC-07BL",
+    "shortDescription": "Horno microondas de laboratorio de 700W y 20 litros de capacidad, diseñado para calentar o fundir rápidamente medios de cultivo, soluciones y reactivos mediante radiación de microondas.",
+    "function": "Calentar o fundir rápidamente medios de cultivo (por ejemplo agar), soluciones o reactivos mediante radiación de microondas. Utiliza un magnetrón que genera ondas electromagnéticas de alta frecuencia para hacer vibrar las moléculas de agua y otras moléculas polares, generando calor por fricción molecular.",
+    "components": [
+      "Cámara de cocción",
+      "Magnetrón",
+      "Plato giratorio",
+      "Panel de control (potencia y tiempo)",
+      "Puerta con sistema de seguridad",
+      "Panel digital con teclado numérico"
+    ],
+    "basicProcedure": [
+      "Conectar el cable a un tomacorriente con espacio libre para las rejillas de entrada/salida de aire.",
+      "Verificar que el recipiente a calentar sea apto para microondas (no usar metal).",
+      "Aflojar tapas o usar recipientes con ventilación para evitar sobrepresión, especialmente con medios de cultivo.",
+      "Colocar el recipiente en el plato giratorio y cerrar la puerta.",
+      "Presionar TIME COOK e ingresar el tiempo con el teclado numérico.",
+      "Ajustar la potencia con POWER si se desea.",
+      "Presionar START/+30SEC para iniciar el equipo.",
+      "Detener el equipo periódicamente para agitar o verificar el estado del contenido si el protocolo lo requiere.",
+      "Retirar el recipiente con guantes térmicos cuando finalice, considerando el riesgo de sobrecalentamiento súbito (bumping).",
+      "Limpiar el interior de la cámara después de cada uso, especialmente ante derrames."
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Guantes apropiados al procedimiento",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Quemaduras por sobrecalentamiento súbito (bumping) de líquidos o medios de cultivo",
+      "Riesgo de explosión de recipientes sellados",
+      "Choque eléctrico",
+      "Incendio"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Horno microondas Innova IN-MIC-07BL",
+        "page": null,
+        "documentId": "guia_de_referencia_general_horno_microondas_innova_in_mic_07bl",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Horno microondas Innova IN-MIC-07BL",
+        "page": null,
+        "documentId": "normas_de_seguridad_horno_microondas_innova_in_mic_07bl",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "micropipeta_corning_lambda_plus",
+    "displayName": "Micropipeta Corning Lambda Plus",
+    "shortDescription": "Instrumento mecánico de volumen variable diseñado para medir y transferir volúmenes pequeños y precisos de líquidos, desde microlitros hasta mililitros.",
+    "function": "Medir y transferir volúmenes pequeños y precisos de líquido durante la preparación de muestras y reactivos. Utiliza un pistón interno accionado por un émbolo que desplaza un volumen de aire calibrado dentro del cono porta-puntas para aspirar o dispensar líquido de forma proporcional al volumen seleccionado.",
+    "components": [
+      "Émbolo de accionamiento (dos posiciones: aspiración y expulsión)",
+      "Selector/dial de volumen",
+      "Eyector de puntas",
+      "Cono porta-puntas",
+      "Puntas desechables (tips)",
+      "Botón de pipeteo",
+      "Perilla de ajuste de volumen",
+      "Anillo de bloqueo de volumen",
+      "Llave de calibración"
+    ],
+    "basicProcedure": [
+      "Ajustar el volumen girando la perilla de ajuste hasta que el contador digital muestre el valor deseado, sin exceder el rango del equipo.",
+      "Bloquear el volumen deslizando el anillo de bloqueo hacia arriba para evitar cambios accidentales.",
+      "Colocar una punta desechable nueva en el cono, presionando firmemente con un ligero giro (monocanal) o presionando verticalmente (multicanal).",
+      "Sostener la pipeta vertical, presionar el botón hasta el primer tope, sumergir la punta en el líquido y soltar el botón lentamente para aspirar; esperar 1 segundo antes de retirar.",
+      "Colocar la punta contra la pared del recipiente destino en ángulo de 10-40 grados, presionar hasta el primer tope, esperar 1 segundo, y presionar hasta el segundo tope para dispensar completamente.",
+      "Presionar el botón eyector para expulsar la punta, evitando contacto manual con la punta usada.",
+      "Guardar la micropipeta en posición vertical en su soporte al finalizar el uso."
+    ],
+    "ppe": [
+      "Guantes de nitrilo o látex",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a reactivos tóxicos o biológicos por contacto con las puntas usadas",
+      "Lesión por trauma acumulativo por uso repetitivo prolongado",
+      "Entrada de líquido al eje de la pipeta si se invierte o se recuesta de lado con líquido en la punta",
+      "Daño al mecanismo interno por exceder el volumen máximo"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Micropipetas con soporte Corning Lambda Plus",
+        "page": null,
+        "documentId": "guia_de_referencia_general_micropipetas_con_soporte_corning_lambda_plus",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Micropipetas con soporte Corning Lambda Plus",
+        "page": null,
+        "documentId": "normas_de_seguridad_micropipetas_con_soporte_corning_lambda_plus",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "microscopio_compuesto_binocular_amscope_b120",
+    "displayName": "Microscopio Compuesto Binocular AmScope B120",
+    "shortDescription": "Microscopio óptico binocular que magnifica estructuras microscópicas mediante un sistema de lentes objetivo y ocular con iluminación LED.",
+    "function": "Observar y magnificar estructuras microscópicas como células, tejidos y microorganismos para su identificación y análisis morfológico. Utiliza luz transmitida desde la base y permite aumentos de hasta 1000X mediante la combinación de objetivos de 4X, 10X, 40X y 100X con oculares de 10X.",
+    "components": [
+      "Base e iluminación LED de 1W",
+      "Condensador y diafragma",
+      "Platina porta-muestras con carro mecánico",
+      "Objetivos de distintos aumentos (4X, 10X, 40X, 100X) en revolver",
+      "Oculares binoculares",
+      "Mandos de enfoque macrométrico y micrométrico",
+      "Cabezal binocular Siedentopf con inclinación 30 grados y rotación 360 grados"
+    ],
+    "basicProcedure": [
+      "Encender la fuente de luz y ajustar la intensidad al mínimo antes de iniciar",
+      "Colocar la muestra (portaobjetos) en la platina y sujetarla con las pinzas del carro mecánico",
+      "Seleccionar el objetivo de menor aumento y enfocar utilizando el mando macrométrico y luego el micrométrico",
+      "Ajustar el condensador y el diafragma para optimizar el contraste e iluminación",
+      "Cambiar de objetivo según sea necesario, reenfocando con el mando micrométrico",
+      "Al finalizar, reducir la intensidad de luz, retirar la muestra y dejar el objetivo de menor aumento en posición"
+    ],
+    "ppe": [
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes según la naturaleza de la muestra",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Fatiga visual por uso prolongado",
+      "Exposición a muestras biológicas o químicas en las láminas",
+      "Daño a componentes ópticos por fuerza excesiva en los mandos de enfoque"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Microscopio compuesto binocular AmScope B120",
+        "page": null,
+        "documentId": "guia_de_referencia_general_microscopio_compuesto_binocular_amscope_b120",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Microscopio compuesto binocular AmScope B120",
+        "page": null,
+        "documentId": "normas_de_seguridad_microscopio_compuesto_binocular_amscope_b120",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "microscopio_trinocular_xsp_500sm",
+    "displayName": "Microscopio Trinocular XSP-500SM",
+    "shortDescription": "Microscopio óptico compuesto trinocular que magnifica estructuras microscópicas mediante un sistema de lentes objetivo y ocular con iluminación LED.",
+    "function": "Observar y magnificar estructuras microscópicas como células, tejidos y microorganismos para su identificación y análisis morfológico. Permite aumentos de 40X a 1000X mediante la combinación de objetivos y oculares.",
+    "components": [
+      "Base e iluminación (LED de 1W)",
+      "Condensador Abbe NA=1.25 y diafragma",
+      "Platina porta-muestras mecánica de doble capa (125x135 mm) con carro mecánico",
+      "Revolver con objetivos de distintos aumentos",
+      "Cabezal trinocular (inclinación 30°, rotación 360°)",
+      "Oculares binocular/trinocular",
+      "Mandos de enfoque macrométrico y micrométrico"
+    ],
+    "basicProcedure": [
+      "Encender la fuente de luz y ajustar la intensidad al mínimo",
+      "Colocar el portaobjetos en la platina y sujetarlo con las pinzas del carro mecánico",
+      "Seleccionar el objetivo de menor aumento",
+      "Enfocar utilizando primero el mando macrométrico y luego el micrométrico",
+      "Ajustar el condensador y el diafragma para optimizar el contraste e iluminación",
+      "Cambiar de objetivo según sea necesario, reenenfocando con el mando micrométrico",
+      "Reducir la intensidad de luz al finalizar",
+      "Retirar la muestra y dejar el objetivo de menor aumento en posición"
+    ],
+    "ppe": [
+      "Guantes según la naturaleza de la muestra",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Fatiga visual por uso prolongado",
+      "Exposición a muestras biológicas o químicas en las láminas",
+      "Daño por forzar los mandos de enfoque o desplazar el objetivo contra la lámina",
+      "Riesgo eléctrico si el equipo presenta cables expuestos o daños visibles"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Microscopio trinocular XSP-500SM",
+        "page": null,
+        "documentId": "guia_de_referencia_general_microscopio_trinocular_xsp_500sm",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Microscopio trinocular XSP-500SM",
+        "page": null,
+        "documentId": "normas_de_seguridad_microscopio_trinocular_xsp_500sm",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "ph_metro_electronico_digital_oakton_ph_510_series",
+    "displayName": "pH metro electrónico digital Oakton pH 510 Series",
+    "shortDescription": "Medidor electrónico de pH de mesa que mide la acidez o alcalinidad de soluciones acuosas mediante un electrodo de vidrio sensible a iones hidrógeno.",
+    "function": "Medir el pH (acidez o alcalinidad) de soluciones acuosas. El equipo utiliza un electrodo de vidrio combinado que genera una diferencia de potencial proporcional a la concentración de iones H+ en la solución, convertida en una lectura de pH mediante compensación automática de temperatura.",
+    "components": [
+      "Electrodo combinado de pH",
+      "Cuerpo del medidor con pantalla LCD",
+      "Sensor de temperatura (compensación automática)",
+      "Soluciones buffer de calibración (pH 4, 7 y 10)",
+      "Panel de control con botones: ON/OFF, CAL/MEAS, MODE, MI, MR, HOLD, ENTER",
+      "Conectores traseros: ATC (temperatura), INPUT (BNC para electrodo), REF (referencia), REC (registrador), GND, DC"
+    ],
+    "basicProcedure": [
+      "Conectar el adaptador AC a la fuente de poder y luego a la clavija DC del medidor",
+      "Conectar el electrodo sensor al conector BNC marcado INPUT, rotando y empujando en sentido horario hasta que trabe",
+      "Si se usa, conectar la sonda de temperatura al jack marcado ATC",
+      "Presionar la tecla ON/OFF para encender el equipo",
+      "Verificar/seleccionar modo pH con la tecla MODE",
+      "Calibrar con al menos 2 soluciones buffer frescas: enjuagar el electrodo, sumergirlo en el buffer, presionar CAL/MEAS, esperar READY y presionar ENTER para confirmar cada punto",
+      "Enjuagar el electrodo con agua destilada y secar suavemente con papel absorbente sin frotar el bulbo",
+      "Sumergir el electrodo en la muestra y agitar suavemente hasta que la lectura se estabilice",
+      "Esperar que aparezca el indicador READY",
+      "Registrar el valor de pH (y temperatura si aplica) mostrado en pantalla",
+      "Enjuagar el electrodo y devolverlo a su solución de almacenamiento (KCl 3M u otra indicada por el fabricante)"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a soluciones buffer y muestras químicas",
+      "Rotura del electrodo de vidrio (bordes cortantes)",
+      "Daño irreversible del electrodo si se deja secar al aire"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - pH metro de mesa Oakton pH 510 series",
+        "page": null,
+        "documentId": "guia_de_referencia_general_ph_metro_de_mesa_oakton_ph_510_series",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Oakton pH 510 e Ion 510",
+        "page": null,
+        "documentId": "manual_del_fabricante_oakton_ph_510_e_ion_510",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - pH metro de mesa Oakton pH 510 series",
+        "page": null,
+        "documentId": "normas_de_seguridad_ph_metro_de_mesa_oakton_ph_510_series",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "ph_metro_ohaus_starter_3100",
+    "displayName": "pH-metro de mesa OHAUS Starter 3100",
+    "shortDescription": "Equipo electrónico de medición de pH que utiliza un electrodo de vidrio combinado para determinar la acidez o alcalinidad de soluciones acuosas. Posee pantalla LCD retroiluminada, compensación automática de temperatura y capacidad de almacenamiento de hasta 99 mediciones.",
+    "function": "Medir el pH (acidez o alcalinidad) de soluciones acuosas mediante un electrodo de vidrio sensible a la actividad de iones hidrógeno. El equipo convierte la diferencia de potencial electroquímico generada por el electrodo en una lectura de pH. Permite realizar calibraciones de 1, 2 o 3 puntos con soluciones buffer predefinidas y mediciones en escala pH o mV.",
+    "components": [
+      "Electrodo combinado de pH (BNC)",
+      "Cuerpo del medidor con pantalla LCD retroiluminada",
+      "Sensor de temperatura (NTC 30 kΩ) para compensación automática (ATC)",
+      "Soluciones buffer de calibración (pH 4.01, 7.00 y 10.01)",
+      "Soporte independiente para electrodo",
+      "Adaptador de alimentación (12V DC)",
+      "Puerto RS232 para impresora",
+      "Memoria interna para 99 mediciones"
+    ],
+    "basicProcedure": [
+      "Instalar el adaptador de poder conectando el cable al medidor (entrada 12V) y luego a la toma de corriente",
+      "Conectar el electrodo de pH a los conectores traseros: pH (BNC), TEMP (Cinch) y REF (banana 2mm) según el tipo de electrodo",
+      "Presionar el botón Exit para encender el medidor",
+      "Seleccionar el grupo de buffer predefinido (b1, b2 o b3)",
+      "Enjuagar el electrodo con agua destilada y prepararlo para calibración",
+      "Calibrar el equipo con al menos dos soluciones buffer frescos: presionar Cal/Slope, sumergir el electrodo en la primera solución buffer, agitar 5 segundos, esperar 30 segundos y confirmar con Read/Enter; repetir con una segunda solución buffer",
+      "Enjuagar el electrodo con agua destilada y secar suavemente con papel absorbente sin frotar el bulbo",
+      "Sumergir el electrodo en la muestra a medir, agitar suavemente durante 5 segundos",
+      "Esperar 30 a 60 segundos para que la lectura se estabilice",
+      "Presionar Read/Enter para iniciar la medición y obtener el valor de pH",
+      "Registrar el valor de pH (y temperatura si aplica) mostrado en pantalla",
+      "Enjuagar el electrodo con agua destilada y devolverlo a su solución de almacenamiento (KCl 3M)",
+      "Apagar el equipo presionando y manteniendo el botón Exit durante 3 segundos"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a soluciones buffer y muestras químicas",
+      "Rotura del electrodo de vidrio con bordes cortantes",
+      "Daño irreversible del electrodo si se deja secar al aire",
+      "Choque eléctrico por mal uso del adaptador de alimentación",
+      "Daño del equipo por derrames de solventes orgánicos (tolueno, xileno, MEK) que atacan la carcasa de ABS",
+      "Lesiones por exposición a agentes químicos o biológicos en las muestras"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - pH metro de mesa Ohaus Starter 3100",
+        "page": null,
+        "documentId": "guia_de_referencia_general_ph_metro_de_mesa_ohaus_starter_3100",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Ohaus Starter 3100 (espanol e ingles)",
+        "page": null,
+        "documentId": "manual_del_fabricante_ohaus_starter_3100_espanol_e_ingles",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - pH metro de mesa Ohaus Starter 3100",
+        "page": null,
+        "documentId": "normas_de_seguridad_ph_metro_de_mesa_ohaus_starter_3100",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "purificador_osmosis_inversa_do2_6_tapas",
+    "displayName": "Purificador de Osmosis Inversa DO2-6 Tapas",
+    "shortDescription": "Equipo de laboratorio que produce agua purificada de baja conductividad eliminando sales, iones y partículas disueltas mediante un sistema de membranas de osmosis inversa.",
+    "function": "Producir agua purificada de baja conductividad para uso en laboratorio, eliminando sales, iones y partículas disueltas mediante el paso de agua de alimentación a presión a través de una membrana semipermeable.",
+    "components": [
+      "Prefiltros (sedimentos, carbón activado)",
+      "Membrana de osmosis inversa",
+      "Bomba de presión",
+      "Tanque de almacenamiento de agua purificada",
+      "Grifo dispensador",
+      "Manómetros/indicadores"
+    ],
+    "basicProcedure": [
+      "Verificar el suministro de agua de alimentación y el estado de los prefiltros",
+      "Encender el equipo y esperar a que se estabilice la presión de trabajo",
+      "Dispensar y descartar los primeros mililitros de agua si el protocolo lo indica, para estabilizar la calidad",
+      "Recolectar el agua purificada en un envase limpio y rotulado",
+      "Verificar la conductividad/resistividad del agua obtenida si el equipo cuenta con este indicador",
+      "Apagar el equipo según las indicaciones del fabricante cuando no esté en uso prolongado"
+    ],
+    "ppe": [
+      "Guantes según el desinfectante utilizado",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a agentes desinfectantes durante la limpieza del sistema",
+      "Fugas de agua a presión"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Purificador de osmosis inversa DO2 6 tapas",
+        "page": null,
+        "documentId": "guia_de_referencia_general_purificador_de_osmosis_inversa_do2_6_tapas",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Purificador de osmosis inversa DO2 6 tapas",
+        "page": null,
+        "documentId": "normas_de_seguridad_purificador_de_osmosis_inversa_do2_6_tapas",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "refractometro_manual_atago_atc_1e",
+    "displayName": "Refractómetro Manual Atago ATC-1E",
+    "shortDescription": "Instrumento óptico manual que mide la concentración de sólidos solubles (grados Brix) o el índice de refracción en muestras líquidas.",
+    "function": "Determina la concentración de sólidos solubles (grados Brix) o el índice de refracción de una muestra líquida, como jugos, soluciones azucaradas o sueros. Mide el ángulo crítico de refracción de la muestra colocada sobre el prisma y lo traduce a una escala de índice de refracción o grados Brix.",
+    "components": [
+      "Prisma de medición",
+      "Tapa/cubierta abatible",
+      "Ocular con escala graduada",
+      "Tornillo de ajuste de enfoque/calibración"
+    ],
+    "basicProcedure": [
+      "Calibrar el equipo colocando unas gotas de agua destilada sobre el prisma y ajustando la lectura a cero (0 Brix).",
+      "Limpiar y secar el prisma con un paño suave después de la calibración.",
+      "Colocar unas gotas de la muestra sobre el prisma y cerrar la cubierta, evitando burbujas de aire.",
+      "Orientar el equipo hacia una fuente de luz y observar por el ocular.",
+      "Leer el valor donde la línea de contraste (límite claro-oscuro) cruza la escala graduada.",
+      "Limpiar el prisma con agua destilada y secar después de cada medición."
+    ],
+    "ppe": [
+      "Guantes según la naturaleza de la muestra",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Riesgo mínimo; posible exposición a la muestra líquida sobre el prisma",
+      "Daño al prisma por rayado con objetos duros o abrasivos"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Refractometro manual Atago ATC-1E",
+        "page": null,
+        "documentId": "guia_de_referencia_general_refractometro_manual_atago_atc_1e",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Refractometro manual Atago ATC-1E",
+        "page": null,
+        "documentId": "normas_de_seguridad_refractometro_manual_atago_atc_1e",
+        "snippet": null
+      },
+      {
+        "title": "Referencia de familia - Atago serie MASTER (catalogo, no manual)",
+        "page": null,
+        "documentId": "referencia_de_familia_atago_serie_master_catalogo_no_manual",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "refrigerador_vertical_ecasa_glc_175",
+    "displayName": "Refrigerador Vertical Ecasa GLC-175",
+    "shortDescription": "Refrigerador de laboratorio vertical de la marca Ecasa diseñado para conservar reactivos, muestras, medios de cultivo y material termosensible a temperaturas controladas.",
+    "function": "Conservar reactivos, muestras, medios de cultivo y material termosensible a temperaturas de refrigeración (generalmente entre 2°C y 8°C). Utiliza un sistema de compresión de vapor que extrae el calor del interior y lo disipa al exterior, manteniendo una temperatura constante regulada por un termostato.",
+    "components": [
+      "Gabinete aislado térmicamente",
+      "Compresor y sistema de refrigeración",
+      "Termostato/controlador de temperatura",
+      "Estantes o bandejas internas",
+      "Puerta con junta hermética"
+    ],
+    "basicProcedure": [
+      "Verificar que la puerta cierre correctamente y que la junta esté en buen estado antes de almacenar material",
+      "Organizar el contenido evitando sobrecargar el equipo y bloquear la circulación de aire interna",
+      "Rotular y fechar los reactivos o muestras almacenadas según el protocolo del laboratorio",
+      "Evitar abrir la puerta de forma innecesaria o prolongada para mantener la estabilidad térmica",
+      "Verificar periódicamente que la temperatura se mantenga en el rango requerido mediante un termómetro independiente",
+      "Registrar la temperatura en una bitácora si el laboratorio lo requiere para trazabilidad"
+    ],
+    "ppe": [
+      "Guantes según el reactivo almacenado",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a reactivos almacenados en caso de derrame",
+      "Riesgo eléctrico por cables o enchufes dañados"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Refrigerador vertical Ecasa GLC-175",
+        "page": null,
+        "documentId": "guia_de_referencia_general_refrigerador_vertical_ecasa_glc_175",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Refrigerador vertical Ecasa GLC-175",
+        "page": null,
+        "documentId": "normas_de_seguridad_refrigerador_vertical_ecasa_glc_175",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "refrigeradora_domestica_innova_modelo_everest_1800_nf",
+    "displayName": "Refrigeradora Doméstica Innova Everest 1800 NF",
+    "shortDescription": "Refrigerador de laboratorio diseñado para conservar reactivos, muestras, medios de cultivo y material termosensible a temperaturas de refrigeración entre 2°C y 8°C.",
+    "function": "Conservar reactivos, muestras, medios de cultivo y material termosensible a temperaturas de refrigeración controladas. Utiliza un sistema de compresión de vapor que extrae el calor del interior del gabinete y lo disipa al exterior, manteniendo una temperatura interna constante regulada por un termostato.",
+    "components": [
+      "Gabinete aislado térmicamente",
+      "Compresor y sistema de refrigeración",
+      "Termostato/controlador de temperatura",
+      "Estantes o bandejas internas",
+      "Puerta con junta hermética"
+    ],
+    "basicProcedure": [
+      "Verificar que la puerta cierre correctamente y que la junta esté en buen estado antes de almacenar material",
+      "Organizar el contenido evitando sobrecargar el equipo y bloquear la circulación de aire interna",
+      "Rotular y fechar los reactivos o muestras almacenadas según el protocolo del laboratorio",
+      "Evitar abrir la puerta de forma innecesaria o prolongada para mantener la estabilidad térmica",
+      "Verificar periódicamente que la temperatura se mantenga en el rango requerido mediante un termómetro independiente",
+      "Registrar la temperatura en una bitácora si el laboratorio lo requiere para trazabilidad"
+    ],
+    "ppe": [
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Guantes según el reactivo almacenado",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a reactivos almacenados en caso de derrame",
+      "Riesgo eléctrico por cables o enchufes dañados"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Refrigeradora domestica Innova Everest 1800 NF",
+        "page": null,
+        "documentId": "guia_de_referencia_general_refrigeradora_domestica_innova_everest_1800_nf",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Refrigeradora domestica Innova Everest 1800 NF",
+        "page": null,
+        "documentId": "normas_de_seguridad_refrigeradora_domestica_innova_everest_1800_nf",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "refrigeradora_indurama",
+    "displayName": "Refrigeradora Indurama",
+    "shortDescription": "Refrigerador de laboratorio de la marca Indurama diseñado para conservar reactivos, muestras y material termosensible a temperaturas controladas entre 2°C y 8°C.",
+    "function": "Conservar reactivos, muestras, medios de cultivo y material termosensible a temperaturas de refrigeración controladas. Utiliza un sistema de compresión de vapor que extrae el calor del interior del gabinete y lo disipa al exterior, manteniendo una temperatura interna constante regulada por un termostato.",
+    "components": [
+      "Gabinete aislado térmicamente",
+      "Compresor y sistema de refrigeración",
+      "Termostato/controlador de temperatura",
+      "Estantes o bandejas internas",
+      "Puerta con junta hermética",
+      "Panel de control con pantalla retroiluminada"
+    ],
+    "basicProcedure": [
+      "Verificar que los empaques de las puertas estén completamente secos antes de conectar el equipo",
+      "Conectar el equipo a la toma eléctrica",
+      "El panel se activa automáticamente al energizar",
+      "Ajustar el modo y temperatura con los botones del panel si es necesario",
+      "Esperar varias horas antes de introducir material para que el equipo alcance la temperatura requerida",
+      "Verificar que la puerta cierre correctamente y que la junta esté en buen estado",
+      "Organizar el contenido evitando sobrecargar el equipo y bloquear la circulación de aire interna",
+      "Rotular y fechar los reactivos o muestras almacenadas según el protocolo del laboratorio",
+      "Evitar abrir la puerta de forma innecesaria o prolongada",
+      "Verificar periódicamente la temperatura con un termómetro independiente",
+      "Registrar la temperatura en bitácora si el laboratorio lo requiere"
+    ],
+    "ppe": [
+      "Guantes según el reactivo almacenado",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a reactivos almacenados en caso de derrame",
+      "Riesgo eléctrico por cables o enchufes dañados",
+      "Contacto con sustancias químicas o biológicas almacenadas"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Refrigeradora domestica Indurama",
+        "page": null,
+        "documentId": "guia_de_referencia_general_refrigeradora_domestica_indurama",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Refrigeradora domestica Indurama",
+        "page": null,
+        "documentId": "normas_de_seguridad_refrigeradora_domestica_indurama",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "refrigeradora_side_by_side_indurama_ri_780",
+    "displayName": "Refrigeradora Side by Side Indurama RI-780",
+    "shortDescription": "Refrigerador de laboratorio con capacidad de 566 litros y control digital para mantener muestras, reactivos y medios de cultivo a temperaturas de refrigeración entre 2°C y 8°C.",
+    "function": "Conservar reactivos, muestras, medios de cultivo y material termosensible a temperaturas controladas de refrigeración. Utiliza un sistema de compresión de vapor que extrae calor del interior y lo disipa al exterior, manteniendo una temperatura constante regulada por termostato.",
+    "components": [
+      "Gabinete aislado térmicamente",
+      "Compresor y sistema de refrigeración con motor Inverter",
+      "Termostato/controlador de temperatura digital",
+      "Estantes o bandejas internas",
+      "Puerta con junta hermética",
+      "Panel de control con botones de temperatura y Super Cool",
+      "Iluminación LED",
+      "Alarma de puerta abierta"
+    ],
+    "basicProcedure": [
+      "Verificar que los empaques de las puertas estén completamente secos antes de conectar",
+      "Conectar el equipo a la toma eléctrica",
+      "El panel digital se enciende y muestra los valores de temperatura por defecto",
+      "Usar los botones de refrigerador/congelador para fijar la temperatura deseada",
+      "Opcionalmente activar Super Cool para enfriamiento rápido inicial",
+      "Dejar estabilizar el equipo varias horas antes de cargar material",
+      "Verificar que la puerta cierre correctamente y que la junta esté en buen estado",
+      "Organizar el contenido evitando sobrecargar y bloquear la circulación de aire",
+      "Rotular y fechar los reactivos o muestras almacenadas",
+      "Evitar abrir la puerta innecesariamente para mantener estabilidad térmica",
+      "Verificar periódicamente la temperatura con termómetro independiente"
+    ],
+    "ppe": [
+      "Guantes según el reactivo almacenado",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Exposición a reactivos almacenados en caso de derrame",
+      "Riesgo eléctrico por cables o enchufes dañados",
+      "Fugas de refrigerante ecológico tipo R600a (riesgo de ignición)"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Refrigeradora side by side Indurama RI-780",
+        "page": null,
+        "documentId": "guia_de_referencia_general_refrigeradora_side_by_side_indurama_ri_780",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Refrigeradora side by side Indurama RI-780",
+        "page": null,
+        "documentId": "normas_de_seguridad_refrigeradora_side_by_side_indurama_ri_780",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "secuenciador_de_adn_li_cor_4300",
+    "displayName": "Secuenciador de ADN Li-Cor 4300",
+    "shortDescription": "Equipo de electroforesis capilar que determina la secuencia de nucleótidos de fragmentos de ADN mediante separación por campo eléctrico y detección por fluorescencia.",
+    "function": "Determinar la secuencia de nucleótidos de fragmentos de ADN o realizar análisis de fragmentos (por ejemplo genotipificación), mediante separación por electroforesis capilar y detección por fluorescencia. Los fragmentos de ADN marcados con fluoróforos se inyectan electrocinéticamente en capilares rellenos de polímero; al aplicar un campo eléctrico, los fragmentos migran según su tamaño y son detectados por un láser que excita los fluoróforos.",
+    "components": [
+      "Array de capilares",
+      "Polímero de separación y buffers",
+      "Sistema óptico (láser de excitación de 685 nm y 785 nm a 30 mW cada uno, y detector)",
+      "Placas para muestras (96/384 pocillos)",
+      "Software de análisis de datos (e-Seq o Saga)",
+      "Panel frontal de control",
+      "Servidor interno del equipo"
+    ],
+    "basicProcedure": [
+      "Preparar las muestras de ADN (reacción de secuenciación o PCR de fragmentos) según el protocolo validado",
+      "Verificar el nivel de polímero y buffers, reemplazándolos según lo indicado por el fabricante",
+      "Cargar las muestras en la placa correspondiente y colocarla en el carrusel/bandeja del equipo",
+      "Configurar la corrida en el software (método de inyección, tiempo, módulo de análisis) según el ensayo",
+      "Iniciar la corrida y monitorear el estado del equipo durante el proceso",
+      "Al finalizar, exportar y respaldar los datos generados, y retirar las placas y reactivos usados"
+    ],
+    "ppe": [
+      "Guantes de nitrilo",
+      "Gafas de seguridad",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Exposición a reactivos de secuenciación (algunos con componentes tóxicos)",
+      "Exposición a radiación láser de baja potencia (sistema óptico interno, Clase I)",
+      "Riesgo eléctrico por mal manejo de cables",
+      "Riesgo de quemaduras o lesiones por partes móviles"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Secuenciador y analizador de ADN LI-COR 4300 DNA Analyzer",
+        "page": null,
+        "documentId": "guia_de_referencia_general_secuenciador_y_analizador_de_adn_li_cor_4300_dna_analyzer",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Secuenciador y analizador de ADN LI-COR 4300 DNA Analyzer",
+        "page": null,
+        "documentId": "normas_de_seguridad_secuenciador_y_analizador_de_adn_li_cor_4300_dna_analyzer",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "termociclador_applied_biosystems_miniamp_plus",
+    "displayName": "Termociclador Applied Biosystems MiniAmp Plus",
+    "shortDescription": "Equipo de PCR que amplifica fragmentos específicos de ADN mediante ciclos repetidos de cambios de temperatura. Cuenta con bloque térmico Peltier intercambiable y pantalla táctil integrada.",
+    "function": "Amplificar fragmentos específicos de ADN mediante la reacción en cadena de la polimerasa (PCR). El bloque térmico calienta y enfría rápidamente los tubos de reacción siguiendo un programa de temperaturas y tiempos, permitiendo la desnaturalización del ADN, el alineamiento de cebadores y la extensión por la polimerasa, duplicando exponencialmente el fragmento de interés en cada ciclo.",
+    "components": [
+      "Bloque térmico (Peltier) intercambiable",
+      "Tapa calefactada",
+      "Panel de control con pantalla táctil",
+      "Memoria de programas (protocolos de ciclado)"
+    ],
+    "basicProcedure": [
+      "Preparar la mezcla de reacción de PCR en tubos o placas según el protocolo validado",
+      "Colocar los tubos o placa en el bloque térmico, distribuyéndolos de forma equilibrada",
+      "Cerrar la tapa calefactada asegurando un ajuste firme sobre los tubos",
+      "Seleccionar o programar el protocolo de ciclado (temperaturas, tiempos y número de ciclos) requerido mediante la pantalla táctil",
+      "Iniciar la corrida y esperar a que el equipo complete el programa por completo",
+      "Retirar los tubos al finalizar y almacenarlos según corresponda (refrigeración o congelación)"
+    ],
+    "ppe": [
+      "Guantes termorresistentes al abrir la tapa recién usada",
+      "Guantes de nitrilo para manipular reactivos",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos cerca de partes móviles"
+    ],
+    "risks": [
+      "Quemaduras por contacto con el bloque térmico o la tapa calefactada calientes",
+      "Exposición a reactivos de PCR"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Termociclador Applied Biosystems MiniAmp Plus",
+        "page": null,
+        "documentId": "guia_de_referencia_general_termociclador_applied_biosystems_miniamp_plus",
+        "snippet": null
+      },
+      {
+        "title": "Manual del fabricante - Applied Biosystems MiniAmp y MiniAmp Plus",
+        "page": null,
+        "documentId": "manual_del_fabricante_applied_biosystems_miniamp_y_miniamp_plus",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Termociclador Applied Biosystems MiniAmp Plus",
+        "page": null,
+        "documentId": "normas_de_seguridad_termociclador_applied_biosystems_miniamp_plus",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "termociclador_techne_tc_412",
+    "displayName": "Termociclador Techne TC-412",
+    "shortDescription": "Equipo de PCR que amplifica fragmentos específicos de ADN mediante ciclos repetidos de cambios de temperatura. Utiliza un bloque térmico Peltier para calentar y enfriar rápidamente los tubos de reacción.",
+    "function": "Amplificar fragmentos específicos de ADN mediante ciclos repetidos de cambios de temperatura (desnaturalización, alineamiento y extensión) en la reacción en cadena de la polimerasa (PCR). Permite duplicar exponencialmente el fragmento de interés en cada ciclo.",
+    "components": [
+      "Bloque térmico (Peltier) intercambiable",
+      "Tapa calefactada (evita condensación)",
+      "Panel de control/pantalla táctil",
+      "Memoria de programas (protocolos de ciclado)"
+    ],
+    "basicProcedure": [
+      "Preparar la mezcla de reacción de PCR en tubos o placas según el protocolo validado",
+      "Colocar los tubos/placa en el bloque térmico, distribuyéndolos de forma equilibrada",
+      "Cerrar la tapa calefactada asegurando un ajuste firme sobre los tubos",
+      "Seleccionar o programar el protocolo de ciclado (temperaturas, tiempos y número de ciclos) requerido",
+      "Iniciar la corrida y esperar a que el equipo complete el programa por completo",
+      "Retirar los tubos al finalizar y almacenarlos según corresponda (refrigeración o congelación)"
+    ],
+    "ppe": [
+      "Guantes termorresistentes al abrir la tapa recién usada",
+      "Guantes de nitrilo para manipular reactivos",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Quemaduras por contacto con el bloque térmico o la tapa calefactada calientes",
+      "Exposición a reactivos de PCR"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Termociclador Techne TC-412",
+        "page": null,
+        "documentId": "guia_de_referencia_general_termociclador_techne_tc_412",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Termociclador Techne TC-412",
+        "page": null,
+        "documentId": "normas_de_seguridad_termociclador_techne_tc_412",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "termociclador_tr_mgl48g",
+    "displayName": "Termociclador TR-MGL48G",
+    "shortDescription": "Equipo de PCR que amplifica fragmentos específicos de ADN mediante ciclos repetidos de cambios de temperatura. Utiliza un bloque térmico Peltier para calentar y enfriar rápidamente los tubos de reacción.",
+    "function": "Amplificar fragmentos específicos de ADN mediante la reacción en cadena de la polimerasa (PCR). El equipo realiza ciclos repetidos de desnaturalización, alineamiento de cebadores y extensión por polimerasa, duplicando exponencialmente el fragmento de interés en cada ciclo.",
+    "components": [
+      "Bloque térmico (Peltier) intercambiable",
+      "Tapa calefactada",
+      "Panel de control/pantalla táctil",
+      "Memoria de programas"
+    ],
+    "basicProcedure": [
+      "Preparar la mezcla de reacción de PCR en tubos o placas según el protocolo validado",
+      "Colocar los tubos/placa en el bloque térmico, distribuyéndolos de forma equilibrada",
+      "Cerrar la tapa calefactada asegurando un ajuste firme sobre los tubos",
+      "Seleccionar o programar el protocolo de ciclado requerido",
+      "Iniciar la corrida y esperar a que el equipo complete el programa por completo",
+      "Retirar los tubos al finalizar y almacenarlos según corresponda"
+    ],
+    "ppe": [
+      "Guantes termorresistentes",
+      "Guantes de nitrilo",
+      "Bata o mandil de laboratorio",
+      "Gafas de seguridad",
+      "Cabello recogido"
+    ],
+    "risks": [
+      "Quemaduras por contacto con el bloque térmico o la tapa calefactada calientes",
+      "Exposición a reactivos de PCR"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Termociclador TR-MGL48G",
+        "page": null,
+        "documentId": "guia_de_referencia_general_termociclador_tr_mgl48g",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Termociclador TR-MGL48G",
+        "page": null,
+        "documentId": "normas_de_seguridad_termociclador_tr_mgl48g",
+        "snippet": null
+      }
+    ]
+  },
+  {
+    "classId": "ultracongelador_haier_ult_freezer",
+    "displayName": "Ultracongelador Haier ULT Freezer",
+    "shortDescription": "Equipo de refrigeración que funciona a ultra baja temperatura (típicamente -80°C) mediante un sistema de refrigeración en cascada con dos compresores. Está diseñado para preservar muestras biológicas críticas a largo plazo.",
+    "function": "Conservar muestras biológicas críticas (líneas celulares, ácidos nucleicos, microorganismos) a temperaturas ultra bajas para preservar su viabilidad e integridad a largo plazo. Utiliza un sistema de refrigeración en cascada regulado por un controlador electrónico con alarmas de temperatura y falla de energía.",
+    "components": [
+      "Gabinete con aislamiento reforzado",
+      "Sistema de refrigeración en cascada (dos compresores)",
+      "Panel de control con alarmas de temperatura y falla de energía",
+      "Puertas internas y externa con cierre hermético",
+      "Batería de respaldo para alarmas"
+    ],
+    "basicProcedure": [
+      "Verificar que la temperatura del equipo esté estable en -80°C antes de almacenar muestras nuevas",
+      "Organizar las muestras en cajas o gradillas rotuladas con un mapa/inventario de ubicación",
+      "Abrir la puerta el menor tiempo posible para minimizar la pérdida de frío y la formación de escarcha",
+      "Verificar periódicamente las alarmas de temperatura y registrar los valores en una bitácora",
+      "Registrar el ingreso y retiro de muestras en el inventario del laboratorio"
+    ],
+    "ppe": [
+      "Guantes criogénicos",
+      "Gafas de seguridad o careta",
+      "Bata o mandil de laboratorio",
+      "Cabello recogido y sin accesorios sueltos"
+    ],
+    "risks": [
+      "Quemaduras por congelación (frostbite) al tocar superficies o muestras a -80°C",
+      "Asfixia por acumulación de nitrógeno/CO2 si se usa hielo seco como respaldo en espacio cerrado"
+    ],
+    "relatedPractices": [],
+    "sources": [
+      {
+        "title": "Guia de referencia general - Ultracongelador Haier ULT Freezer",
+        "page": null,
+        "documentId": "guia_de_referencia_general_ultracongelador_haier_ult_freezer",
+        "snippet": null
+      },
+      {
+        "title": "Normas de seguridad - Ultracongelador Haier ULT Freezer",
+        "page": null,
+        "documentId": "normas_de_seguridad_ultracongelador_haier_ult_freezer",
+        "snippet": null
       }
     ]
   }
