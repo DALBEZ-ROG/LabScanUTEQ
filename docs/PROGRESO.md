@@ -22,8 +22,8 @@ Estados: `PENDIENTE` · `EN CURSO` · `HECHO` · `BLOQUEADO`
 | Ítem | Responsable | Estado | Fecha comprometida |
 |---|---|---|---|
 | Autorización para fotografiar el laboratorio | | PENDIENTE | |
-| Dataset etiquetado en Roboflow | Mario | EN CURSO | v2 con 54 clases y 746 fotos. Lista de clases en `docs/labels_v2.txt`. Falta entrenar: `docs/ENTRENAMIENTO_COLAB.md` |
-| `model.tflite` + `labels.txt` | Mario | HECHO, SIN VERIFICAR EN TELÉFONO | Reexportado vía onnx2tf: entrada NHWC `[1,640,640,3]`, salida `[1,54,8400]`, 50 clases. Falta abrir Diagnóstico y apuntar a un equipo real. Ver D-028 |
+| Dataset etiquetado en Roboflow | Mario | HECHO | v2 con 54 clases y 748 fotos anotadas. 1569 / 114 / 111 tras aumentos. Pendiente: más fotos de las clases con 3 o 4, y fotos con varios equipos en el encuadre. Ver D-043 |
+| `model.tflite` + `labels.txt` | Mario | v2 INTEGRADO, SIN VERIFICAR EN TELÉFONO | 54 clases, mAP@50 0,912. Entrada NHWC `[1,640,640,3]`, salida `[1,58,8400]`. Verificado con `tools/integrar_modelo.py`. Falta apuntar a un equipo real. Ver D-043 |
 | Manuales y guías digitalizados para el RAG | Mario | HECHO | 54 clases, 129 documentos, 1888 fragmentos indexados. 15 clases con manual del fabricante. Ver D-035 |
 | Backend RAG desplegado | Mario | HECHO, CORRE EN EL PC DE MARIO | Repositorio aparte: `labscan-rag`. Verificado desde el teléfono el 2026-09-09 (`GET /api/health` 200). No está en un servidor: hay que levantarlo con `uvicorn` y poner la IP del PC en Ajustes |
 

@@ -1395,3 +1395,67 @@ Dos cambios, uno en cada lado:
 
 El icono es lo que hace visible de un vistazo que una fuente es de internet y no un manual del
 laboratorio, que es la parte que importa de D-041.
+
+## D-043 — Modelo v2: 54 clases, mAP50 0,912, y lo que ese número no dice — 2026-09-10
+
+Entra el modelo entrenado sobre el dataset v2, con las cajas preetiquetadas por
+`tools/preetiquetar.py` y revisadas a mano por Mario.
+
+| Métrica | v1 (50 clases) | v2 (54 clases) |
+|---|---|---|
+| mAP@50 | 0,837 | **0,912** |
+| mAP@50-95 | — | 0,685 |
+| precisión | — | 0,813 |
+| exhaustividad | — | 0,844 |
+
+Verificado antes de integrar con `tools/integrar_modelo.py`: entrada NHWC `[1,640,640,3]`,
+salida `[1,58,8400]`, donde 58 = 4 coordenadas + 54 clases.
+
+### Tres razones para no citar el 0,912 a secas
+
+**Diez clases no se midieron.** El conjunto de prueba tiene 111 imágenes para 54 clases, así
+que a estas no les tocó ninguna: analizador DBO, NanoDrop, estufa Memmert, Incu-Shaker,
+luxómetro, microondas, pH metro Oakton, refractómetro Atago, refrigeradora Indurama y
+ultracongelador Haier. No fallan: no hay dato sobre ellas.
+
+**Con una o dos instancias por clase, la métrica salta de 0 a 1 con un solo acierto.** Muchas
+clases marcan exactamente 0,995, que significa "acertó las dos que había".
+
+**El reparto es aleatorio sobre fotos casi idénticas**, así que hay imágenes muy parecidas en
+entrenamiento y en prueba. Mide memorización además de generalización. Es lo mismo que pasó
+con el 0,837 del v1 (D-033), que luego en el laboratorio no se sostuvo.
+
+### Cinco clases que sí fallan, y el patrón
+
+| Clase | mAP50 | Con qué se confunde |
+|---|---|---|
+| `termociclador_tr_mgl48g` | 0,247 | los otros dos termocicladores |
+| `destilador_de_agua_metalico_ac_l4` | 0,249 | exhaustividad 0, no lo encuentra |
+| `agitador_orbital_elmi_sky_line_dos_20l` | 0,495 | el otro agitador orbital |
+| `camara_de_electroforesis_owl_easycast_b2` | 0,497 | la B1-BP, son casi idénticas |
+| `gps_portatil_de_mano_garmin_gpsmap_78` | 0,497 | exhaustividad 0 |
+
+No es casualidad: son los grupos de equipos que se parecen entre sí, y que en el dataset v1
+estaban fundidos en una sola clase. Separarlos era lo correcto, pero exige más fotos de cada
+uno. Se arregla fotografiando, no entrenando más.
+
+### El dato que más explica el comportamiento en el laboratorio
+
+**111 imágenes y 111 instancias: exactamente una caja por foto.** El dataset no tiene ni un
+solo caso de dos aparatos en el mismo encuadre. En el laboratorio la cámara apunta a mesas con
+varios equipos, y para eso el modelo no ha entrenado nunca.
+
+Es la explicación más probable de por qué el v1 se comportaba peor en el teléfono que en las
+métricas, y va a seguir pasando con el v2 mientras el dataset sea de un aparato por foto.
+
+### El int8 quedó pendiente
+
+`onnx2tf` genera `best_integer_quant.tflite` y `best_full_integer_quant.tflite`, pero ninguno
+carga: el delegado XNNPACK rechaza cuatro nodos TRANSPOSE cuantizados y falla al preparar. No
+se investigó más porque es una optimización de rendimiento, no un requisito, y el float32
+estaba verificado.
+
+Sigue siendo la única palanca grande para el problema de los 2,7 FPS (D-033). Cuando se
+retome: comprobar primero si el modelo carga con
+`OpResolverType.BUILTIN_WITHOUT_DEFAULT_DELEGATES`, que dice si el problema es del modelo o
+solo del acelerador en Python.
