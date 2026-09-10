@@ -118,8 +118,7 @@ yamls = glob.glob("/content/**/data.yaml", recursive=True)
 print("archivos de etiquetas:", len(etiquetas))
 print("data.yaml encontrados:", yamls)
 if not etiquetas or not yamls:
-    print("
-PARA. El dataset NO es de deteccion de objetos.")
+    print("PARA. El dataset NO es de deteccion de objetos.")
     print("Mira si la estructura es train/<clase>/*.jpg: eso es una exportacion")
     print("de CLASIFICACION y sus fotos no tienen cuadros delimitadores.")
 ```
