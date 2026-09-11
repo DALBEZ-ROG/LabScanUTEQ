@@ -138,6 +138,22 @@ class CameraBinder(
                     // RGBA_8888 permite usar ImageProxy.toBitmap() directamente, sin
                     // escribir a mano la conversion de YUV_420_888.
                     .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                    // CameraX gira el fotograma ANTES de entregarlo, para que el modelo lo
+                    // vea derecho pase lo que pase con el telefono.
+                    //
+                    // Sin esto la app solo detectaba en horizontal, y el motivo tardo en
+                    // verse porque no parecia un problema de orientacion: el sensor entrega
+                    // siempre un bufer apaisado, asi que en horizontal coincide con el mundo
+                    // y acierta, y en vertical el modelo recibe la escena tumbada 90 grados.
+                    // Fue entrenado con fotos derechas, asi que una autoclave de lado es para
+                    // el otra imagen y no la reconoce.
+                    //
+                    // Con esto, `imageInfo.rotationDegrees` llega ya en 0 y el paso de
+                    // rotacion de BoxMapper se vuelve la identidad, que es lo correcto porque
+                    // la imagen ya viene girada. La Activity se recrea al girar el telefono
+                    // (no hay android:configChanges en el manifiesto), asi que CameraX
+                    // reengancha con la rotacion de destino correcta en cada vuelta.
+                    .setOutputImageRotationEnabled(true)
                     .build()
                     .apply { setAnalyzer(analysisExecutor, analyzer) }
             }

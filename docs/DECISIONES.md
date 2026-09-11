@@ -1558,3 +1558,37 @@ vuelve a pedir la clave. Y la misma petición que arma la app, enviada a la API 
 la presión.
 
 Pendiente: la app solo detecta bien en horizontal. Se mira después.
+
+## D-045 — La detección solo funcionaba con el teléfono en horizontal — 2026-09-10
+
+Reportado tras la presentación: los cuadros aparecían con el teléfono acostado y no con el
+teléfono derecho.
+
+No era un problema de la interfaz ni del mapeo de coordenadas. `YoloTfliteDetector.detect`
+corría la inferencia sobre el fotograma **sin girar**, tal como lo entrega `ImageAnalysis`, y
+dejaba la rotación para `BoxMapper` al dibujar. Está escrito así en su propio comentario.
+
+El sensor entrega **siempre** un búfer apaisado. En horizontal eso coincide con el mundo y el
+modelo acierta. En vertical el modelo recibe la escena tumbada 90 grados, y fue entrenado con
+fotos derechas: una autoclave de lado es otra imagen y no la reconoce.
+
+Cuesta verlo porque no se manifiesta como un problema de orientación. Se manifiesta como "a
+veces detecta y a veces no", y lleva a buscar en el modelo o en el umbral.
+
+**La solución es `setOutputImageRotationEnabled(true)` en `ImageAnalysis`.** CameraX gira el
+fotograma antes de entregarlo, `imageInfo.rotationDegrees` llega en 0, y el paso de rotación de
+`BoxMapper` se vuelve la identidad, que es lo correcto porque la imagen ya viene girada.
+
+La Activity se recrea al girar el teléfono (no hay `android:configChanges` en el manifiesto),
+así que CameraX reengancha con la rotación de destino correcta en cada vuelta.
+
+### SIN VERIFICAR EN DISPOSITIVO
+
+El teléfono se desconectó del enlace inalámbrico antes de poder probarlo. Compila y las 77
+pruebas siguen en verde, pero eso **no cubre** la cadena de coordenadas, que es la sección
+crítica de CLAUDE.md y justo lo que este cambio toca.
+
+Antes de darlo por bueno hay que repetir la verificación obligatoria: con `StubDetector`
+devolviendo una caja fija en el 25–75 % del fotograma, esa caja debe quedar centrada en
+pantalla **en vertical, en horizontal y con la cámara frontal**. Si en alguna de las tres sale
+corrida o estirada, la causa está aquí.
